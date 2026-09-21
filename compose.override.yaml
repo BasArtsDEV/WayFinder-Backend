@@ -1,12 +1,24 @@
 
 services:
-###> doctrine/doctrine-bundle ###
+  ###> doctrine/doctrine-bundle ###
   database:
     ports:
-      - "5432"
-###< doctrine/doctrine-bundle ###
+      - "5432:5432"
+  ###< doctrine/doctrine-bundle ###
 
-###> symfony/mailer ###
+  adminer:
+    image: butopea/adminer
+    ports:
+      - "7080:8080"
+    environment:
+      ADMINER_SERVER: database
+      ADMINER_DB: app
+      ADMINER_USER: app
+      ADMINER_DRIVER: pgsql
+      ADMINER_PASSWORD: "!ChangeMe!"
+      ADMINER_AUTOLOGIN: 1
+
+  ###> symfony/mailer ###
   mailer:
     image: axllent/mailpit
     ports:
