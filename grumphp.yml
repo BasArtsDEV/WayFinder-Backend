@@ -1,2 +1,49 @@
 grumphp:
-    tasks: {  }
+    fixer:
+        enabled: false
+    tasks:
+        composer: null
+        git_blacklist:
+            keywords:
+                - "dump\\\\("
+                - "var_dump\\\\("
+                - "print_r\\\\("
+                - "die\\\\("
+                - "exit\\\\("
+                - "exit;"
+        git_commit_message:
+            allow_empty_message: false
+            enforce_capitalized_subject: false
+            enforce_no_subject_punctuations: false
+            enforce_no_subject_trailing_period: true
+            enforce_single_lined_subject: true
+            type_scope_conventions:
+                types:
+                    - build
+                    - ci
+                    - chore
+                    - docs
+                    - feat
+                    - fix
+                    - perf
+                    - refactor
+                    - revert
+                    - style
+                    - test
+                scopes: [ ]
+            skip_on_merge_commit: true
+            max_body_width: 72
+            max_subject_width: 80
+            matchers: [ ]
+            case_insensitive: true
+            multiline: true
+            additional_modifiers: ''
+        composer_script:
+            script: test:yaml
+            triggered_by:
+                - yaml
+                - yml
+        twigcsfixer: ~
+        phpcsfixer:
+            config: .php-cs-fixer.dist.php
+        phpstan: ~
