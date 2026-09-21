@@ -1,10 +1,40 @@
 {
     "type": "project",
+    "authors": [
+        {
+            "name": "Gaël Lefèvre",
+            "email": "gael.lefevre@etudiant.univ-reims.fr",
+            "homepage": "https://lefevregael.fr",
+            "role": "Developer"
+        },
+        {
+            "name": "Sandjy Gaudin",
+            "email": "sandjy.gaudin@etudiant.univ-reims.fr",
+            "role": "Developer"
+        },
+        {
+            "name": "Natan Sorel",
+            "email": "natan.sorel@etudiant.univ-reims.fr",
+            "role": "Developer"
+        },
+        {
+            "name": "Tony Hadj Sadoun",
+            "email": "tony.hadjsadoun@etudiant.univ-reims.fr",
+            "role": "Developer"
+        },
+        {
+            "name": "Wassime Moussaoui",
+            "email": "wassime.moussaoui@etudiant.univ-reims.fr",
+            "role": "Developer"
+        }
+    ],
+    "name": "sae/chasse-au-tresor",
+    "description": "The central project will be a classified ads site.",
     "license": "proprietary",
     "minimum-stability": "stable",
     "prefer-stable": true,
     "require": {
-        "php": ">=8.2",
+        "php": ">=8.4",
         "ext-ctype": "*",
         "ext-iconv": "*",
         "doctrine/doctrine-bundle": "^3.3",
@@ -84,7 +114,45 @@
         ],
         "post-update-cmd": [
             "@auto-scripts"
+        ],
+        "start" : [
+            "Composer\\Config::disableProcessTimeout",
+            "symfony serve"
+        ],
+        "test:phpcs" : "php-cs-fixer fix --dry-run",
+        "fix:phpcs": "php-cs-fixer fix",
+        "test:twigcs": "twig-cs-fixer lint templates/",
+        "fix:twigcs": "twig-cs-fixer fix templates/",
+        "test:phpstan": "vendor/bin/phpstan analyse src tests",
+        "test:yaml": "php bin/console lint:yaml config",
+        "test" : [
+            "@test:phpcs",
+            "@test:twigcs",
+            "@test:phpstan",
+            "@test:yaml"
+        ],
+        "fix" : [
+            "@fix:phpcs",
+            "@fix:twigcs"
+        ],
+        "db": [
+            "php bin/console doctrine:database:drop --force --if-exists",
+            "php bin/console doctrine:database:create",
+            "php bin/console doctrine:migrations:migrate --no-interaction",
+            "php bin/console doctrine:fixtures:load --no-interaction"
         ]
+    },
+    "scripts-descriptions": {
+        "start": "Starts the Symfony server with timeout disabled",
+        "test:phpcs": "Checks PHP code style without applying changes",
+        "fix:phpcs": "Applies style fixes to PHP code",
+        "test:twigcs": "Checks Twig code style without applying changes",
+        "fix:twigcs": "Applies style fixes to Twig code",
+        "test:phpstan": "Checks PHP code format depending on phpstan conditions",
+        "test:yaml": "Does a verification for each yaml file within in config/",
+        "test": "Runs all code checks",
+        "fix": "Applies all code fixes",
+        "db": "Recreates the database, applies migrations, and loads fixtures"
     },
     "conflict": {
         "symfony/symfony": "*"
