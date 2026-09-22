@@ -2,13 +2,13 @@
 
 ## Authors
 
-| Name               | GitLab IDs  | Role       |
-|--------------------|-------------|------------|
-| Natan Sorel        | @sore0012   | Owner      |
-| Gaël Lefèvre       | @lefe0306   | Maintainer |
-| Sandjy Gaudin      | @gaud0055   | Maintainer |
-| Tony Hadj Sadoun   | @hadj0030   | Maintainer |
-| Wassime Moussaoui  | @mous0111   | Maintainer |
+| Name               | GitLab IDs       | Role       |
+|--------------------|------------------|------------|
+| Natan Sorel        | @sore0012 Limeen | Owner      |
+| Gaël Lefèvre       | @lefe0306        | Maintainer |
+| Sandjy Gaudin      | @gaud0055        | Maintainer |
+| Tony Hadj Sadoun   | @hadj0030        | Maintainer |
+| Wassime Moussaoui  | @mous0111        | Maintainer |
 
 ## Project Presentation
 
