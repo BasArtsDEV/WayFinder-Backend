@@ -1,14 +1,62 @@
 # sae5-01-back
 
-Projet académique, création d'une application de chasse au trésor, partie back-end
+## Authors
 
-## Auteurs du projet
+| Name               | GitLab IDs       | Role       |
+|--------------------|------------------|------------|
+| Natan Sorel        | @sore0012 Limeen | Owner      |
+| Gaël Lefèvre       | @lefe0306        | Maintainer |
+| Sandjy Gaudin      | @gaud0055        | Maintainer |
+| Tony Hadj Sadoun   | @hadj0030        | Maintainer |
+| Wassime Moussaoui  | @mous0111        | Maintainer |
 
-- Tony Hadj Sadoun ``hadj0030``
-- Sandjy Gaudin ``gaud0055``
-- Natan Sorel ``sore0012`` ``Limeen``
-- Wassime Moussaoui ``mous0111``
-- Gaël Lefèvre ``lefe0306``
+## Project Presentation
+
+### Introduction
+
+This back-end repository is part of an academic project (SAÉ 5.01) carried out as a team of five students from the IUT of Reims.
+The goal of this project is to build a complete, containerized treasure hunt web application following an agile methodology.
+
+The application allows administrators to create and manage treasure hunts, geographical riddles
+(text, multiple-choice questions, QR codes, GPS-based locations),
+and user accounts, while providing a secure API consumed by a React front-end application.
+
+### Conceptual Data Model
+
+< INSERT IMAGE HERE >
+
+### Features
+
+- Authentication & Authorization: Secure JWT-based authentication with role-based access control separating creators and players.
+- Treasure Hunt Management: Full CRUD operations for designers to create, update, delete, and organize treasure hunts and their associated multi-type riddles (text, MCQ, QR code, GPS).
+- Progression & Scoring: Tracking system for players to register for hunts, solve riddles sequentially, handle time penalties for incorrect answers, and pause or complete challenges.
+- Data Fixtures & Testing: Comprehensive fake and real data fixtures alongside automated test suites ensuring application stability and security.
+
+## Tech Stack
+
+This project is built using the following technologies:
+* **Framework:** Symfony 7.4 (PHP 8.4+)
+* **Database:** PostgreSQL (v16-alpine) via Docker
+* **Dependency Manager:** Composer
+* **Frontend:** Twig
+* **Containerization:** Docker & Docker Compose
+
+### Code Quality Tools
+To maintain high coding standards, we use:
+* [PHP CS Fixer](https://cs.symfony.com/): Automatically fixes PHP coding standards.
+* [Twig CS Fixer](https://github.com/VincentLanglet/Twig-CS-Fixer): Linter and fixer for Twig templates.
+* [PHPStan](https://phpstan.org/documentation): PHP Static Analysis Tool that finds bugs in your code without running it.
+* [GrumPHP](https://github.com/phpro/grumphp): A code quality tool that runs tasks like linters, tests, and static analysis whenever you commit changes.
+
+### Development Workflow (Agile)
+
+The project follows an **Agile** methodology via **GitLab** to ensure code quality and feature tracking:
+* **Backlog Management:** GitLab *Issues* are used to track tasks and bugs.
+* **Branching Strategy:**
+    * `main`: Stable protected production branch.
+    * `feature/feature-name`: Development of new features.
+    * `fix/bug-name`: Bug fixes.
+* **Quality Assurance:** Every branch requires a **Merge Request (MR)**. A code review by another team member is mandatory before any fusion into the main branch.
 
 ## Installation
 
@@ -21,47 +69,20 @@ docker compose up -d
 ```
 
 ```
+composer db
 composer start
 ```
 
-## Présentation du projet
-
-### Introduction
-
-< écrire ici >
-
-### Modèle Conceptuel de données
-
-< insérer MCD ici >
-
-### Fonctionnalités
-
 ## Scripts composer
 
-Vous trouverez ci-dessous des renseignements sur les actions des scripts.
-
-- ``start`` : qui lance le serveur web de test (« symfony serve ») sans restriction de durée d'exécution
-- ``test:phpcs`` : qui lance la commande de vérification du code par PHP CS Fixer
-- ``fix:phpcs`` : qui lance la commande de correction du code par PHP CS Fixer
-- ``test:twigcs`` : qui lance la commande de vérification du code par Twig CS Fixer
-- ``fix:twigcs`` : qui lance la commande de correction du code par Twig CS Fixer
-- ``test`` : qui lance les scripts Composer « test:phpcs » et « test:twigcs »
-- ``fix`` : qui lance les scripts Composer « fix:phpcs » et « fix:twigcs »
-- ``test:codeception`` :
-    - Nettoyage du répertoire « _output » et du code généré par Codeception
-    - Destruction silencieuse forcée de la base de données
-    - Création silencieuse de la base de données
-    - Création silencieuse du schéma de la base de données
-    - Exécution des tests Codeception
-- ``db`` :
-    - Destruction forcée de la base de données
-    - Création de la base de données
-    - Application des migrations successives sans questions interactives
-    - Génération des données factices sans questions interactives
-- ``fix:db``:
-    - ⚠️ **à utiliser que en cas de nécessité**
-    - Réinitialise le système de migrations de Doctrine.
-    - Supprime tous les anciens fichiers du dossier « migrations ».
-    - Recrée une base de données propre et vide.
-    - Génère une nouvelle migration unique à partir de tes entités.
-    - Exécute le script ``composer db`` pour installer le schéma et les données de test.
+- ``start`` : Starts the Symfony server with timeout disabled
+- ``test:phpcs`` : Checks PHP code style without applying changes
+- ``fix:phpcs`` : Applies style fixes to PHP code
+- ``test:twigcs`` : Checks Twig code style without applying changes
+- ``fix:twigcs`` : Applies style fixes to Twig code
+- ``test:phpstan`` : Checks PHP code format depending on phpstan conditions
+- ``test:yaml`` : Does a verification for each YAML file within in config/
+- ``test`` : Runs all code checks
+- ``fix`` : Applies all code fixes
+- ``db`` : Recreates the DB, applies migrations, and loads fixtures
+- ``fix:db``: Resets the DB and migration history, dropping and recreating the database, generating a fresh initial migration, and running database setup.
