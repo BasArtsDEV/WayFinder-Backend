@@ -142,6 +142,15 @@
             "php bin/console doctrine:database:create",
             "php bin/console doctrine:migrations:migrate --no-interaction",
             "php bin/console doctrine:fixtures:load --no-interaction"
+        ],
+        "fix:db": [
+            "php bin/console doctrine:migrations:sync-metadata-storage",
+            "php -r \"array_map('unlink', glob('migrations/*.php'));\"",
+            "php bin/console doctrine:database:drop --force",
+            "php bin/console doctrine:database:create",
+            "php bin/console make:migration",
+            "php bin/console doctrine:migrations:migrate --no-interaction",
+            "composer db"
         ]
     },
     "scripts-descriptions": {
@@ -154,7 +163,8 @@
         "test:yaml": "Does a verification for each yaml file within in config/",
         "test": "Runs all code checks",
         "fix": "Applies all code fixes",
-        "db": "Recreates the database, applies migrations, and loads fixtures"
+        "db": "Recreates the DB, applies migrations, and loads fixtures",
+        "fix:db": "Resets the DB and migration history, dropping and recreating the database, generating a fresh initial migration, and running database setup."
     },
     "conflict": {
         "symfony/symfony": "*"
