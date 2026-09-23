@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -46,6 +48,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\ManyToOne(inversedBy: 'users')]
     private ?Team $team = null;
+
+    /**
+     * @var Collection<int, Enrollement>
+     */
+    #[ORM\ManyToMany(targetEntity: Enrollement::class, inversedBy: 'users')]
+    private Collection $enrollements;
+
+    public function __construct()
+    {
+        $this->enrollements = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -184,6 +197,30 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setTeam(?Team $team): static
     {
         $this->team = $team;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Enrollement>
+     */
+    public function getEnrollements(): Collection
+    {
+        return $this->enrollements;
+    }
+
+    public function addEnrollement(Enrollement $enrollement): static
+    {
+        if (!$this->enrollements->contains($enrollement)) {
+            $this->enrollements->add($enrollement);
+        }
+
+        return $this;
+    }
+
+    public function removeEnrollement(Enrollement $enrollement): static
+    {
+        $this->enrollements->removeElement($enrollement);
 
         return $this;
     }

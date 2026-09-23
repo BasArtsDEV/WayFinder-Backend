@@ -41,9 +41,16 @@ class Enrollement
     #[ORM\ManyToOne(inversedBy: 'enrollements')]
     private ?Riddle $riddle = null;
 
+    /**
+     * @var Collection<int, User>
+     */
+    #[ORM\ManyToMany(targetEntity: User::class, mappedBy: 'enrollements')]
+    private Collection $users;
+
     public function __construct()
     {
         $this->submissions = new ArrayCollection();
+        $this->users = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -149,6 +156,33 @@ class Enrollement
     public function setRiddle(?Riddle $riddle): static
     {
         $this->riddle = $riddle;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, User>
+     */
+    public function getUsers(): Collection
+    {
+        return $this->users;
+    }
+
+    public function addUser(User $user): static
+    {
+        if (!$this->users->contains($user)) {
+            $this->users->add($user);
+            $user->addEnrollement($this);
+        }
+
+        return $this;
+    }
+
+    public function removeUser(User $user): static
+    {
+        if ($this->users->removeElement($user)) {
+            $user->removeEnrollement($this);
+        }
 
         return $this;
     }
