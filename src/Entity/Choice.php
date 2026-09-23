@@ -19,6 +19,10 @@ class Choice
     #[ORM\Column]
     private bool $isRight = false;
 
+    #[ORM\ManyToOne(inversedBy: 'choices')]
+    #[ORM\JoinColumn(nullable: false)]
+    private RiddleQCM $riddleQCM;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -44,6 +48,18 @@ class Choice
     public function setIsRight(bool $isRight): static
     {
         $this->isRight = $isRight;
+
+        return $this;
+    }
+
+    public function getRiddleQCM(): ?RiddleQCM
+    {
+        return $this->riddleQCM;
+    }
+
+    public function setRiddleQCM(?RiddleQCM $riddleQCM): static
+    {
+        $this->riddleQCM = $riddleQCM;
 
         return $this;
     }
