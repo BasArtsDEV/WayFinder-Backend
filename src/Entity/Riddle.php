@@ -55,9 +55,16 @@ abstract class Riddle
     #[ORM\OneToMany(targetEntity: Enrollement::class, mappedBy: 'riddle')]
     private Collection $enrollements;
 
+    /**
+     * @var Collection<int, Submission>
+     */
+    #[ORM\OneToMany(targetEntity: Submission::class, mappedBy: 'riddle')]
+    private Collection $submissions;
+
     public function __construct()
     {
         $this->enrollements = new ArrayCollection();
+        $this->submissions = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -173,6 +180,36 @@ abstract class Riddle
             // set the owning side to null (unless already changed)
             if ($enrollement->getRiddle() === $this) {
                 $enrollement->setRiddle(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Submission>
+     */
+    public function getSubmissions(): Collection
+    {
+        return $this->submissions;
+    }
+
+    public function addSubmission(Submission $submission): static
+    {
+        if (!$this->submissions->contains($submission)) {
+            $this->submissions->add($submission);
+            $submission->setRiddle($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSubmission(Submission $submission): static
+    {
+        if ($this->submissions->removeElement($submission)) {
+            // set the owning side to null (unless already changed)
+            if ($submission->getRiddle() === $this) {
+                $submission->setRiddle(null);
             }
         }
 

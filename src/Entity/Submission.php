@@ -33,6 +33,10 @@ class Submission
     #[ORM\JoinColumn(nullable: false)]
     private Enrollement $enrollement;
 
+    #[ORM\ManyToOne(inversedBy: 'submissions')]
+    #[ORM\JoinColumn(nullable: false)]
+    private Riddle $riddle;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -106,6 +110,18 @@ class Submission
     public function setEnrollement(?Enrollement $enrollement): static
     {
         $this->enrollement = $enrollement;
+
+        return $this;
+    }
+
+    public function getRiddle(): ?Riddle
+    {
+        return $this->riddle;
+    }
+
+    public function setRiddle(?Riddle $riddle): static
+    {
+        $this->riddle = $riddle;
 
         return $this;
     }
