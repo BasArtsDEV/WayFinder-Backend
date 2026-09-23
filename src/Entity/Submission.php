@@ -29,6 +29,10 @@ class Submission
     #[ORM\Column(type: Types::DATE_IMMUTABLE)]
     private \DateTimeImmutable $submissionDate;
 
+    #[ORM\ManyToOne(inversedBy: 'submissions')]
+    #[ORM\JoinColumn(nullable: false)]
+    private Enrollement $enrollement;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -90,6 +94,18 @@ class Submission
     public function setSubmissionDate(\DateTimeImmutable $submissionDate): static
     {
         $this->submissionDate = $submissionDate;
+
+        return $this;
+    }
+
+    public function getEnrollement(): ?Enrollement
+    {
+        return $this->enrollement;
+    }
+
+    public function setEnrollement(?Enrollement $enrollement): static
+    {
+        $this->enrollement = $enrollement;
 
         return $this;
     }
