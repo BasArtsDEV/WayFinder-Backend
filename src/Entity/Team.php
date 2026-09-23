@@ -24,9 +24,16 @@ class Team
     #[ORM\OneToMany(targetEntity: User::class, mappedBy: 'team')]
     private Collection $users;
 
+    /**
+     * @var Collection<int, TreasureHunt>
+     */
+    #[ORM\OneToMany(targetEntity: TreasureHunt::class, mappedBy: 'team')]
+    private Collection $treasurehunts;
+
     public function __construct()
     {
         $this->users = new ArrayCollection();
+        $this->treasurehunts = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -70,6 +77,36 @@ class Team
             // set the owning side to null (unless already changed)
             if ($user->getTeam() === $this) {
                 $user->setTeam(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, TreasureHunt>
+     */
+    public function getTreasurehunts(): Collection
+    {
+        return $this->treasurehunts;
+    }
+
+    public function addTreasurehunt(TreasureHunt $treasurehunt): static
+    {
+        if (!$this->treasurehunts->contains($treasurehunt)) {
+            $this->treasurehunts->add($treasurehunt);
+            $treasurehunt->setTeam($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTreasurehunt(TreasureHunt $treasurehunt): static
+    {
+        if ($this->treasurehunts->removeElement($treasurehunt)) {
+            // set the owning side to null (unless already changed)
+            if ($treasurehunt->getTeam() === $this) {
+                $treasurehunt->setTeam(null);
             }
         }
 

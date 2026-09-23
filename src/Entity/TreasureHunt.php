@@ -26,6 +26,10 @@ class TreasureHunt
     #[ORM\Column(type: Types::DATE_IMMUTABLE)]
     private \DateTimeImmutable $creationDate;
 
+    #[ORM\ManyToOne(inversedBy: 'treasurehunts')]
+    #[ORM\JoinColumn(nullable: false)]
+    private Team $team;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -75,6 +79,18 @@ class TreasureHunt
     public function setCreationDate(\DateTimeImmutable $creationDate): static
     {
         $this->creationDate = $creationDate;
+
+        return $this;
+    }
+
+    public function getTeam(): ?Team
+    {
+        return $this->team;
+    }
+
+    public function setTeam(?Team $team): static
+    {
+        $this->team = $team;
 
         return $this;
     }
