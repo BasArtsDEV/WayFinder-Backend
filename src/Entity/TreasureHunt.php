@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\TreasureHuntRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -29,6 +31,17 @@ class TreasureHunt
     #[ORM\ManyToOne(inversedBy: 'treasurehunts')]
     #[ORM\JoinColumn(nullable: false)]
     private Team $team;
+
+    /**
+     * @var Collection<int, Enrollement>
+     */
+    #[ORM\OneToMany(targetEntity: Enrollement::class, mappedBy: 'treasureHunt')]
+    private Collection $enrollements;
+
+    public function __construct()
+    {
+        $this->enrollements = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -91,6 +104,36 @@ class TreasureHunt
     public function setTeam(?Team $team): static
     {
         $this->team = $team;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Enrollement>
+     */
+    public function getEnrollements(): Collection
+    {
+        return $this->enrollements;
+    }
+
+    public function addEnrollement(Enrollement $enrollement): static
+    {
+        if (!$this->enrollements->contains($enrollement)) {
+            $this->enrollements->add($enrollement);
+            $enrollement->setTreasureHunt($this);
+        }
+
+        return $this;
+    }
+
+    public function removeEnrollement(Enrollement $enrollement): static
+    {
+        if ($this->enrollements->removeElement($enrollement)) {
+            // set the owning side to null (unless already changed)
+            if ($enrollement->getTreasureHunt() === $this) {
+                $enrollement->setTreasureHunt(null);
+            }
+        }
 
         return $this;
     }

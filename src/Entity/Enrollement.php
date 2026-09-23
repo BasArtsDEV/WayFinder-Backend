@@ -26,6 +26,10 @@ class Enrollement
     #[ORM\Column]
     private int $countdown;
 
+    #[ORM\ManyToOne(inversedBy: 'enrollements')]
+    #[ORM\JoinColumn(nullable: false)]
+    private TreasureHunt $treasureHunt;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -75,6 +79,18 @@ class Enrollement
     public function setCountdown(int $countdown): static
     {
         $this->countdown = $countdown;
+
+        return $this;
+    }
+
+    public function getTreasureHunt(): ?TreasureHunt
+    {
+        return $this->treasureHunt;
+    }
+
+    public function setTreasureHunt(?TreasureHunt $treasureHunt): static
+    {
+        $this->treasureHunt = $treasureHunt;
 
         return $this;
     }
