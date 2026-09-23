@@ -1,15 +1,5 @@
 # sae5-01-back
 
-## Authors
-
-| Name               | GitLab IDs       | Role       |
-|--------------------|------------------|------------|
-| Natan Sorel        | @sore0012 Limeen | Owner      |
-| Gaël Lefèvre       | @lefe0306        | Maintainer |
-| Sandjy Gaudin      | @gaud0055        | Maintainer |
-| Tony Hadj Sadoun   | @hadj0030        | Maintainer |
-| Wassime Moussaoui  | @mous0111        | Maintainer |
-
 ## Project Presentation
 
 ### Introduction
@@ -21,10 +11,6 @@ The application allows administrators to create and manage treasure hunts, geogr
 (text, multiple-choice questions, QR codes, GPS-based locations),
 and user accounts, while providing a secure API consumed by a React front-end application.
 
-### Conceptual Data Model
-
-< INSERT IMAGE HERE >
-
 ### Features
 
 - Authentication & Authorization: Secure JWT-based authentication with role-based access control separating creators and players.
@@ -32,7 +18,17 @@ and user accounts, while providing a secure API consumed by a React front-end ap
 - Progression & Scoring: Tracking system for players to register for hunts, solve riddles sequentially, handle time penalties for incorrect answers, and pause or complete challenges.
 - Data Fixtures & Testing: Comprehensive fake and real data fixtures alongside automated test suites ensuring application stability and security.
 
-## Tech Stack
+## Authors
+
+| Name               | GitLab IDs       | Role       |
+|--------------------|------------------|------------|
+| Natan Sorel        | @sore0012 Limeen | Owner      |
+| Gaël Lefèvre       | @lefe0306        | Maintainer |
+| Sandjy Gaudin      | @gaud0055        | Maintainer |
+| Tony Hadj Sadoun   | @hadj0030        | Maintainer |
+| Wassime Moussaoui  | @mous0111        | Maintainer |
+
+### Tech Stack
 
 This project is built using the following technologies:
 * **Framework:** Symfony 7.4 (PHP 8.4+)
@@ -86,3 +82,7 @@ composer start
 - ``fix`` : Applies all code fixes
 - ``db`` : Recreates the DB, applies migrations, and loads fixtures
 - ``fix:db``: Resets the DB and migration history, dropping and recreating the database, generating a fresh initial migration, and running database setup.
+
+### Conceptual Data Model
+
+![MCD version finalisée](MCD_final.jpg)
