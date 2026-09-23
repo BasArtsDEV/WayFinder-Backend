@@ -38,6 +38,9 @@ class Enrollement
     #[ORM\OneToMany(targetEntity: Submission::class, mappedBy: 'enrollement')]
     private Collection $submissions;
 
+    #[ORM\ManyToOne(inversedBy: 'enrollements')]
+    private ?Riddle $riddle = null;
+
     public function __construct()
     {
         $this->submissions = new ArrayCollection();
@@ -134,6 +137,18 @@ class Enrollement
                 $submission->setEnrollement(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getRiddle(): ?Riddle
+    {
+        return $this->riddle;
+    }
+
+    public function setRiddle(?Riddle $riddle): static
+    {
+        $this->riddle = $riddle;
 
         return $this;
     }
