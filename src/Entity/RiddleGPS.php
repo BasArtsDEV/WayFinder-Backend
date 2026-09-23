@@ -6,13 +6,8 @@ use App\Repository\RiddleGPSRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: RiddleGPSRepository::class)]
-class RiddleGPS
+class RiddleGPS extends Riddle
 {
-    #[ORM\Id]
-    #[ORM\GeneratedValue]
-    #[ORM\Column]
-    private ?int $id = null;
-
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $locationName = null;
 
@@ -21,11 +16,6 @@ class RiddleGPS
 
     #[ORM\Column]
     private float $longitude;
-
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
 
     public function getLocationName(): ?string
     {

@@ -5,9 +5,20 @@ namespace App\Entity;
 use App\Repository\RiddleRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\Mapping\DiscriminatorColumn;
+use Doctrine\ORM\Mapping\DiscriminatorMap;
+use Doctrine\ORM\Mapping\InheritanceType;
 
 #[ORM\Entity(repositoryClass: RiddleRepository::class)]
-class Riddle
+#[InheritanceType('SINGLE_TABLE')]
+#[DiscriminatorColumn(name: 'discr', type: 'string')]
+#[DiscriminatorMap([
+    'riddlegps' => RiddleGPS::class,
+    'riddleqcm' => RiddleQCM::class,
+    'riddleQRCode' => RiddleQRCode::class,
+    'riddleText' => RiddleText::class]
+)]
+abstract class Riddle
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]

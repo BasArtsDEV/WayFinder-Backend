@@ -6,23 +6,13 @@ use App\Repository\RiddleTextRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: RiddleTextRepository::class)]
-class RiddleText
+class RiddleText extends Riddle
 {
-    #[ORM\Id]
-    #[ORM\GeneratedValue]
-    #[ORM\Column]
-    private ?int $id = null;
-
     #[ORM\Column(length: 1024)]
     private string $question;
 
     #[ORM\Column(length: 1024)]
     private string $expectedAnswer;
-
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
 
     public function getQuestion(): ?string
     {
