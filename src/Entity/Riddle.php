@@ -43,6 +43,10 @@ abstract class Riddle
     #[ORM\Column]
     private int $secondsPenalty = 0;
 
+    #[ORM\ManyToOne(inversedBy: 'riddles')]
+    #[ORM\JoinColumn(nullable: false)]
+    private TreasureHunt $treasureHunt;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -116,6 +120,18 @@ abstract class Riddle
     public function setSecondsPenalty(int $secondsPenalty): static
     {
         $this->secondsPenalty = $secondsPenalty;
+
+        return $this;
+    }
+
+    public function getTreasureHunt(): ?TreasureHunt
+    {
+        return $this->treasureHunt;
+    }
+
+    public function setTreasureHunt(?TreasureHunt $treasureHunt): static
+    {
+        $this->treasureHunt = $treasureHunt;
 
         return $this;
     }

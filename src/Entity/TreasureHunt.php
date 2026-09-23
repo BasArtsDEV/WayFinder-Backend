@@ -38,9 +38,16 @@ class TreasureHunt
     #[ORM\OneToMany(targetEntity: Enrollement::class, mappedBy: 'treasureHunt')]
     private Collection $enrollements;
 
+    /**
+     * @var Collection<int, Riddle>
+     */
+    #[ORM\OneToMany(targetEntity: Riddle::class, mappedBy: 'treasureHunt')]
+    private Collection $riddles;
+
     public function __construct()
     {
         $this->enrollements = new ArrayCollection();
+        $this->riddles = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -132,6 +139,36 @@ class TreasureHunt
             // set the owning side to null (unless already changed)
             if ($enrollement->getTreasureHunt() === $this) {
                 $enrollement->setTreasureHunt(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Riddle>
+     */
+    public function getRiddles(): Collection
+    {
+        return $this->riddles;
+    }
+
+    public function addRiddle(Riddle $riddle): static
+    {
+        if (!$this->riddles->contains($riddle)) {
+            $this->riddles->add($riddle);
+            $riddle->setTreasureHunt($this);
+        }
+
+        return $this;
+    }
+
+    public function removeRiddle(Riddle $riddle): static
+    {
+        if ($this->riddles->removeElement($riddle)) {
+            // set the owning side to null (unless already changed)
+            if ($riddle->getTreasureHunt() === $this) {
+                $riddle->setTreasureHunt(null);
             }
         }
 
