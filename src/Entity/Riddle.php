@@ -61,6 +61,10 @@ abstract class Riddle
     #[ORM\OneToMany(targetEntity: Submission::class, mappedBy: 'riddle')]
     private Collection $submissions;
 
+    #[ORM\ManyToOne(inversedBy: 'riddles')]
+    #[ORM\JoinColumn(nullable: false)]
+    private Location $location;
+
     public function __construct()
     {
         $this->enrollements = new ArrayCollection();
@@ -212,6 +216,18 @@ abstract class Riddle
                 $submission->setRiddle(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getLocation(): ?Location
+    {
+        return $this->location;
+    }
+
+    public function setLocation(?Location $location): static
+    {
+        $this->location = $location;
 
         return $this;
     }

@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\LocationRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -28,6 +30,17 @@ class Location
 
     #[ORM\Column(type: Types::BLOB, nullable: true)]
     private mixed $img = null;
+
+    /**
+     * @var Collection<int, Riddle>
+     */
+    #[ORM\OneToMany(targetEntity: Riddle::class, mappedBy: 'location')]
+    private Collection $riddles;
+
+    public function __construct()
+    {
+        $this->riddles = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -90,6 +103,36 @@ class Location
     public function setImg(mixed $img): static
     {
         $this->img = $img;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Riddle>
+     */
+    public function getRiddles(): Collection
+    {
+        return $this->riddles;
+    }
+
+    public function addRiddle(Riddle $riddle): static
+    {
+        if (!$this->riddles->contains($riddle)) {
+            $this->riddles->add($riddle);
+            $riddle->setLocation($this);
+        }
+
+        return $this;
+    }
+
+    public function removeRiddle(Riddle $riddle): static
+    {
+        if ($this->riddles->removeElement($riddle)) {
+            // set the owning side to null (unless already changed)
+            if ($riddle->getLocation() === $this) {
+                $riddle->setLocation(null);
+            }
+        }
 
         return $this;
     }
