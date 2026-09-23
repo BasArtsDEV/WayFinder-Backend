@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\EnrollementRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -25,6 +27,31 @@ class Enrollement
 
     #[ORM\Column]
     private int $countdown;
+
+    #[ORM\ManyToOne(inversedBy: 'enrollements')]
+    #[ORM\JoinColumn(nullable: false)]
+    private TreasureHunt $treasureHunt;
+
+    /**
+     * @var Collection<int, Submission>
+     */
+    #[ORM\OneToMany(targetEntity: Submission::class, mappedBy: 'enrollement')]
+    private Collection $submissions;
+
+    #[ORM\ManyToOne(inversedBy: 'enrollements')]
+    private ?Riddle $riddle = null;
+
+    /**
+     * @var Collection<int, User>
+     */
+    #[ORM\ManyToMany(targetEntity: User::class, mappedBy: 'enrollements')]
+    private Collection $users;
+
+    public function __construct()
+    {
+        $this->submissions = new ArrayCollection();
+        $this->users = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -75,6 +102,87 @@ class Enrollement
     public function setCountdown(int $countdown): static
     {
         $this->countdown = $countdown;
+
+        return $this;
+    }
+
+    public function getTreasureHunt(): ?TreasureHunt
+    {
+        return $this->treasureHunt;
+    }
+
+    public function setTreasureHunt(?TreasureHunt $treasureHunt): static
+    {
+        $this->treasureHunt = $treasureHunt;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Submission>
+     */
+    public function getSubmissions(): Collection
+    {
+        return $this->submissions;
+    }
+
+    public function addSubmission(Submission $submission): static
+    {
+        if (!$this->submissions->contains($submission)) {
+            $this->submissions->add($submission);
+            $submission->setEnrollement($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSubmission(Submission $submission): static
+    {
+        if ($this->submissions->removeElement($submission)) {
+            // set the owning side to null (unless already changed)
+            if ($submission->getEnrollement() === $this) {
+                $submission->setEnrollement(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getRiddle(): ?Riddle
+    {
+        return $this->riddle;
+    }
+
+    public function setRiddle(?Riddle $riddle): static
+    {
+        $this->riddle = $riddle;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, User>
+     */
+    public function getUsers(): Collection
+    {
+        return $this->users;
+    }
+
+    public function addUser(User $user): static
+    {
+        if (!$this->users->contains($user)) {
+            $this->users->add($user);
+            $user->addEnrollement($this);
+        }
+
+        return $this;
+    }
+
+    public function removeUser(User $user): static
+    {
+        if ($this->users->removeElement($user)) {
+            $user->removeEnrollement($this);
+        }
 
         return $this;
     }

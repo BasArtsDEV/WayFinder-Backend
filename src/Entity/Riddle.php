@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\RiddleRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\DiscriminatorColumn;
@@ -42,6 +44,32 @@ abstract class Riddle
 
     #[ORM\Column]
     private int $secondsPenalty = 0;
+
+    #[ORM\ManyToOne(inversedBy: 'riddles')]
+    #[ORM\JoinColumn(nullable: false)]
+    private TreasureHunt $treasureHunt;
+
+    /**
+     * @var Collection<int, Enrollement>
+     */
+    #[ORM\OneToMany(targetEntity: Enrollement::class, mappedBy: 'riddle')]
+    private Collection $enrollements;
+
+    /**
+     * @var Collection<int, Submission>
+     */
+    #[ORM\OneToMany(targetEntity: Submission::class, mappedBy: 'riddle')]
+    private Collection $submissions;
+
+    #[ORM\ManyToOne(inversedBy: 'riddles')]
+    #[ORM\JoinColumn(nullable: false)]
+    private Location $location;
+
+    public function __construct()
+    {
+        $this->enrollements = new ArrayCollection();
+        $this->submissions = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -116,6 +144,90 @@ abstract class Riddle
     public function setSecondsPenalty(int $secondsPenalty): static
     {
         $this->secondsPenalty = $secondsPenalty;
+
+        return $this;
+    }
+
+    public function getTreasureHunt(): ?TreasureHunt
+    {
+        return $this->treasureHunt;
+    }
+
+    public function setTreasureHunt(?TreasureHunt $treasureHunt): static
+    {
+        $this->treasureHunt = $treasureHunt;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Enrollement>
+     */
+    public function getEnrollements(): Collection
+    {
+        return $this->enrollements;
+    }
+
+    public function addEnrollement(Enrollement $enrollement): static
+    {
+        if (!$this->enrollements->contains($enrollement)) {
+            $this->enrollements->add($enrollement);
+            $enrollement->setRiddle($this);
+        }
+
+        return $this;
+    }
+
+    public function removeEnrollement(Enrollement $enrollement): static
+    {
+        if ($this->enrollements->removeElement($enrollement)) {
+            // set the owning side to null (unless already changed)
+            if ($enrollement->getRiddle() === $this) {
+                $enrollement->setRiddle(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Submission>
+     */
+    public function getSubmissions(): Collection
+    {
+        return $this->submissions;
+    }
+
+    public function addSubmission(Submission $submission): static
+    {
+        if (!$this->submissions->contains($submission)) {
+            $this->submissions->add($submission);
+            $submission->setRiddle($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSubmission(Submission $submission): static
+    {
+        if ($this->submissions->removeElement($submission)) {
+            // set the owning side to null (unless already changed)
+            if ($submission->getRiddle() === $this) {
+                $submission->setRiddle(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getLocation(): ?Location
+    {
+        return $this->location;
+    }
+
+    public function setLocation(?Location $location): static
+    {
+        $this->location = $location;
 
         return $this;
     }

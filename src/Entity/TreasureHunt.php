@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\TreasureHuntRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -25,6 +27,28 @@ class TreasureHunt
 
     #[ORM\Column(type: Types::DATE_IMMUTABLE)]
     private \DateTimeImmutable $creationDate;
+
+    #[ORM\ManyToOne(inversedBy: 'treasurehunts')]
+    #[ORM\JoinColumn(nullable: false)]
+    private Team $team;
+
+    /**
+     * @var Collection<int, Enrollement>
+     */
+    #[ORM\OneToMany(targetEntity: Enrollement::class, mappedBy: 'treasureHunt')]
+    private Collection $enrollements;
+
+    /**
+     * @var Collection<int, Riddle>
+     */
+    #[ORM\OneToMany(targetEntity: Riddle::class, mappedBy: 'treasureHunt')]
+    private Collection $riddles;
+
+    public function __construct()
+    {
+        $this->enrollements = new ArrayCollection();
+        $this->riddles = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -75,6 +99,78 @@ class TreasureHunt
     public function setCreationDate(\DateTimeImmutable $creationDate): static
     {
         $this->creationDate = $creationDate;
+
+        return $this;
+    }
+
+    public function getTeam(): ?Team
+    {
+        return $this->team;
+    }
+
+    public function setTeam(?Team $team): static
+    {
+        $this->team = $team;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Enrollement>
+     */
+    public function getEnrollements(): Collection
+    {
+        return $this->enrollements;
+    }
+
+    public function addEnrollement(Enrollement $enrollement): static
+    {
+        if (!$this->enrollements->contains($enrollement)) {
+            $this->enrollements->add($enrollement);
+            $enrollement->setTreasureHunt($this);
+        }
+
+        return $this;
+    }
+
+    public function removeEnrollement(Enrollement $enrollement): static
+    {
+        if ($this->enrollements->removeElement($enrollement)) {
+            // set the owning side to null (unless already changed)
+            if ($enrollement->getTreasureHunt() === $this) {
+                $enrollement->setTreasureHunt(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Riddle>
+     */
+    public function getRiddles(): Collection
+    {
+        return $this->riddles;
+    }
+
+    public function addRiddle(Riddle $riddle): static
+    {
+        if (!$this->riddles->contains($riddle)) {
+            $this->riddles->add($riddle);
+            $riddle->setTreasureHunt($this);
+        }
+
+        return $this;
+    }
+
+    public function removeRiddle(Riddle $riddle): static
+    {
+        if ($this->riddles->removeElement($riddle)) {
+            // set the owning side to null (unless already changed)
+            if ($riddle->getTreasureHunt() === $this) {
+                $riddle->setTreasureHunt(null);
+            }
+        }
 
         return $this;
     }
