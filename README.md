@@ -65,6 +65,7 @@ docker compose up -d
 ```
 
 ```
+composer install
 composer db
 composer start
 ```
@@ -82,6 +83,17 @@ composer start
 - ``fix`` : Applies all code fixes
 - ``db`` : Recreates the DB, applies migrations, and loads fixtures
 - ``fix:db``: Resets the DB and migration history, dropping and recreating the database, generating a fresh initial migration, and running database setup.
+
+## JWT Public key and Private key
+You might need to generate both a public and private key to access the **JWT** (Json Web Token) feature
+by running the follow command in your terminal :
+```shell
+php bin/console lexik:jwt:generate-keypair [--skip-if-exists] [--overwrite]
+```
+
+Where :
+- `--overwrite` will regenerate the keys if they already exist.
+- `--skip-if-exists` to do nothing if they already exist.
 
 ### Conceptual Data Model
 
