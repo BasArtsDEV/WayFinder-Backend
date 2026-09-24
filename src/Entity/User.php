@@ -2,24 +2,96 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\ApiProperty;
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\Patch;
+use ApiPlatform\OpenApi\Model\MediaType;
+use ApiPlatform\OpenApi\Model\Operation;
+use ApiPlatform\OpenApi\Model\Response;
+use ApiPlatform\OpenApi\Model\Schema;
+use App\Controller\GetAvatarController;
 use App\Repository\UserRepository;
+use App\State\MeProvider;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
 #[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_EMAIL', fields: ['email'])]
+#[ApiResource(
+    operations: [
+        new Get(
+            normalizationContext: ['groups' => ['user:read']],
+            security: 'true'
+        ),
+        new Get(
+            uriTemplate: '/me',
+            openapi: new Operation(
+                summary: 'Retrieves the connected user',
+                description: 'Retrieves the connected user',
+            ),
+            normalizationContext: ['groups' => ['user:me']],
+            security: "is_granted('ROLE_USER')",
+            provider: MeProvider::class,
+        ),
+        new Get(
+            uriTemplate: '/users/{id}/avatar',
+            formats: [
+                'png' => 'image/png',
+            ],
+            controller: GetAvatarController::class,
+            openapi: new Operation(
+                responses: [
+                    '200' => new Response(
+                        description: 'The user avatar',
+                        content: new \ArrayObject([
+                            'image/png' => new MediaType(
+                                schema: new Schema([
+                                    'type' => 'string',
+                                    'format' => 'binary',
+                                ])
+                            ),
+                        ])
+                    ),
+                    '404' => new Response(
+                        description: 'User does not exist'
+                    ),
+                ],
+                summary: 'Retrieves a user avatar',
+                description: 'Retrieves the PNG image corresponding to a user avatar',
+            ),
+        ),
+        new Patch(
+            normalizationContext: ['groups' => ['user:read', 'user:me']],
+            denormalizationContext: ['groups' => ['user:write']],
+            security: "object == user and is_granted('ROLE_USER')"
+        ),
+    ]
+)]
+#[UniqueEntity('email')]
+#[ORM\HasLifecycleCallbacks]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['user:read', 'user:me'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 180)]
+    #[Groups(['user:write', 'user:me'])]
+    #[Assert\NotBlank]
+    #[Assert\Email(
+        message: 'L\'email "{{ value }}" n\'est pas une adresse email valide.'
+    )]
     private string $email;
 
     /**
@@ -32,18 +104,51 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * @var string The hashed password
      */
     #[ORM\Column]
+    #[Groups(['user:write'])]
     private string $password;
 
     #[ORM\Column(length: 30)]
+    #[Groups(['user:read', 'user:write', 'user:me'])]
+    #[Assert\NotBlank]
+    #[Assert\Regex(
+        pattern: '/^[\w\d_-]+$/',
+        message: 'Le pseudo ne peut contenir que des lettres, chiffres, _ ou -'
+    )]
+    #[ApiProperty(example: 'monusername')]
     private string $username;
 
     #[ORM\Column(length: 60)]
+    #[Groups(['user:read', 'user:write', 'user:me'])]
+    #[Assert\NotBlank]
+    #[Assert\Regex(
+        pattern: '/^[\w\d\s-]+$/',
+        message: 'Le prénom ne peut pas contenir <, >, &, "'
+    )]
+    #[ApiProperty(example: 'Jean')]
     private string $firstName;
 
     #[ORM\Column(length: 60)]
+    #[Groups(['user:read', 'user:write', 'user:me'])]
+    #[Assert\NotBlank]
+    #[Assert\Regex(
+        pattern: '/^[\w\d\s-]+$/',
+        message: 'Le nom ne peut pas contenir <, >, &, "'
+    )]
+    #[ApiProperty(example: 'Dupont')]
     private string $lastName;
 
-    #[ORM\Column]
+    /**
+     * @var string|resource|null
+     */
+    #[ORM\Column(type: Types::BLOB, nullable: true)]
+    private $avatar;
+
+    #[ORM\Column(type: Types::DATE_IMMUTABLE)]
+    #[Groups(['user:read', 'user:me'])]
+    #[ApiProperty(
+        description: "Date d'inscription de l'utilisateur",
+        writable: false
+    )]
     private \DateTimeImmutable $createdAt;
 
     #[ORM\ManyToOne(inversedBy: 'users')]
@@ -63,6 +168,24 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    /**
+     * @return string|resource|null
+     */
+    public function getAvatar()
+    {
+        return $this->avatar;
+    }
+
+    /**
+     * @param string|resource|null $avatar
+     */
+    public function setAvatar($avatar): static
+    {
+        $this->avatar = $avatar;
+
+        return $this;
     }
 
     public function getEmail(): ?string
@@ -135,7 +258,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $data;
     }
 
-    #[\Deprecated]
     public function eraseCredentials(): void
     {
         // @deprecated, to be removed when upgrading to Symfony 8
@@ -187,6 +309,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->createdAt = $createdAt;
 
         return $this;
+    }
+
+    #[ORM\PrePersist]
+    public function setCreatedDateValue(): void
+    {
+        $this->createdAt = new \DateTimeImmutable();
     }
 
     public function getTeam(): ?Team
