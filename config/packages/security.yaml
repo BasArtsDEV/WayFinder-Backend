@@ -17,8 +17,16 @@ security:
             pattern: ^/(_profiler|_wdt|assets|build)/
             security: false
         main:
+            entry_point: App\Security\ApiAuthenticationEntryPoint
             lazy: true
             provider: app_user_provider
+            form_login:
+                login_path: app_login
+                check_path: app_login
+                enable_csrf: true
+                default_target_path: api_doc
+            logout:
+                path: app_logout
 
             # Activate different ways to authenticate:
             # https://symfony.com/doc/current/security.html#the-firewall
@@ -28,8 +36,13 @@ security:
 
     # Note: Only the *first* matching rule is applied
     access_control:
-        # - { path: ^/admin, roles: ROLE_ADMIN }
-        # - { path: ^/profile, roles: ROLE_USER }
+        - { path: ^/api/?$, roles: PUBLIC_ACCESS }
+        - { path: ^/api/users/\d+$, roles: PUBLIC_ACCESS }
+        - { path: ^/api/users/\d+/avatar, roles: PUBLIC_ACCESS }
+
+        # On donne un accès public à toutes les pages (au-dessus) mais pas à la page principale de l'api (en-dessous)
+        # l'ordre des accessibilités de access_control est important, la première ligne est prioritaire
+        - { path: ^/api/, roles: IS_AUTHENTICATED_FULLY }
 
 when@test:
     security:
