@@ -61,7 +61,7 @@ class TreasureHunt
     #[Assert\NotBlank]
     private string $description;
 
-    #[ORM\Column]
+    #[ORM\Column(type: Types::BOOLEAN)]
     #[Groups(['hunt:read', 'hunt:write', 'hunt:details'])]
     private bool $isPublished;
 
