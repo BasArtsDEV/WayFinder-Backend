@@ -40,7 +40,7 @@ final class EnrollementFactory extends PersistentObjectFactory
             'scoreTotal' => self::faker()->randomNumber(),
             'status' => self::faker()->randomElement(EnrollementStatus::cases()),
             'treasureHunt' => TreasureHuntFactory::random(),
-            'users' => [UserFactory::random()],
+            'user' => UserFactory::random(),
             'riddle' => null,
         ];
     }
