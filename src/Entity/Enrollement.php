@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Enum\EnrollementStatus;
 use App\Repository\EnrollementRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -16,8 +17,8 @@ class Enrollement
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 1)]
-    private string $status;
+    #[ORM\Column(enumType: EnrollementStatus::class)]
+    private EnrollementStatus $status;
 
     #[ORM\Column]
     private int $scoreTotal = 0;
@@ -58,12 +59,12 @@ class Enrollement
         return $this->id;
     }
 
-    public function getStatus(): ?string
+    public function getStatus(): EnrollementStatus
     {
         return $this->status;
     }
 
-    public function setStatus(string $status): static
+    public function setStatus(EnrollementStatus $status): static
     {
         $this->status = $status;
 
