@@ -37,11 +37,11 @@ class Location
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['location:read', 'location:write'])]
+    #[Groups(['location:read'])]
     private string $name;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
-    #[Groups(['location:read', 'location:write'])]
+    #[Groups(['location:read'])]
     private ?string $description = null;
 
     #[ORM\Column(type: Types::BLOB, nullable: true)]
