@@ -2,27 +2,50 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
 use App\Repository\LocationRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: LocationRepository::class)]
+#[ApiResource(
+    operations: [
+        new GetCollection(
+            uriTemplate: '/locations',
+            normalizationContext: ['groups' => ['location:read']],
+            security: "is_granted('ROLE_USER')"
+        ),
+
+        new Get(
+            uriTemplate: '/locations/{id}',
+            normalizationContext: ['groups' => ['location:read']],
+            security: "is_granted('ROLE_USER')"
+        ),
+    ]
+)]
 class Location
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['location:read'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['location:read', 'location:write'])]
     private string $name;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Groups(['location:read', 'location:write'])]
     private ?string $description = null;
 
     #[ORM\Column(type: Types::BLOB, nullable: true)]
+    #[Groups(['location:read'])]
     private mixed $img = null;
 
     /**
@@ -98,7 +121,6 @@ class Location
     public function removeRiddle(Riddle $riddle): static
     {
         if ($this->riddles->removeElement($riddle)) {
-            // set the owning side to null (unless already changed)
             if ($riddle->getLocation() === $this) {
                 $riddle->setLocation(null);
             }
