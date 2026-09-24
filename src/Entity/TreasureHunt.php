@@ -44,6 +44,9 @@ class TreasureHunt
     #[ORM\OneToMany(targetEntity: Riddle::class, mappedBy: 'treasureHunt')]
     private Collection $riddles;
 
+    #[ORM\Column(length: 6, nullable: true)]
+    private ?string $invitationCode = null;
+
     public function __construct()
     {
         $this->enrollements = new ArrayCollection();
@@ -171,6 +174,18 @@ class TreasureHunt
                 $riddle->setTreasureHunt(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getInvitationCode(): ?string
+    {
+        return $this->invitationCode;
+    }
+
+    public function setInvitationCode(?string $invitationCode): static
+    {
+        $this->invitationCode = $invitationCode;
 
         return $this;
     }

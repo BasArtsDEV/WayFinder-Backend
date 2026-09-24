@@ -62,8 +62,8 @@ abstract class Riddle
     private Collection $submissions;
 
     #[ORM\ManyToOne(inversedBy: 'riddles')]
-    #[ORM\JoinColumn(nullable: false)]
-    private Location $location;
+    #[ORM\JoinColumn(nullable: true)]
+    private ?Location $location = null;
 
     public function __construct()
     {
@@ -211,7 +211,6 @@ abstract class Riddle
     public function removeSubmission(Submission $submission): static
     {
         if ($this->submissions->removeElement($submission)) {
-            // set the owning side to null (unless already changed)
             if ($submission->getRiddle() === $this) {
                 $submission->setRiddle(null);
             }
