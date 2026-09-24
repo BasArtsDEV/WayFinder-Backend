@@ -29,7 +29,7 @@ use Symfony\Component\Validator\Constraints as Assert;
         new Get(
             uriTemplate: '/treasure_hunts/{id}/team',
             uriVariables: [
-                'id' => new Link(toProperty: 'treasureHunts', fromClass: TreasureHunt::class),
+                'id' => new Link(toProperty: 'treasurehunts', fromClass: TreasureHunt::class),
             ],
             normalizationContext: ['groups' => ['team:read', 'team:details']],
         ),
@@ -60,12 +60,12 @@ class Team
      */
     #[ORM\OneToMany(targetEntity: TreasureHunt::class, mappedBy: 'team')]
     #[Groups(['team:read', 'team:details'])]
-    private Collection $treasureHunts;
+    private Collection $treasurehunts;
 
     public function __construct()
     {
         $this->users = new ArrayCollection();
-        $this->treasureHunts = new ArrayCollection();
+        $this->treasurehunts = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -118,15 +118,15 @@ class Team
     /**
      * @return Collection<int, TreasureHunt>
      */
-    public function getTreasureHunts(): Collection
+    public function gettreasurehunts(): Collection
     {
-        return $this->treasureHunts;
+        return $this->treasurehunts;
     }
 
     public function addTreasureHunt(TreasureHunt $treasureHunt): static
     {
-        if (!$this->treasureHunts->contains($treasureHunt)) {
-            $this->treasureHunts->add($treasureHunt);
+        if (!$this->treasurehunts->contains($treasureHunt)) {
+            $this->treasurehunts->add($treasureHunt);
             $treasureHunt->setTeam($this);
         }
 
@@ -135,7 +135,7 @@ class Team
 
     public function removeTreasureHunt(TreasureHunt $treasureHunt): static
     {
-        if ($this->treasureHunts->removeElement($treasureHunt)) {
+        if ($this->treasurehunts->removeElement($treasureHunt)) {
             if ($treasureHunt->getTeam() === $this) {
                 $treasureHunt->setTeam(null);
             }
