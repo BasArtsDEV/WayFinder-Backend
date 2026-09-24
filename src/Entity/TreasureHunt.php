@@ -21,21 +21,21 @@ use Symfony\Component\Validator\Constraints as Assert;
         new GetCollection(normalizationContext: ['groups' => ['hunt:read', 'hunt:details']]),
 
         new Get(
-            uriTemplate: '/riddle/{id}/treasure-hunt',
+            uriTemplate: '/riddles/{id}/treasure-hunt',
             uriVariables: [
                 'id' => new Link(toProperty: 'riddles', fromClass: Riddle::class),
             ],
             normalizationContext: ['groups' => ['hunt:read', 'hunt:details']],
         ),
         new Get(
-            uriTemplate: '/enrollement/{id}/treasure-hunt',
+            uriTemplate: '/enrollements/{id}/treasure-hunt',
             uriVariables: [
                 'id' => new Link(toProperty: 'enrollements', fromClass: Enrollement::class),
             ],
             normalizationContext: ['groups' => ['hunt:read', 'hunt:details']],
         ),
         new GetCollection(
-            uriTemplate: '/team/{id}/treasure-hunts',
+            uriTemplate: '/teams/{id}/treasure-hunts',
             uriVariables: [
                 'id' => new Link(toProperty: 'team', fromClass: Team::class),
             ],

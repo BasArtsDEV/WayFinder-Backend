@@ -2,38 +2,70 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Link;
 use App\Repository\TeamRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: TeamRepository::class)]
+#[ApiResource(
+    operations: [
+        new Get(normalizationContext: ['groups' => ['team:read', 'team:details']]),
+        new GetCollection(normalizationContext: ['groups' => ['team:read', 'team:details']]),
+
+        new Get(
+            uriTemplate: '/users/{id}/team',
+            uriVariables: [
+                'id' => new Link(toProperty: 'users', fromClass: User::class),
+            ],
+            normalizationContext: ['groups' => ['team:read', 'team:details']],
+        ),
+        new Get(
+            uriTemplate: '/treasure_hunts/{id}/team',
+            uriVariables: [
+                'id' => new Link(toProperty: 'treasureHunts', fromClass: TreasureHunt::class),
+            ],
+            normalizationContext: ['groups' => ['team:read', 'team:details']],
+        ),
+    ]
+)]
 class Team
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['team:read', 'team:details'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 30)]
+    #[Groups(['team:read', 'team:write', 'team:details'])]
+    #[Assert\NotBlank]
     private string $name;
 
     /**
      * @var Collection<int, User>
      */
     #[ORM\OneToMany(targetEntity: User::class, mappedBy: 'team')]
+    #[Groups(['team:read', 'team:details'])]
     private Collection $users;
 
     /**
      * @var Collection<int, TreasureHunt>
      */
     #[ORM\OneToMany(targetEntity: TreasureHunt::class, mappedBy: 'team')]
-    private Collection $treasurehunts;
+    #[Groups(['team:read', 'team:details'])]
+    private Collection $treasureHunts;
 
     public function __construct()
     {
         $this->users = new ArrayCollection();
-        $this->treasurehunts = new ArrayCollection();
+        $this->treasureHunts = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -86,27 +118,26 @@ class Team
     /**
      * @return Collection<int, TreasureHunt>
      */
-    public function getTreasurehunts(): Collection
+    public function getTreasureHunts(): Collection
     {
-        return $this->treasurehunts;
+        return $this->treasureHunts;
     }
 
-    public function addTreasurehunt(TreasureHunt $treasurehunt): static
+    public function addTreasureHunt(TreasureHunt $treasureHunt): static
     {
-        if (!$this->treasurehunts->contains($treasurehunt)) {
-            $this->treasurehunts->add($treasurehunt);
-            $treasurehunt->setTeam($this);
+        if (!$this->treasureHunts->contains($treasureHunt)) {
+            $this->treasureHunts->add($treasureHunt);
+            $treasureHunt->setTeam($this);
         }
 
         return $this;
     }
 
-    public function removeTreasurehunt(TreasureHunt $treasurehunt): static
+    public function removeTreasureHunt(TreasureHunt $treasureHunt): static
     {
-        if ($this->treasurehunts->removeElement($treasurehunt)) {
-            // set the owning side to null (unless already changed)
-            if ($treasurehunt->getTeam() === $this) {
-                $treasurehunt->setTeam(null);
+        if ($this->treasureHunts->removeElement($treasureHunt)) {
+            if ($treasureHunt->getTeam() === $this) {
+                $treasureHunt->setTeam(null);
             }
         }
 
