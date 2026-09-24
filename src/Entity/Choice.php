@@ -2,26 +2,59 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
 use App\Repository\ChoiceRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: ChoiceRepository::class)]
+#[ApiResource(
+    operations: [
+        new GetCollection(
+            uriTemplate: '/choices',
+            normalizationContext: [
+                'groups' => ['choice:read'],
+            ],
+            security: 'true'
+        ),
+
+        new Get(
+            uriTemplate: '/choices/{id}',
+            normalizationContext: [
+                'groups' => ['choice:read'],
+            ],
+            security: 'true'
+        ),
+    ]
+)]
 class Choice
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['choice:read'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['choice:read'])]
+    #[Assert\NotBlank]
+    #[Assert\Length(max: 255)]
     private string $choice;
 
     #[ORM\Column]
+    #[Groups(['choice:read'])]
     private bool $isRight = false;
 
-    #[ORM\ManyToOne(inversedBy: 'choices')]
+    #[ORM\ManyToOne(
+        targetEntity: RiddleQCM::class,
+        inversedBy: 'choices'
+    )]
     #[ORM\JoinColumn(nullable: false)]
-    private RiddleQCM $riddleQCM;
+    #[Groups(['choice:read'])]
+    private ?RiddleQCM $riddleQCM = null;
 
     public function getId(): ?int
     {
@@ -40,7 +73,7 @@ class Choice
         return $this;
     }
 
-    public function isRight(): ?bool
+    public function isRight(): bool
     {
         return $this->isRight;
     }
