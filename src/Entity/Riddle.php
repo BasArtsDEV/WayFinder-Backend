@@ -10,6 +10,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\DiscriminatorColumn;
 use Doctrine\ORM\Mapping\DiscriminatorMap;
 use Doctrine\ORM\Mapping\InheritanceType;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: RiddleRepository::class)]
 #[InheritanceType('SINGLE_TABLE')]
@@ -18,35 +19,42 @@ use Doctrine\ORM\Mapping\InheritanceType;
     'riddlegps' => RiddleGPS::class,
     'riddleqcm' => RiddleQCM::class,
     'riddleQRCode' => RiddleQRCode::class,
-    'riddleText' => RiddleText::class]
-)]
+    'riddleText' => RiddleText::class,
+])]
 abstract class Riddle
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['riddle:read', 'qcm:read'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 120)]
+    #[Groups(['riddle:read', 'qcm:read'])]
     private string $title;
 
     #[ORM\Column(type: Types::TEXT)]
+    #[Groups(['riddle:read', 'qcm:read'])]
     private string $description;
 
     #[ORM\Column(type: Types::BLOB, nullable: true)]
     private mixed $img = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Groups(['riddle:read', 'qcm:read'])]
     private ?string $imgDescription = null;
 
     #[ORM\Column]
+    #[Groups(['riddle:read', 'qcm:read'])]
     private int $index;
 
     #[ORM\Column]
+    #[Groups(['riddle:read', 'qcm:read'])]
     private int $secondsPenalty = 0;
 
     #[ORM\ManyToOne(inversedBy: 'riddles')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['riddle:read', 'qcm:read'])]
     private TreasureHunt $treasureHunt;
 
     /**
@@ -63,6 +71,7 @@ abstract class Riddle
 
     #[ORM\ManyToOne(inversedBy: 'riddles')]
     #[ORM\JoinColumn(nullable: true)]
+    #[Groups(['riddle:read', 'qcm:read'])]
     private ?Location $location = null;
 
     public function __construct()
@@ -160,9 +169,6 @@ abstract class Riddle
         return $this;
     }
 
-    /**
-     * @return Collection<int, Enrollement>
-     */
     public function getEnrollements(): Collection
     {
         return $this->enrollements;
@@ -181,7 +187,6 @@ abstract class Riddle
     public function removeEnrollement(Enrollement $enrollement): static
     {
         if ($this->enrollements->removeElement($enrollement)) {
-            // set the owning side to null (unless already changed)
             if ($enrollement->getRiddle() === $this) {
                 $enrollement->setRiddle(null);
             }
@@ -190,9 +195,6 @@ abstract class Riddle
         return $this;
     }
 
-    /**
-     * @return Collection<int, Submission>
-     */
     public function getSubmissions(): Collection
     {
         return $this->submissions;
