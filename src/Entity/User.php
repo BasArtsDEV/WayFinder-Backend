@@ -157,7 +157,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @var Collection<int, Enrollement>
      */
-    #[ORM\ManyToMany(targetEntity: Enrollement::class, inversedBy: 'users')]
+    #[ORM\OneToMany(targetEntity: Enrollement::class, mappedBy: 'user')]
     private Collection $enrollements;
 
     public function __construct()
@@ -341,6 +341,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         if (!$this->enrollements->contains($enrollement)) {
             $this->enrollements->add($enrollement);
+            $enrollement->setUser($this);
         }
 
         return $this;

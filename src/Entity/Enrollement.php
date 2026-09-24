@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Enum\EnrollementStatus;
 use App\Repository\EnrollementRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -16,8 +17,8 @@ class Enrollement
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 1)]
-    private string $status;
+    #[ORM\Column(enumType: EnrollementStatus::class)]
+    private EnrollementStatus $status;
 
     #[ORM\Column]
     private int $scoreTotal = 0;
@@ -41,16 +42,13 @@ class Enrollement
     #[ORM\ManyToOne(inversedBy: 'enrollements')]
     private ?Riddle $riddle = null;
 
-    /**
-     * @var Collection<int, User>
-     */
-    #[ORM\ManyToMany(targetEntity: User::class, mappedBy: 'enrollements')]
-    private Collection $users;
+    #[ORM\ManyToOne(inversedBy: 'enrollements')]
+    #[ORM\JoinColumn(nullable: false)]
+    private User $user;
 
     public function __construct()
     {
         $this->submissions = new ArrayCollection();
-        $this->users = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -58,12 +56,12 @@ class Enrollement
         return $this->id;
     }
 
-    public function getStatus(): ?string
+    public function getStatus(): EnrollementStatus
     {
         return $this->status;
     }
 
-    public function setStatus(string $status): static
+    public function setStatus(EnrollementStatus $status): static
     {
         $this->status = $status;
 
@@ -160,29 +158,14 @@ class Enrollement
         return $this;
     }
 
-    /**
-     * @return Collection<int, User>
-     */
-    public function getUsers(): Collection
+    public function getUser(): User
     {
-        return $this->users;
+        return $this->user;
     }
 
-    public function addUser(User $user): static
+    public function setUser(User $user): static
     {
-        if (!$this->users->contains($user)) {
-            $this->users->add($user);
-            $user->addEnrollement($this);
-        }
-
-        return $this;
-    }
-
-    public function removeUser(User $user): static
-    {
-        if ($this->users->removeElement($user)) {
-            $user->removeEnrollement($this);
-        }
+        $this->user = $user;
 
         return $this;
     }
