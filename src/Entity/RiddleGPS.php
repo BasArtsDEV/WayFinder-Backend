@@ -2,19 +2,38 @@
 
 namespace App\Entity;
 
-use App\Repository\RiddleGPSRepository;
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
-#[ORM\Entity(repositoryClass: RiddleGPSRepository::class)]
+#[ORM\Entity(repositoryClass: \App\Repository\RiddleGPSRepository::class)]
+#[ApiResource(
+    operations: [
+        new GetCollection(
+            normalizationContext: ['groups' => ['riddleGPS:read']],
+            security: "is_granted('ROLE_USER')"
+        ),
+
+        new Get(
+            normalizationContext: ['groups' => ['riddleGPS:read']],
+            security: "is_granted('ROLE_USER')"
+        ),
+    ]
+)]
 class RiddleGPS extends Riddle
 {
     #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(['riddleGPS:read'])]
     private ?string $locationName = null;
 
     #[ORM\Column]
+    #[Groups(['riddleGPS:read'])]
     private float $latitude;
 
     #[ORM\Column]
+    #[Groups(['riddleGPS:read'])]
     private float $longitude;
 
     public function getLocationName(): ?string
