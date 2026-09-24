@@ -16,6 +16,21 @@ security:
             # Ensure dev tools and static assets are always allowed
             pattern: ^/(_profiler|_wdt|assets|build)/
             security: false
+
+        login:
+            pattern: ^/api/login
+            stateless: true
+            json_login:
+                check_path: /api/login
+                username_path: email
+                success_handler: lexik_jwt_authentication.handler.authentication_success
+                failure_handler: lexik_jwt_authentication.handler.authentication_failure
+
+        api:
+            pattern: ^/api
+            stateless: true
+            jwt: ~
+
         main:
             entry_point: App\Security\ApiAuthenticationEntryPoint
             lazy: true
@@ -42,6 +57,7 @@ security:
 
         # On donne un accès public à toutes les pages (au-dessus) mais pas à la page principale de l'api (en-dessous)
         # l'ordre des accessibilités de access_control est important, la première ligne est prioritaire
+        - { path: ^/api/login, roles: PUBLIC_ACCESS }
         - { path: ^/api/, roles: IS_AUTHENTICATED_FULLY }
 
 when@test:
