@@ -6,6 +6,7 @@ use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Link;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use App\Enum\EnrollementStatus;
@@ -19,13 +20,6 @@ use Symfony\Component\Serializer\Annotation\Groups;
 #[ORM\Entity(repositoryClass: EnrollementRepository::class)]
 #[ApiResource(
     operations: [
-        new GetCollection(
-            uriTemplate: '/enrollements',
-            normalizationContext: [
-                'groups' => ['enrollement:read'],
-            ],
-            security: "is_granted('ROLE_USER')"
-        ),
         new Get(
             uriTemplate: '/enrollements/{id}',
             normalizationContext: [
@@ -33,8 +27,14 @@ use Symfony\Component\Serializer\Annotation\Groups;
             ],
             security: "is_granted('ROLE_USER')"
         ),
-        new Post(
+        new GetCollection(
             uriTemplate: '/enrollements',
+            normalizationContext: [
+                'groups' => ['enrollement:read'],
+            ],
+            security: "is_granted('ROLE_USER')"
+        ),
+        new Post(
             normalizationContext: [
                 'groups' => ['enrollement:read'],
             ],
@@ -44,7 +44,6 @@ use Symfony\Component\Serializer\Annotation\Groups;
             security: "is_granted('ROLE_USER')"
         ),
         new Patch(
-            uriTemplate: '/enrollements/{id}',
             normalizationContext: [
                 'groups' => ['enrollement:read'],
             ],
@@ -54,28 +53,40 @@ use Symfony\Component\Serializer\Annotation\Groups;
             security: "is_granted('ROLE_USER')"
         ),
         new Delete(
-            uriTemplate: '/enrollements/{id}',
             security: "is_granted('ROLE_USER')"
         ),
         new GetCollection(
-            uriTemplate: '/enrollements/{id}/submissions',
-            normalizationContext: [
-                'groups' => ['submission:read'],
+            uriTemplate: '/treasure_hunts/{id}/enrollements',
+            uriVariables: [
+                'id' => new Link(toProperty: 'treasureHunt', fromClass: TreasureHunt::class),
             ],
-            security: "is_granted('ROLE_USER')"
-        ),
-        new Get(
-            uriTemplate: '/enrollements/{id}/riddle',
-            normalizationContext: [
-                'groups' => ['riddle:read'],
-            ],
-            security: "is_granted('ROLE_USER')"
-        ),
-        new GetCollection(
-            uriTemplate: '/enrollements/{id}/users',
             normalizationContext: [
                 'groups' => ['user:read'],
             ],
+            security: "is_granted('ROLE_USER')"
+        ),
+        new GetCollection(
+            uriTemplate: '/users/{id}/enrollements',
+            uriVariables: [
+                'id' => new Link(toProperty: 'user', fromClass: User::class),
+            ],
+            normalizationContext: ['groups' => ['enrollement:read']],
+            security: "is_granted('ROLE_USER')"
+        ),
+        new GetCollection(
+            uriTemplate: '/riddles/{id}/enrollements',
+            uriVariables: [
+                'id' => new Link(toProperty: 'riddle', fromClass: Riddle::class),
+            ],
+            normalizationContext: ['groups' => ['enrollement:read']],
+            security: "is_granted('ROLE_USER')"
+        ),
+        new Get(
+            uriTemplate: '/submissions/{id}/enrollement',
+            uriVariables: [
+                'id' => new Link(fromProperty: 'enrollement', fromClass: Submission::class),
+            ],
+            normalizationContext: ['groups' => ['enrollement:read']],
             security: "is_granted('ROLE_USER')"
         ),
     ]
@@ -131,12 +142,6 @@ class Enrollement
     public function __construct()
     {
         $this->submissions = new ArrayCollection();
-        $this->users = new ArrayCollection();
-
-        $this->status = '0';
-        $this->scoreTotal = 0;
-        $this->registrationDate = new \DateTimeImmutable();
-        $this->countdown = 0;
     }
 
     public function getId(): ?int
