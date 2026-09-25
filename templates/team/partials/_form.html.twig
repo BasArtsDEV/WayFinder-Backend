@@ -1,0 +1,7 @@
+{{ form_start(form) }}
+    {{ form_row(form.name, {label: 'Name'}) }}
+
+<button type="submit" class="btn btn-primary w-100 p-3">
+    {{ submit_label|default('Enregistrer') }}
+</button>
+{{ form_end(form) }}
