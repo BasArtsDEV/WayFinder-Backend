@@ -26,35 +26,35 @@ abstract class Riddle
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['riddle:read', 'qcm:read', 'riddlegps:read', 'riddleQRCode:read', 'riddleText:read'])]
+    #[Groups(['riddle:read', 'qcm:read', 'riddle_gps:read', 'riddle_qrcode:read', 'riddle_text:read'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 120)]
-    #[Groups(['riddle:read', 'qcm:read', 'riddlegps:read', 'riddleQRCode:read', 'riddleText:read'])]
+    #[Groups(['riddle:read', 'qcm:read', 'riddle_gps:read', 'riddle_qrcode:read', 'riddle_text:read'])]
     private string $title;
 
     #[ORM\Column(type: Types::TEXT)]
-    #[Groups(['riddle:read', 'qcm:read', 'riddlegps:read', 'riddleQRCode:read', 'riddleText:read'])]
+    #[Groups(['riddle:read', 'qcm:read', 'riddle_gps:read', 'riddle_qrcode:read', 'riddle_text:read'])]
     private string $description;
 
     #[ORM\Column(type: Types::BLOB, nullable: true)]
     private mixed $img = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
-    #[Groups(['riddle:read', 'qcm:read', 'riddlegps:read', 'riddleQRCode:read', 'riddleText:read'])]
+    #[Groups(['riddle:read', 'qcm:read', 'riddle_gps:read', 'riddle_qrcode:read', 'riddle_text:read'])]
     private ?string $imgDescription = null;
 
     #[ORM\Column]
-    #[Groups(['riddle:read', 'qcm:read', 'riddlegps:read', 'riddleQRCode:read', 'riddleText:read'])]
+    #[Groups(['riddle:read', 'qcm:read', 'riddle_gps:read', 'riddle_qrcode:read', 'riddle_text:read'])]
     private int $index;
 
     #[ORM\Column]
-    #[Groups(['riddle:read', 'qcm:read', 'riddlegps:read', 'riddleQRCode:read', 'riddleText:read'])]
+    #[Groups(['riddle:read', 'qcm:read', 'riddle_gps:read', 'riddle_qrcode:read', 'riddle_text:read'])]
     private int $secondsPenalty = 0;
 
     #[ORM\ManyToOne(inversedBy: 'riddles')]
     #[ORM\JoinColumn(nullable: false)]
-    #[Groups(['riddle:read', 'qcm:read', 'riddlegps:read', 'riddleQRCode:read', 'riddleText:read'])]
+    #[Groups(['riddle:read', 'qcm:read', 'riddle_gps:read', 'riddle_qrcode:read', 'riddle_text:read'])]
     private TreasureHunt $treasureHunt;
 
     /**
@@ -71,7 +71,7 @@ abstract class Riddle
 
     #[ORM\ManyToOne(inversedBy: 'riddles')]
     #[ORM\JoinColumn(nullable: true)]
-    #[Groups(['riddle:read', 'qcm:read', 'riddlegps:read', 'riddleQRCode:read', 'riddleText:read'])]
+    #[Groups(['riddle:read', 'qcm:read', 'riddle_gps:read', 'riddle_qrcode:read', 'riddle_text:read'])]
     private ?Location $location = null;
 
     public function __construct()
