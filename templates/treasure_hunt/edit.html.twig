@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mise à jour d'une chasse au trésor{% endblock %}
+
+{% block main %}
+    {{ include('treasure_hunt/partials/_form.html.twig', {
+        form: form,
+        submit_label: 'Mettre à jour',
+        with_context: false,
+    }) }}
+{% endblock %}
