@@ -1,0 +1,35 @@
+<style>
+    .team-container {
+        margin: 2rem auto;
+        padding: 0 2rem;
+    }
+
+    .team {
+        display: flex;
+        justify-content: space-between;
+        padding: 0.8rem;
+        border-radius: 8px;
+        transition: all 0.2s ease-in-out;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    }
+
+    .team:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    }
+
+    .team-title {
+        text-decoration: none;
+        color: black;
+    }
+</style>
+
+<div class="advertisement-container">
+    <ul class="advertisement-list">
+        {% for team in teams %}
+            <li class="team">
+                <a class="team-name" href="{{ path('app_team') }}">{{ team.name }}</a>
+            </li>
+        {% endfor %}
+    </ul>
+</div>
