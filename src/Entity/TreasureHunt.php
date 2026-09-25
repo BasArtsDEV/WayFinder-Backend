@@ -127,7 +127,7 @@ class TreasureHunt
         return $this;
     }
 
-    public function published(): ?bool
+    public function isPublished(): bool
     {
         return $this->published;
     }
