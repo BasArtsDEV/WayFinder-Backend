@@ -35,7 +35,7 @@ use Symfony\Component\Validator\Constraints as Assert;
                 'id' => new Link(toProperty: 'riddleQCM', fromClass: RiddleQCM::class),
             ],
             normalizationContext: ['groups' => ['choice:read']],
-        )
+        ),
     ]
 )]
 class Choice
@@ -62,7 +62,7 @@ class Choice
     )]
     #[ORM\JoinColumn(nullable: false)]
     #[Groups(['choice:read'])]
-    private ?RiddleQCM $riddleQCM = null;
+    private RiddleQCM $riddleQCM;
 
     public function getId(): ?int
     {
