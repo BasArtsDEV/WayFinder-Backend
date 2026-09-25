@@ -6,6 +6,7 @@ use App\Entity\Team;
 use App\Form\TeamType;
 use App\Repository\TeamRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -20,6 +21,14 @@ final class TeamController extends AbstractController
 
         return $this->render('team/index.html.twig', [
             'teams' => $teams,
+        ]);
+    }
+
+    #[Route('/team/{id}', name: 'app_team_show', requirements: ['id' => '\d+'], methods: ['GET'])]
+    public function show(#[MapEntity(expr: 'repository.find(id)')] Team $team): Response
+    {
+        return $this->render('team/show.html.twig', [
+            'team' => $team,
         ]);
     }
 
