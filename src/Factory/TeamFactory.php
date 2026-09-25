@@ -33,8 +33,10 @@ final class TeamFactory extends PersistentObjectFactory
     #[\Override]
     protected function defaults(): array|callable
     {
+        $names = json_decode(file_get_contents(__DIR__.'/../../data/team_names.json'), true);
+
         return [
-            'name' => self::faker()->text(30),
+            'name' => self::faker()->randomElement($names),
         ];
     }
 

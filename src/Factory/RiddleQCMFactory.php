@@ -33,11 +33,14 @@ final class RiddleQCMFactory extends PersistentObjectFactory
     #[\Override]
     protected function defaults(): array|callable
     {
+        $descriptions = json_decode(file_get_contents(__DIR__.'/../../data/riddle_descriptions.json'), true);
+        $questions = json_decode(file_get_contents(__DIR__.'/../../data/riddle_questions.json'), true);
+
         return [
-            'description' => self::faker()->text(),
+            'description' => self::faker()->randomElement($descriptions),
             'index' => self::faker()->numberBetween(1, 10),
             'location' => LocationFactory::random(),
-            'question' => self::faker()->text(1024),
+            'question' => self::faker()->randomElement($questions),
             'secondsPenalty' => self::faker()->randomElement([15, 30, 60]),
             'title' => self::faker()->text(120),
             'treasureHunt' => TreasureHuntFactory::random(),

@@ -33,13 +33,16 @@ final class RiddleGPSFactory extends PersistentObjectFactory
     #[\Override]
     protected function defaults(): array|callable
     {
+        $descriptions = json_decode(file_get_contents(__DIR__.'/../../data/riddle_descriptions.json'), true);
+
         return [
-            'description' => self::faker()->text(),
+            'description' => self::faker()->randomElement($descriptions),
             'index' => self::faker()->numberBetween(1, 10),
             'latitude' => self::faker()->latitude(),
             'location' => LocationFactory::random(),
             'longitude' => self::faker()->longitude(),
-            'secondsPenalty' => self::faker()->randomElement([15, 30, 60]),            'title' => self::faker()->text(120),
+            'secondsPenalty' => self::faker()->randomElement([15, 30, 60]),
+            'title' => self::faker()->text(120),
             'treasureHunt' => TreasureHuntFactory::random(),
         ];
     }

@@ -33,8 +33,10 @@ final class LocationFactory extends PersistentObjectFactory
     #[\Override]
     protected function defaults(): array|callable
     {
+        $names = json_decode(file_get_contents(__DIR__.'/../../data/location_names.json'), true);
+
         return [
-            'name' => self::faker()->text(255),
+            'name' => self::faker()->randomElement($names),
             'description' => self::faker()->paragraphs(3, true),
             'img' => self::faker()->imageUrl(100, 100, 'city'),
         ];

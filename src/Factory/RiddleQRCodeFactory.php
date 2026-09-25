@@ -33,8 +33,10 @@ final class RiddleQRCodeFactory extends PersistentObjectFactory
     #[\Override]
     protected function defaults(): array|callable
     {
+        $descriptions = json_decode(file_get_contents(__DIR__.'/../../data/riddle_descriptions.json'), true);
+
         return [
-            'description' => self::faker()->text(),
+            'description' => self::faker()->randomElement($descriptions),
             'index' => self::faker()->randomNumber(),
             'location' => LocationFactory::random(),
             'secondsPenalty' => self::faker()->randomElement([15, 30, 60]),
