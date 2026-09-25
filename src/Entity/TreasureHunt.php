@@ -63,7 +63,7 @@ class TreasureHunt
 
     #[ORM\Column(type: Types::BOOLEAN)]
     #[Groups(['hunt:read', 'hunt:write', 'hunt:details'])]
-    private bool $isPublished = false;
+    private bool $published = false;
 
     #[ORM\Column(type: Types::DATE_IMMUTABLE)]
     #[Groups(['hunt:read', 'hunt:details'])]
@@ -127,14 +127,14 @@ class TreasureHunt
         return $this;
     }
 
-    public function isPublished(): ?bool
+    public function published(): ?bool
     {
-        return $this->isPublished;
+        return $this->published;
     }
 
-    public function setIsPublished(bool $isPublished): static
+    public function setPublished(bool $published): static
     {
-        $this->isPublished = $isPublished;
+        $this->published = $published;
 
         return $this;
     }
