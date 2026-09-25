@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Création d'une nouvelle équipe{% endblock %}
+
+{% block main %}
+    {{ include('team/partials/_form.html.twig', {
+        form: form,
+        submit_label: 'Créer mon équpe',
+        with_context: false,
+    }) }}
+{% endblock %}
