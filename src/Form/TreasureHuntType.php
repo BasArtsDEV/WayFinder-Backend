@@ -1,0 +1,40 @@
+<?php
+
+namespace App\Form;
+
+use App\Entity\TreasureHunt;
+use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
+
+class TreasureHuntType extends AbstractType
+{
+    public function buildForm(FormBuilderInterface $builder, array $options): void
+    {
+        $builder
+            ->add('title', TextType::class, [
+                'attr' => [
+                    'minlength' => 10,
+                    'maxlength' => 120,
+                    'placeholder' => 'Titre de la chasse au trésor (10 à 120 caractères)',
+                ],
+            ])
+            ->add('description', TextareaType::class, [
+                'attr' => [
+                    'minlength' => 50,
+                    'maxlength' => 1000,
+                    'placeholder' => 'Titre de la chasse au trésor (50 à 1000 caractères)',
+                ],
+            ])
+        ;
+    }
+
+    public function configureOptions(OptionsResolver $resolver): void
+    {
+        $resolver->setDefaults([
+            'data_class' => TreasureHunt::class,
+        ]);
+    }
+}
