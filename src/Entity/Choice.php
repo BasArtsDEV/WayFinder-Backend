@@ -5,6 +5,7 @@ namespace App\Entity;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Link;
 use App\Repository\ChoiceRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
@@ -28,6 +29,13 @@ use Symfony\Component\Validator\Constraints as Assert;
             ],
             security: 'true'
         ),
+        new GetCollection(
+            uriTemplate: '/riddle_qcms/{id}/choices',
+            uriVariables: [
+                'id' => new Link(toProperty: 'riddleQCM', fromClass: RiddleQCM::class),
+            ],
+            normalizationContext: ['groups' => ['choice:read']],
+        )
     ]
 )]
 class Choice
