@@ -63,7 +63,7 @@ class TreasureHunt
 
     #[ORM\Column(type: Types::BOOLEAN)]
     #[Groups(['hunt:read', 'hunt:write', 'hunt:details'])]
-    private bool $isPublished;
+    private bool $isPublished = false;
 
     #[ORM\Column(type: Types::DATE_IMMUTABLE)]
     #[Groups(['hunt:read', 'hunt:details'])]
