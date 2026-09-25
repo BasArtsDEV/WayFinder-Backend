@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Entity\Team;
 use App\Entity\TreasureHunt;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -16,28 +17,27 @@ class TreasureHuntRepository extends ServiceEntityRepository
         parent::__construct($registry, TreasureHunt::class);
     }
 
-    //    /**
-    //     * @return TreasureHunt[] Returns an array of TreasureHunt objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('t')
-    //            ->andWhere('t.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('t.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
+    /**
+     * @return TreasureHunt[]
+     */
+    public function findAllOrderedByDate(): array
+    {
+        return $this->createQueryBuilder('t')
+            ->orderBy('t.creationDate', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
 
-    //    public function findOneBySomeField($value): ?TreasureHunt
-    //    {
-    //        return $this->createQueryBuilder('t')
-    //            ->andWhere('t.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+    /**
+     * @return TreasureHunt[]
+     */
+    public function findByTeamOrdered(Team $team): array
+    {
+        return $this->createQueryBuilder('t')
+            ->where('t.team = :team')
+            ->setParameter('team', $team)
+            ->orderBy('t.title', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
 }
