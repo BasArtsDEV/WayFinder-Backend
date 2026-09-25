@@ -1,0 +1,25 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Détails de la chasse au trésor{% endblock %}
+
+{% block main %}
+<div class="treasure_hunt_details">
+    <span>Titre : {{ treasureHunt.title }}</span>
+    <span>Description : {{ treasureHunt.description }}</span>
+    <span>Jouable : {{ treasureHunt.published }}</span>
+    <span>Date de création : {{ treasureHunt.creationDate|date }}</span>
+    <span>Code d'invitation : {{ treasureHunt.invitationCode }}</span>
+
+    <a href="{{ path('app_team_show', {id: treasureHunt.team.id}) }}">
+        <span class="badge text-bg-secondary">{{ treasureHunt.team.name }}</span>
+    </a>
+
+    <a href="{{ path('app_treasure_hunt_edit', {id: treasureHunt.id}) }}">
+        <span class="btn btn-primary btn-sm"
+            aria-label="Modifier">
+            Modifier
+        </span>
+    </a>
+    {{ include('treasure_hunt/partials/_delete_button.html.twig') }}
+</div>
+{% endblock %}
