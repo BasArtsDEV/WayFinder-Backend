@@ -51,13 +51,22 @@ security:
 
     # Note: Only the *first* matching rule is applied
     access_control:
+        # Documentation et Login de l'API
         - { path: ^/api/?$, roles: PUBLIC_ACCESS }
+        - { path: ^/api/login, roles: PUBLIC_ACCESS }
+
+        # Gestion publique des utilisateurs et des avatars
         - { path: ^/api/users/\d+$, roles: PUBLIC_ACCESS }
         - { path: ^/api/users/\d+/avatar, roles: PUBLIC_ACCESS }
 
-        # On donne un accès public à toutes les pages (au-dessus) mais pas à la page principale de l'api (en-dessous)
-        # l'ordre des accessibilités de access_control est important, la première ligne est prioritaire
-        - { path: ^/api/login, roles: PUBLIC_ACCESS }
+        # Lecture publique des chasses au trésor, énigmes, lieux et choix
+        - { path: ^/api/treasure_hunts, roles: PUBLIC_ACCESS, methods: [ GET ] }
+        - { path: ^/api/riddles, roles: PUBLIC_ACCESS, methods: [ GET ] }
+        - { path: ^/api/locations, roles: PUBLIC_ACCESS, methods: [ GET ] }
+        - { path: ^/api/choices, roles: PUBLIC_ACCESS, methods: [ GET ] }
+        - { path: ^/api/riddle_qcms, roles: PUBLIC_ACCESS, methods: [ GET ] }
+
+        # Tout le reste de l'API nécessite au minimum d'être authentifié
         - { path: ^/api/, roles: IS_AUTHENTICATED_FULLY }
 
 when@test:

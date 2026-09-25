@@ -2,39 +2,86 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Link;
+use ApiPlatform\Metadata\Post;
 use App\Repository\SubmissionRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: SubmissionRepository::class)]
+#[ApiResource(
+    operations: [
+        new Get(normalizationContext: ['groups' => ['submission:read', 'submission:details']]),
+        new GetCollection(normalizationContext: ['groups' => ['submission:read', 'submission:details']]),
+
+        new GetCollection(
+            uriTemplate: '/enrollements/{id}/submissions',
+            uriVariables: [
+                'id' => new Link(toProperty: 'enrollement', fromClass: Enrollement::class),
+            ],
+            normalizationContext: ['groups' => ['submission:read', 'submission:details']],
+        ),
+        new GetCollection(
+            uriTemplate: '/riddles/{id}/submissions',
+            uriVariables: [
+                'id' => new Link(toProperty: 'riddle', fromClass: Riddle::class),
+            ],
+            normalizationContext: ['groups' => ['submission:read', 'submission:details']],
+        ),
+
+        new Post(
+            normalizationContext: ['groups' => ['submission:read', 'submission:details']],
+            denormalizationContext: ['groups' => 'submission:write'],
+            security: "is_granted('ROLE_ADMIN') or is_granted('ROLE_CREATOR')",
+        ),
+        new Delete(
+            security: "is_granted('ROLE_ADMIN') or is_granted('ROLE_CREATOR')",
+        ),
+    ]
+)]
 class Submission
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['submission:read', 'submission:details'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank]
+    #[Groups(['submission:read', 'submission:details'])]
     private string $submittedValue;
 
     #[ORM\Column]
+    #[Groups(['submission:read', 'submission:details'])]
     private bool $isRight = false;
 
     #[ORM\Column]
+    #[Groups(['submission:read', 'submission:details'])]
     private int $resolutionTime = 0;
 
     #[ORM\Column]
+    #[Groups(['submission:read', 'submission:details'])]
     private int $appliedPenalty = 0;
 
     #[ORM\Column(type: Types::DATE_IMMUTABLE)]
+    #[Groups(['submission:read', 'submission:details'])]
     private \DateTimeImmutable $submissionDate;
 
     #[ORM\ManyToOne(inversedBy: 'submissions')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['submission:read', 'submission:details'])]
     private Enrollement $enrollement;
 
     #[ORM\ManyToOne(inversedBy: 'submissions')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['submission:read', 'submission:details'])]
     private Riddle $riddle;
 
     public function getId(): ?int

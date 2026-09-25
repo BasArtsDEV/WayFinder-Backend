@@ -2,49 +2,94 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Link;
 use App\Repository\TreasureHuntRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: TreasureHuntRepository::class)]
+#[ApiResource(
+    operations: [
+        new Get(normalizationContext: ['groups' => ['hunt:read', 'hunt:details']]),
+        new GetCollection(normalizationContext: ['groups' => ['hunt:read', 'hunt:details']]),
+
+        new Get(
+            uriTemplate: '/riddles/{id}/treasure-hunt',
+            uriVariables: [
+                'id' => new Link(fromProperty: 'treasureHunt', fromClass: Riddle::class),
+            ],
+            normalizationContext: ['groups' => ['hunt:read', 'hunt:details']],
+        ),
+        new Get(
+            uriTemplate: '/enrollements/{id}/treasure-hunt',
+            uriVariables: [
+                'id' => new Link(fromProperty: 'treasureHunt', fromClass: Enrollement::class),
+            ],
+            normalizationContext: ['groups' => ['hunt:read', 'hunt:details']],
+        ),
+        new GetCollection(
+            uriTemplate: '/teams/{id}/treasure-hunts',
+            uriVariables: [
+                'id' => new Link(toProperty: 'team', fromClass: Team::class),
+            ],
+            normalizationContext: ['groups' => ['hunt:read', 'hunt:details']],
+        ),
+    ]
+)]
 class TreasureHunt
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['hunt:read', 'hunt:details'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 120)]
+    #[Groups(['hunt:read', 'hunt:write', 'hunt:details'])]
+    #[Assert\NotBlank]
     private string $title;
 
     #[ORM\Column(type: Types::TEXT)]
+    #[Groups(['hunt:read', 'hunt:write', 'hunt:details'])]
+    #[Assert\NotBlank]
     private string $description;
 
-    #[ORM\Column]
-    private bool $isPublished;
+    #[ORM\Column(type: Types::BOOLEAN)]
+    #[Groups(['hunt:read', 'hunt:write', 'hunt:details'])]
+    private bool $published = false;
 
     #[ORM\Column(type: Types::DATE_IMMUTABLE)]
+    #[Groups(['hunt:read', 'hunt:details'])]
     private \DateTimeImmutable $creationDate;
 
     #[ORM\ManyToOne(inversedBy: 'treasurehunts')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['hunt:read', 'hunt:details'])]
     private Team $team;
 
     /**
      * @var Collection<int, Enrollement>
      */
     #[ORM\OneToMany(targetEntity: Enrollement::class, mappedBy: 'treasureHunt')]
+    #[Groups(['hunt:read', 'hunt:details'])]
     private Collection $enrollements;
 
     /**
      * @var Collection<int, Riddle>
      */
     #[ORM\OneToMany(targetEntity: Riddle::class, mappedBy: 'treasureHunt')]
+    #[Groups(['hunt:read', 'hunt:write', 'hunt:details'])]
     private Collection $riddles;
 
     #[ORM\Column(length: 6, nullable: true)]
+    #[Groups(['hunt:read', 'hunt:details'])]
     private ?string $invitationCode = null;
 
     public function __construct()
@@ -82,14 +127,14 @@ class TreasureHunt
         return $this;
     }
 
-    public function isPublished(): ?bool
+    public function isPublished(): bool
     {
-        return $this->isPublished;
+        return $this->published;
     }
 
-    public function setIsPublished(bool $isPublished): static
+    public function setPublished(bool $published): static
     {
-        $this->isPublished = $isPublished;
+        $this->published = $published;
 
         return $this;
     }
