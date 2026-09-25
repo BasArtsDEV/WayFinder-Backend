@@ -23,14 +23,14 @@ use Symfony\Component\Validator\Constraints as Assert;
         new Get(
             uriTemplate: '/riddles/{id}/treasure-hunt',
             uriVariables: [
-                'id' => new Link(toProperty: 'riddles', fromClass: Riddle::class),
+                'id' => new Link(fromProperty: 'treasureHunt', fromClass: Riddle::class),
             ],
             normalizationContext: ['groups' => ['hunt:read', 'hunt:details']],
         ),
         new Get(
             uriTemplate: '/enrollements/{id}/treasure-hunt',
             uriVariables: [
-                'id' => new Link(toProperty: 'enrollements', fromClass: Enrollement::class),
+                'id' => new Link(fromProperty: 'treasureHunt', fromClass: Enrollement::class),
             ],
             normalizationContext: ['groups' => ['hunt:read', 'hunt:details']],
         ),
