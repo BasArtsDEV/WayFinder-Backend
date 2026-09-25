@@ -23,7 +23,7 @@ final class TeamController extends AbstractController
         ]);
     }
 
-    #[Route('/advertisement/new', name: 'app_advertisement_new')]
+    #[Route('/team/new', name: 'app_team_new')]
     public function new(Request $request, EntityManagerInterface $em): Response
     {
         $team = new Team();
