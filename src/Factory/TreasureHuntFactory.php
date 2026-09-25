@@ -37,7 +37,7 @@ final class TreasureHuntFactory extends PersistentObjectFactory
             'creationDate' => \DateTimeImmutable::createFromMutable(self::faker()->dateTime()),
             'description' => self::faker()->text(),
             'invitationCode' => strtoupper(self::faker()->bothify('??????')),
-            'isPublished' => self::faker()->boolean(),
+            'published' => self::faker()->boolean(),
             'team' => TeamFactory::random(),
             'title' => self::faker()->text(120),
         ];
