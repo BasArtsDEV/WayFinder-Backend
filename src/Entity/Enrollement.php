@@ -2,46 +2,128 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Patch;
+use ApiPlatform\Metadata\Post;
 use App\Enum\EnrollementStatus;
 use App\Repository\EnrollementRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: EnrollementRepository::class)]
+#[ApiResource(
+    operations: [
+        new GetCollection(
+            uriTemplate: '/enrollements',
+            normalizationContext: [
+                'groups' => ['enrollement:read'],
+            ],
+            security: "is_granted('ROLE_USER')"
+        ),
+        new Get(
+            uriTemplate: '/enrollements/{id}',
+            normalizationContext: [
+                'groups' => ['enrollement:read'],
+            ],
+            security: "is_granted('ROLE_USER')"
+        ),
+        new Post(
+            uriTemplate: '/enrollements',
+            normalizationContext: [
+                'groups' => ['enrollement:read'],
+            ],
+            denormalizationContext: [
+                'groups' => ['enrollement:write'],
+            ],
+            security: "is_granted('ROLE_USER')"
+        ),
+        new Patch(
+            uriTemplate: '/enrollements/{id}',
+            normalizationContext: [
+                'groups' => ['enrollement:read'],
+            ],
+            denormalizationContext: [
+                'groups' => ['enrollement:write'],
+            ],
+            security: "is_granted('ROLE_USER')"
+        ),
+        new Delete(
+            uriTemplate: '/enrollements/{id}',
+            security: "is_granted('ROLE_USER')"
+        ),
+        new GetCollection(
+            uriTemplate: '/enrollements/{id}/submissions',
+            normalizationContext: [
+                'groups' => ['submission:read'],
+            ],
+            security: "is_granted('ROLE_USER')"
+        ),
+        new Get(
+            uriTemplate: '/enrollements/{id}/riddle',
+            normalizationContext: [
+                'groups' => ['riddle:read'],
+            ],
+            security: "is_granted('ROLE_USER')"
+        ),
+        new GetCollection(
+            uriTemplate: '/enrollements/{id}/users',
+            normalizationContext: [
+                'groups' => ['user:read'],
+            ],
+            security: "is_granted('ROLE_USER')"
+        ),
+    ]
+)]
 class Enrollement
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['enrollement:read'])]
     private ?int $id = null;
 
+    #[Groups(['enrollement:read'])]
     #[ORM\Column(enumType: EnrollementStatus::class)]
     private EnrollementStatus $status;
 
     #[ORM\Column]
+    #[Groups(['enrollement:read'])]
     private int $scoreTotal = 0;
 
     #[ORM\Column(type: Types::DATE_IMMUTABLE)]
+    #[Groups(['enrollement:read'])]
     private \DateTimeImmutable $registrationDate;
 
     #[ORM\Column]
+    #[Groups(['enrollement:read'])]
     private int $countdown;
 
     #[ORM\ManyToOne(inversedBy: 'enrollements')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['enrollement:read', 'enrollement:write'])]
     private TreasureHunt $treasureHunt;
 
     /**
      * @var Collection<int, Submission>
      */
-    #[ORM\OneToMany(targetEntity: Submission::class, mappedBy: 'enrollement')]
+    #[ORM\OneToMany(
+        targetEntity: Submission::class,
+        mappedBy: 'enrollement'
+    )]
+    #[Groups(['enrollement:read'])]
     private Collection $submissions;
 
     #[ORM\ManyToOne(inversedBy: 'enrollements')]
+    #[Groups(['enrollement:read', 'enrollement:write'])]
     private ?Riddle $riddle = null;
 
+    #[Groups(['enrollement:read'])]
     #[ORM\ManyToOne(inversedBy: 'enrollements')]
     #[ORM\JoinColumn(nullable: false)]
     private User $user;
@@ -49,6 +131,12 @@ class Enrollement
     public function __construct()
     {
         $this->submissions = new ArrayCollection();
+        $this->users = new ArrayCollection();
+
+        $this->status = '0';
+        $this->scoreTotal = 0;
+        $this->registrationDate = new \DateTimeImmutable();
+        $this->countdown = 0;
     }
 
     public function getId(): ?int
@@ -85,8 +173,9 @@ class Enrollement
         return $this->registrationDate;
     }
 
-    public function setRegistrationDate(\DateTimeImmutable $registrationDate): static
-    {
+    public function setRegistrationDate(
+        \DateTimeImmutable $registrationDate,
+    ): static {
         $this->registrationDate = $registrationDate;
 
         return $this;
@@ -109,8 +198,9 @@ class Enrollement
         return $this->treasureHunt;
     }
 
-    public function setTreasureHunt(?TreasureHunt $treasureHunt): static
-    {
+    public function setTreasureHunt(
+        ?TreasureHunt $treasureHunt,
+    ): static {
         $this->treasureHunt = $treasureHunt;
 
         return $this;
@@ -124,8 +214,9 @@ class Enrollement
         return $this->submissions;
     }
 
-    public function addSubmission(Submission $submission): static
-    {
+    public function addSubmission(
+        Submission $submission,
+    ): static {
         if (!$this->submissions->contains($submission)) {
             $this->submissions->add($submission);
             $submission->setEnrollement($this);
@@ -134,10 +225,10 @@ class Enrollement
         return $this;
     }
 
-    public function removeSubmission(Submission $submission): static
-    {
+    public function removeSubmission(
+        Submission $submission,
+    ): static {
         if ($this->submissions->removeElement($submission)) {
-            // set the owning side to null (unless already changed)
             if ($submission->getEnrollement() === $this) {
                 $submission->setEnrollement(null);
             }

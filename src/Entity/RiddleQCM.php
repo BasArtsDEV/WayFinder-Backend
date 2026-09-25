@@ -2,26 +2,68 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
 use App\Repository\RiddleQCMRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: RiddleQCMRepository::class)]
+#[ApiResource(
+    operations: [
+        new GetCollection(
+            uriTemplate: '/riddle_qcms',
+            normalizationContext: [
+                'groups' => ['qcm:read'],
+            ],
+            security: 'true'
+        ),
+
+        new Get(
+            uriTemplate: '/riddle_qcms/{id}',
+            normalizationContext: [
+                'groups' => ['qcm:read'],
+            ],
+            security: 'true'
+        ),
+
+        new GetCollection(
+            uriTemplate: '/riddle_qcms/{id}/choices',
+            normalizationContext: [
+                'groups' => ['choice:read'],
+            ],
+            security: 'true'
+        ),
+    ]
+)]
 class RiddleQCM extends Riddle
 {
     #[ORM\Column(length: 2048)]
+    #[Groups(['qcm:read'])]
+    #[Assert\NotBlank]
+    #[Assert\Length(max: 2048)]
     private string $question;
 
     /**
      * @var Collection<int, Choice>
      */
-    #[ORM\OneToMany(targetEntity: Choice::class, mappedBy: 'riddleQCM')]
+    #[ORM\OneToMany(
+        targetEntity: Choice::class,
+        mappedBy: 'riddleQCM',
+        cascade: ['persist', 'remove'],
+        orphanRemoval: true
+    )]
+    #[Groups(['qcm:read'])]
     private Collection $choices;
 
     public function __construct()
     {
         parent::__construct();
+
         $this->choices = new ArrayCollection();
     }
 
@@ -37,9 +79,6 @@ class RiddleQCM extends Riddle
         return $this;
     }
 
-    /**
-     * @return Collection<int, Choice>
-     */
     public function getChoices(): Collection
     {
         return $this->choices;
@@ -58,7 +97,6 @@ class RiddleQCM extends Riddle
     public function removeChoice(Choice $choice): static
     {
         if ($this->choices->removeElement($choice)) {
-            // set the owning side to null (unless already changed)
             if ($choice->getRiddleQCM() === $this) {
                 $choice->setRiddleQCM(null);
             }
