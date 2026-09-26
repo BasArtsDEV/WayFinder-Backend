@@ -1,0 +1,26 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}S'inscrire{% endblock %}
+
+{% block main %}
+    <div class="min-vh-100 d-flex justify-content-center align-items-center mx-auto">
+        <div class="card shadow p-4" style="width: 75%;">
+            <h1 class="mb-4 text-center">Créer votre compte</h1>
+            {{ form_errors(registrationForm) }}
+            {{ form_start(registrationForm) }}
+                {{ form_row(registrationForm.username) }}
+                <div class="d-flex flex-column flex-md-row gap-md-3">
+                    <div class="flex-fill">{{ form_row(registrationForm.firstname) }}</div>
+                    <div class="flex-fill">{{ form_row(registrationForm.lastname) }}</div>
+                </div>
+
+                {{ form_row(registrationForm.email) }}
+                {{ form_row(registrationForm.password) }}
+
+                <div class="d-flex justify-content-center">
+                    <button type="submit" class="flex-md-fill px-5 btn btn-primary">S'inscrire</button>
+                </div>
+            {{ form_end(registrationForm) }}
+        </div>
+    </div>
+{% endblock %}
