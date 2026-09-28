@@ -6,6 +6,12 @@
 
     <div class="team_details">
         <span>Nom : {{ team.name }}</span>
+        <a href="{{ path('app_team_edit', {id: team.id}) }}">
+        <span class="btn btn-primary btn-sm"
+              aria-label="Modifier">
+            Modifier
+        </span>
+        </a>
         {{ include('team/partials/_delete_button.html.twig') }}
     </div>
 {% endblock %}
