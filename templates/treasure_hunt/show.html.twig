@@ -3,23 +3,142 @@
 {% block title %}Détails de la chasse au trésor{% endblock %}
 
 {% block main %}
-<div class="treasure_hunt_details">
-    <span>Titre : {{ treasureHunt.title }}</span>
-    <span>Description : {{ treasureHunt.description }}</span>
-    <span>Jouable : {{ treasureHunt.published }}</span>
-    <span>Date de création : {{ treasureHunt.creationDate|date }}</span>
-    <span>Code d'invitation : {{ treasureHunt.invitationCode }}</span>
+    <div class="container my-4">
+        <div class="card text-white mb-4 shadow-sm border-0 rounded-4 p-3" style="background-color: #57a841;">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div>
+                        <h1 class="card-title fw-bold fs-2 mb-1">{{ treasureHunt.title }}</h1>
+                        <p class="card-text mb-0">
+                            {{ riddles|length }} énigme{{ riddles|length > 1 ? 's' : '' }} - Créée par l'équipe
+                            <a href="{{ path('app_team_show', {id: treasureHunt.team.id}) }}" class="text-white text-decoration-underline fw-semibold">
+                                {{ treasureHunt.team.name }}
+                            </a>
+                        </p>
+                    </div>
+                    <div>
+                        {% if treasureHunt.published %}
+                            <span class="badge bg-light text-success fw-bold px-3 py-2 rounded-pill shadow-sm">Disponible</span>
+                        {% else %}
+                            <span class="badge bg-warning text-dark fw-bold px-3 py-2 rounded-pill shadow-sm">En édition</span>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
 
-    <a href="{{ path('app_team_show', {id: treasureHunt.team.id}) }}">
-        <span class="badge text-bg-secondary">{{ treasureHunt.team.name }}</span>
-    </a>
+        <div class="mb-4 text-muted small">
+            <p class="mb-1"><strong>Description :</strong> {{ treasureHunt.description }}</p>
+            <p class="mb-1"><strong>Date de création :</strong> {{ treasureHunt.creationDate|date('d/m/Y') }}</p>
+            <p class="mb-0"><strong>Code d'invitation :</strong> {{ treasureHunt.invitationCode }}</p>
+        </div>
 
-    <a href="{{ path('app_treasure_hunt_edit', {id: treasureHunt.id}) }}">
-        <span class="btn btn-primary btn-sm"
-            aria-label="Modifier">
-            Modifier
-        </span>
-    </a>
-    {{ include('treasure_hunt/partials/_delete_button.html.twig') }}
-</div>
+        <div class="riddles-list d-flex flex-column gap-3 mb-4">
+            {% for index, riddle in riddles %}
+                <div class="card bg-light border-0 shadow-sm rounded-4 p-3 position-relative">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <div class="d-flex align-items-center gap-2">
+                                <span class="rounded-circle text-white d-inline-flex align-items-center justify-content-center fw-bold" style="width: 28px; height: 28px; font-size: 0.9rem; background-color: #57a841;">
+                                    {{ index + 1 }}
+                                </span>
+                                <h2 class="h5 fw-bold mb-0">{{ riddle.title }}</h2>
+                            </div>
+
+                            {% if riddle is instanceof('App\\Entity\\RiddleQCM') %}
+                                <span class="badge bg-success text-white">QCM</span>
+                            {% elseif riddle is instanceof('App\\Entity\\RiddleGPS') %}
+                                <span class="badge bg-info text-dark">GPS</span>
+                            {% elseif riddle is instanceof('App\\Entity\\RiddleQRCode') %}
+                                <span class="badge bg-primary text-white">QR Code</span>
+                            {% elseif riddle is instanceof('App\\Entity\\RiddleText') %}
+                                <span class="badge bg-secondary text-white">Texte libre</span>
+                            {% else %}
+                                <span class="badge bg-secondary text-white">Question simple</span>
+                            {% endif %}
+                        </div>
+
+                        <p class="text-secondary mb-3">{{ riddle.description }}</p>
+
+                        <div class="mb-3">
+                            {% if riddle is instanceof('App\\Entity\\RiddleQCM') %}
+                                <p class="mb-1"><strong>Question :</strong> {{ riddle.question }}</p>
+
+                                <div class="mb-1">
+                                    <strong>Réponses possibles :</strong>
+                                    <ul class="mb-0">
+                                        {% for choice in riddle.choices %}
+                                            <li>{{ choice.choice }}</li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+
+                                <div class="mb-1">
+                                    <strong>Réponses attendues :</strong>
+                                    <ul class="mb-0">
+                                        {% for choice in riddle.choices|filter(c => c.isRight)|map(c => c.choice) %}
+                                            <li>{{ choice }}</li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                            {% elseif riddle is instanceof('App\\Entity\\RiddleGPS') %}
+                                <p class="mb-1"><strong>Lieu :</strong> {{ riddle.locationName ?? 'Non spécifié' }}</p>
+                                <p class="mb-0"><strong>Coordonnées GPS :</strong> Latitude {{ riddle.latitude }}, Longitude {{ riddle.longitude }}</p>
+
+                                <iframe
+                                    width="100%"
+                                    height="500"
+                                    src="https://www.openstreetmap.org/export/embed.html?bbox={{ riddle.longitude - 0.01 }}%2C{{ riddle.latitude - 0.01 }}%2C{{ riddle.longitude + 0.01 }}%2C{{ riddle.latitude + 0.01 }}&amp;layer=mapnik&amp;marker={{ riddle.latitude }}%2C{{ riddle.longitude }}">
+                                </iframe>
+                            {% elseif riddle is instanceof('App\\Entity\\RiddleQRCode') %}
+                                <p class="mb-0"><strong>URL cible du QR Code :</strong>
+                                    <a href="{{ riddle.url }}" target="_blank" class="text-decoration-underline">{{ riddle.url }}</a>
+                                    <img src="{{ qr_code_url(riddle.url) }}"  alt="QR code"/>
+                                </p>
+
+                            {% elseif riddle is instanceof('App\\Entity\\RiddleText') %}
+                                <p class="mb-1"><strong>Question :</strong> {{ riddle.question }}</p>
+                                <p class="mb-0"><strong>Réponse attendue :</strong> {{ riddle.expectedAnswer }}</p>
+
+                            {% else %}
+                                {% if riddle.question is defined %}
+                                    <p class="mb-1"><strong>Question :</strong> {{ riddle.question }}</p>
+                                {% endif %}
+                                {% if riddle.expectedAnswer is defined %}
+                                    <p class="mb-0"><strong>Réponse attendue :</strong> {{ riddle.expectedAnswer }}</p>
+                                {% endif %}
+                            {% endif %}
+                        </div>
+
+                        <div class="d-flex justify-content-end align-items-center gap-2">
+                            <button class="btn btn-light btn-sm rounded-circle shadow-sm p-2 d-flex align-items-center justify-content-center" style="width: 35px; height: 35px;" aria-label="Monter">
+                                ⬆
+                            </button>
+                            <button class="btn btn-light btn-sm rounded-circle shadow-sm p-2 d-flex align-items-center justify-content-center" style="width: 35px; height: 35px;" aria-label="Descendre">
+                                ⬇
+                            </button>
+                            <a href="#" class="btn btn-light btn-sm rounded-pill px-3 shadow-sm d-flex align-items-center gap-1 fw-semibold text-dark">
+                                Éditer
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            {% else %}
+                <p class="text-muted text-center fst-italic">Aucune énigme pour le moment.</p>
+            {% endfor %}
+        </div>
+
+        <div class="text-center mb-5">
+            <a href="#" class="btn rounded-pill px-4 py-2 shadow-sm fw-semibold text-white" style="background-color: #57a841;">
+                + Nouvelle énigme
+            </a>
+        </div>
+
+        <div class="d-flex gap-2">
+            <a href="{{ path('app_treasure_hunt_edit', {id: treasureHunt.id}) }}">
+                <span class="btn btn-primary btn-sm" aria-label="Modifier">Modifier</span>
+            </a>
+            {{ include('treasure_hunt/partials/_delete_button.html.twig') }}
+        </div>
+    </div>
 {% endblock %}
