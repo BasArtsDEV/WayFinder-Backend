@@ -236,4 +236,15 @@ abstract class Riddle
 
         return $this;
     }
+
+    public function getTypeLabel(): string
+    {
+        return match (static::class) {
+            RiddleQCM::class => 'QCM',
+            RiddleGPS::class => 'GPS',
+            RiddleQRCode::class => 'QR Code',
+            RiddleText::class => 'Question simple',
+            default => 'Autre',
+        };
+    }
 }
