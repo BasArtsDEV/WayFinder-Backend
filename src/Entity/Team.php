@@ -58,7 +58,12 @@ class Team
     /**
      * @var Collection<int, TreasureHunt>
      */
-    #[ORM\OneToMany(targetEntity: TreasureHunt::class, mappedBy: 'team')]
+    #[ORM\OneToMany(
+        targetEntity: TreasureHunt::class,
+        mappedBy: 'team',
+        cascade: ['remove'],
+        orphanRemoval: true
+    )]
     #[Groups(['team:read', 'team:details'])]
     private Collection $treasurehunts;
 
