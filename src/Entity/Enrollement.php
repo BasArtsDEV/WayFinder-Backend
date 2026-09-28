@@ -125,7 +125,9 @@ class Enrollement
      */
     #[ORM\OneToMany(
         targetEntity: Submission::class,
-        mappedBy: 'enrollement'
+        mappedBy: 'enrollement',
+        cascade: ['remove'],
+        orphanRemoval: true
     )]
     #[Groups(['enrollement:read'])]
     private Collection $submissions;

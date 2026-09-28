@@ -66,7 +66,11 @@ abstract class Riddle
     /**
      * @var Collection<int, Submission>
      */
-    #[ORM\OneToMany(targetEntity: Submission::class, mappedBy: 'riddle')]
+    #[ORM\OneToMany(targetEntity: Submission::class,
+        mappedBy: 'riddle',
+        cascade: ['remove'],
+        orphanRemoval: true
+    )]
     private Collection $submissions;
 
     #[ORM\ManyToOne(inversedBy: 'riddles')]
