@@ -36,13 +36,6 @@ final class UserFactory extends PersistentObjectFactory
     #[\Override]
     protected function defaults(): array|callable
     {
-        $randomNumber = rand(1, 2);
-        if (1 === $randomNumber) {
-            $team = TeamFactory::random();
-        } else {
-            $team = null;
-        }
-
         return [
             'createdAt' => \DateTimeImmutable::createFromMutable(self::faker()->dateTime()),
             'email' => self::faker()->unique()->safeEmail(),
@@ -51,7 +44,6 @@ final class UserFactory extends PersistentObjectFactory
             'password' => 'mdp',
             'roles' => ['ROLE_USER'],
             'username' => self::faker()->text(30),
-            'team' => $team,
             'avatar' => self::faker()->imageUrl(100, 100, 'people'),
         ];
     }
@@ -66,6 +58,11 @@ final class UserFactory extends PersistentObjectFactory
             ->afterInstantiate(function (User $user) {
                 if (null !== $this->passwordHasher) {
                     $user->setPassword($this->passwordHasher->hashPassword($user, $user->getPassword()));
+                }
+
+                if (self::faker()->boolean()) {
+                    $team = TeamFactory::randomOrCreate();
+                    $user->addTeam($team);
                 }
             })
         ;
