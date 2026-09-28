@@ -27,8 +27,11 @@ final class TreasureHuntController extends AbstractController
     #[Route('/treasure_hunt/{id}', name: 'app_treasure_hunt_show', requirements: ['id' => '\d+'], methods: ['GET'])]
     public function show(#[MapEntity(expr: 'repository.find(id)')] TreasureHunt $treasureHunt): Response
     {
+        $riddles = $treasureHunt->getRiddles();
+
         return $this->render('treasure_hunt/show.html.twig', [
             'treasureHunt' => $treasureHunt,
+            'riddles' => $riddles,
         ]);
     }
 
