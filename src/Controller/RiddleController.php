@@ -67,4 +67,34 @@ final class RiddleController extends AbstractController
             'type' => $type,
         ]);
     }
+
+    #[Route('/{id}/edit', name: 'app_riddle_edit', methods: ['GET', 'POST'])]
+    public function edit(
+        Riddle $riddle,
+        Request $request,
+        EntityManagerInterface $em,
+    ): Response {
+        $formType = match (get_class($riddle)) {
+            RiddleQCM::class => RiddleQCMType::class,
+            RiddleGPS::class => RiddleGPSType::class,
+            RiddleQRCode::class => RiddleQRCodeType::class,
+            default => RiddleTextType::class,
+        };
+
+        $form = $this->createForm($formType, $riddle);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $em->flush();
+
+            return $this->redirectToRoute('app_treasure_hunt_edit', [
+                'id' => $riddle->getTreasureHunt()->getId(),
+            ]);
+        }
+
+        return $this->render('riddle/edit.html.twig', [
+            'form' => $form->createView(),
+            'riddle' => $riddle,
+        ]);
+    }
 }
