@@ -1,0 +1,25 @@
+{% extends 'base.html.twig' %}
+
+{% set type_labels = {
+    'text': 'Question simple',
+    'qcm': 'Question QCM',
+    'gps': 'Aller à des coordonnées GPS',
+    'qrcode': 'Trouver un QR Code'
+} %}
+
+{% set type_label = type_labels[type] ?? 'Énigme' %}
+
+{% block title %}Créer une nouvelle énigme - {{ type_label }}{% endblock %}
+
+{% block main %}
+    <div class="container my-4">
+        <h2>Créer une énigme - {{ type_label }}</h2>
+
+        {{ form_start(form) }}
+        {{ form_widget(form) }}
+
+        <button type="submit" class="btn btn-success mt-3">Enregistrer l'énigme</button>
+        <a href="{{ path('app_treasure_hunt_show', {id: hunt.id}) }}" class="btn btn-secondary mt-3">Annuler</a>
+        {{ form_end(form) }}
+    </div>
+{% endblock %}
