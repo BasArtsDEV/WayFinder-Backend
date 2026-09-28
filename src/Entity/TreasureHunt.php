@@ -77,14 +77,22 @@ class TreasureHunt
     /**
      * @var Collection<int, Enrollement>
      */
-    #[ORM\OneToMany(targetEntity: Enrollement::class, mappedBy: 'treasureHunt')]
+    #[ORM\OneToMany(targetEntity: Enrollement::class,
+        mappedBy: 'treasureHunt',
+        cascade: ['remove'],
+        orphanRemoval: true
+    )]
     #[Groups(['hunt:read', 'hunt:details'])]
     private Collection $enrollements;
 
     /**
      * @var Collection<int, Riddle>
      */
-    #[ORM\OneToMany(targetEntity: Riddle::class, mappedBy: 'treasureHunt')]
+    #[ORM\OneToMany(targetEntity: Riddle::class,
+        mappedBy: 'treasureHunt',
+        cascade: ['remove'],
+        orphanRemoval: true
+    )]
     #[Groups(['hunt:read', 'hunt:write', 'hunt:details'])]
     private Collection $riddles;
 
