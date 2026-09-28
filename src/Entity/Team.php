@@ -20,9 +20,9 @@ use Symfony\Component\Validator\Constraints as Assert;
         new GetCollection(normalizationContext: ['groups' => ['team:read', 'team:details']]),
 
         new Get(
-            uriTemplate: '/users/{id}/team',
+            uriTemplate: '/users/{id}/teams',
             uriVariables: [
-                'id' => new Link(fromProperty: 'team', fromClass: User::class),
+                'id' => new Link(fromProperty: 'teams', fromClass: User::class),
             ],
             normalizationContext: ['groups' => ['team:read', 'team:details']],
         ),
@@ -51,7 +51,7 @@ class Team
     /**
      * @var Collection<int, User>
      */
-    #[ORM\OneToMany(targetEntity: User::class, mappedBy: 'team')]
+    #[ORM\ManyToMany(targetEntity: User::class, mappedBy: 'teams')]
     #[Groups(['team:read', 'team:details'])]
     private Collection $users;
 
