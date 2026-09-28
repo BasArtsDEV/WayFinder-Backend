@@ -1,21 +1,42 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Se connecter{% endblock %}
+{% set loginTitle = 'Se connecter' %}
+
+{% block title %}{{ loginTitle }}{% endblock %}
 
 {% block main %}
-    <form method="post">
-        <h1 class="h3 mb-3 font-weight-normal">Se connecter</h1>
+    {% if error %}
+        <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+    {% endif %}
 
-        <label for="username">Email</label>
-        <input type="email" value="{{ last_username }}" name="_username" id="username" class="form-control" autocomplete="email" required autofocus>
+    <div class="d-flex justify-content-center align-items-center mx-auto">
+        <div class="p-4" style="width: 90%">
+            <h1 class="mb-3 font-weight-normal text-center">{{ loginTitle }}</h1>
 
-        <label for="password">Password</label>
+            <form method="post">
+                <div class="d-flex flex-column gap-1 mb-3">
+                    <label for="username" class="fw-semibold">Adresse e-mail</label>
+                    <input type="email" placeholder="example@gmail.com" value="{{ last_username }}" name="_username" id="username" class="form-control rounded-pill border border-3 border-secondary mt-2 px-3 py-3" autocomplete="email" required autofocus>
+                </div>
 
-        <input type="password" name="_password" id="password" class="form-control" autocomplete="current-password" required>
-        <input type="hidden" name="_csrf_token" data-controller="csrf-protection" value="{{ csrf_token('authenticate') }}">
+                <div class="d-flex flex-column gap-1">
+                    <label for="password" class="fw-semibold">Mot de passe</label>
+                    <input type="password" placeholder="Entrez votre mot de passe" name="_password" id="password" class="form-control rounded-pill border border-3 border-secondary mt-2 px-3 py-3" autocomplete="current-password" required>
+                    <input type="hidden" name="_csrf_token" data-controller="csrf-protection" value="{{ csrf_token('authenticate') }}">
+                </div>
 
-        <button class="btn btn-lg btn-primary" type="submit">
-            Se connecter
-        </button>
-    </form>
+                <div class="d-flex flex-column flex-md-row gap-3 justify-content-center mt-4">
+                    <button class="btn btn-lg btn-success rounded-pill" type="submit">
+                        <i class="bi bi-check-circle-fill pe-3"></i>
+                        Valider
+                    </button>
+
+                    <a class="btn btn-lg btn-success rounded-pill text-decoration-none" href="{{ path('app_register') }}">
+                        <i class="bi bi bi-person-add pe-3"></i>
+                        <span class="text-start">Créer un compte</span>
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
 {% endblock %}
