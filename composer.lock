@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "e73dd72064728c3f850ab9602bde6eb1",
+    "content-hash": "c5b5729ea442c11740e003de6651e8aa",
     "packages": [
         {
             "name": "api-platform/doctrine-common",
@@ -2592,6 +2592,54 @@
                 }
             ],
             "time": "2025-10-17T11:30:53+00:00"
+        },
+        {
+            "name": "lelyfoto/twig-instanceof",
+            "version": "v1.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/lelyfoto/twig-instanceof.git",
+                "reference": "7f98a21a60c5178b8f69730b8dc1ad5aeec60684"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/lelyfoto/twig-instanceof/zipball/7f98a21a60c5178b8f69730b8dc1ad5aeec60684",
+                "reference": "7f98a21a60c5178b8f69730b8dc1ad5aeec60684",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^8.0",
+                "symfony/framework-bundle": "^5.4 || ^6.0 || ^7.0 || ^8.0",
+                "twig/twig": "^3.0"
+            },
+            "type": "symfony-bundle",
+            "autoload": {
+                "psr-4": {
+                    "Lelyfoto\\Twig\\InstanceOf\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Michael Erkens",
+                    "email": "github@lelyfoto.nl"
+                }
+            ],
+            "description": "Adds InstanceOf Expression as Twig Extension",
+            "homepage": "https://github.com/lelyfoto/twig-instanceof",
+            "keywords": [
+                "instanceof",
+                "symfony",
+                "twig"
+            ],
+            "support": {
+                "issues": "https://github.com/lelyfoto/twig-instanceof/issues",
+                "source": "https://github.com/lelyfoto/twig-instanceof/tree/v1.3"
+            },
+            "time": "2026-05-02T12:12:29+00:00"
         },
         {
             "name": "lexik/jwt-authentication-bundle",

@@ -73,6 +73,9 @@
             ".php-cs-fixer.dist.php"
         ]
     },
+    "lelyfoto/twig-instanceof": {
+        "version": "v1.3"
+    },
     "lexik/jwt-authentication-bundle": {
         "version": "3.2",
         "recipe": {
