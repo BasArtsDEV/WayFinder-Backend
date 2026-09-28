@@ -1,3 +1,44 @@
+@font-face {
+    font-family: 'Lexend';
+    src: url('../fonts/Lexend-Light.ttf') format('woff2');
+    font-weight: 300;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Lexend';
+    src: url('../fonts/Lexend-Regular.ttf') format('woff2');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Lexend';
+    src: url('../fonts/Lexend-Medium.ttf') format('woff2');
+    font-weight: 500;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Lexend';
+    src: url('../fonts/Lexend-Bold.ttf') format('woff2');
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap;
+}
+
+:root {
+    --app-main-background: #f0d6a4;
+    --app-header-background: #57a841;
+}
+
+body {
+    background-color: var(--app-main-background);
+}
+
 .navbar.bg-success {
-    background-color: #57a841 !important;
+    background-color: var(--app-header-background) !important;
 }

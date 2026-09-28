@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\RiddleGPS;
 use App\Entity\TreasureHunt;
 use App\Form\TreasureHuntType;
 use App\Repository\TreasureHuntRepository;
@@ -11,6 +12,10 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\UX\Map\Bridge\Google\GoogleOptions;
+use Symfony\UX\Map\Map;
+use Symfony\UX\Map\Marker;
+use Symfony\UX\Map\Point;
 
 final class TreasureHuntController extends AbstractController
 {
@@ -27,8 +32,36 @@ final class TreasureHuntController extends AbstractController
     #[Route('/treasure_hunt/{id}', name: 'app_treasure_hunt_show', requirements: ['id' => '\d+'], methods: ['GET'])]
     public function show(#[MapEntity(expr: 'repository.find(id)')] TreasureHunt $treasureHunt): Response
     {
+        $riddles = $treasureHunt->getRiddles();
+
+        $map = new Map()->zoom(13);
+        $hasGpsRiddles = false;
+
+        foreach ($riddles as $riddle) {
+            if ($riddle instanceof RiddleGPS) {
+                $hasGpsRiddles = true;
+                $point = new Point($riddle->getLatitude(), $riddle->getLongitude());
+
+                $map->center($point);
+
+                $map->addMarker(new Marker(
+                    position: $point,
+                    title: $riddle->getLocationName() ?? 'Lieu de l\'énigme'
+                ));
+            }
+        }
+
+        if ($hasGpsRiddles) {
+            $map->options(
+                new GoogleOptions()
+                    ->mapId('692866589361')
+            );
+        }
+
         return $this->render('treasure_hunt/show.html.twig', [
             'treasureHunt' => $treasureHunt,
+            'riddles' => $riddles,
+            'map' => $hasGpsRiddles ? $map : null,
         ]);
     }
 

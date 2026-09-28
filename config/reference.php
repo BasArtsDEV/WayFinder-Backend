@@ -972,7 +972,7 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *         enabled?: bool|Param, // Default: false
  *     },
  *     html?: bool|array{
- *         enabled?: bool|Param, // Default: false
+ *         enabled?: bool|Param, // Default: true
  *     },
  *     markdown?: bool|array{
  *         enabled?: bool|Param, // Default: false
@@ -1939,6 +1939,17 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *         cache?: scalar|Param|null, // Storage to track blocked tokens // Default: "cache.app"
  *     },
  * }
+ * @psalm-type EndroidQrCodeConfig = array{
+ *     route_prefix?: scalar|Param|null, // Default: "/qr-code"
+ *     route_enabled?: bool|Param, // Default: true
+ *     builders?: array<string, array<string, mixed>>,
+ * }
+ * @psalm-type UxMapConfig = array{
+ *     renderer?: scalar|Param|null, // Default: null
+ *     google_maps?: array{
+ *         default_map_id?: scalar|Param|null, // Default: null
+ *     },
+ * }
  * @psalm-type ConfigType = array{
  *     imports?: ImportsConfig,
  *     parameters?: ParametersConfig,
@@ -1955,6 +1966,8 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *     nelmio_cors?: NelmioCorsConfig,
  *     api_platform?: ApiPlatformConfig,
  *     lexik_jwt_authentication?: LexikJwtAuthenticationConfig,
+ *     endroid_qr_code?: EndroidQrCodeConfig,
+ *     ux_map?: UxMapConfig,
  *     "when@dev"?: array{
  *         imports?: ImportsConfig,
  *         parameters?: ParametersConfig,
@@ -1975,6 +1988,8 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *         nelmio_cors?: NelmioCorsConfig,
  *         api_platform?: ApiPlatformConfig,
  *         lexik_jwt_authentication?: LexikJwtAuthenticationConfig,
+ *         endroid_qr_code?: EndroidQrCodeConfig,
+ *         ux_map?: UxMapConfig,
  *     },
  *     "when@prod"?: array{
  *         imports?: ImportsConfig,
@@ -1992,6 +2007,8 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *         nelmio_cors?: NelmioCorsConfig,
  *         api_platform?: ApiPlatformConfig,
  *         lexik_jwt_authentication?: LexikJwtAuthenticationConfig,
+ *         endroid_qr_code?: EndroidQrCodeConfig,
+ *         ux_map?: UxMapConfig,
  *     },
  *     "when@test"?: array{
  *         imports?: ImportsConfig,
@@ -2011,6 +2028,8 @@ use Symfony\Component\Config\Loader\ParamConfigurator as Param;
  *         nelmio_cors?: NelmioCorsConfig,
  *         api_platform?: ApiPlatformConfig,
  *         lexik_jwt_authentication?: LexikJwtAuthenticationConfig,
+ *         endroid_qr_code?: EndroidQrCodeConfig,
+ *         ux_map?: UxMapConfig,
  *     },
  *     ...<string, ExtensionType|array{ // extra keys must follow the when@%env% pattern or match an extension alias
  *         imports?: ImportsConfig,

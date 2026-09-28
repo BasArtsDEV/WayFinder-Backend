@@ -61,6 +61,9 @@
             "migrations/.gitignore"
         ]
     },
+    "endroid/qr-code-bundle": {
+        "version": "7.0.1"
+    },
     "friendsofphp/php-cs-fixer": {
         "version": "3.95",
         "recipe": {
@@ -72,6 +75,9 @@
         "files": [
             ".php-cs-fixer.dist.php"
         ]
+    },
+    "lelyfoto/twig-instanceof": {
+        "version": "v1.3"
     },
     "lexik/jwt-authentication-bundle": {
         "version": "3.2",
@@ -352,6 +358,27 @@
             "version": "7.0",
             "ref": "0df5844274d871b37fc3816c57a768ffc60a43a5"
         }
+    },
+    "symfony/ux-google-map": {
+        "version": "3.5",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "main",
+            "version": "2.22",
+            "ref": "c571ed5f392f3574791a65f9881c54af3c44368d"
+        }
+    },
+    "symfony/ux-map": {
+        "version": "3.5",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "main",
+            "version": "2.19",
+            "ref": "04de870967555f00bd82f542e9e2d29683c3d39e"
+        },
+        "files": [
+            "config/packages/ux_map.yaml"
+        ]
     },
     "symfony/ux-turbo": {
         "version": "3.5",

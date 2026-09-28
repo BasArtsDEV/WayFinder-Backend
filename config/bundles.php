@@ -18,4 +18,7 @@ return [
     Nelmio\CorsBundle\NelmioCorsBundle::class => ['all' => true],
     ApiPlatform\Symfony\Bundle\ApiPlatformBundle::class => ['all' => true],
     Lexik\Bundle\JWTAuthenticationBundle\LexikJWTAuthenticationBundle::class => ['all' => true],
+    Lelyfoto\Twig\InstanceOf\TwigInstanceOfBundle::class => ['all' => true],
+    Endroid\QrCodeBundle\EndroidQrCodeBundle::class => ['all' => true],
+    Symfony\UX\Map\UXMapBundle::class => ['all' => true],
 ];
