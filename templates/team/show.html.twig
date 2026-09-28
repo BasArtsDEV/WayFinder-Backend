@@ -6,6 +6,7 @@
 
     <div class="team_details">
         <span>Nom : {{ team.name }}</span>
+
         <h2>Treasure hunts</h2>
 
         {% if team.gettreasurehunts()|length > 0 %}
@@ -26,6 +27,23 @@
         {% else %}
             <p>Cette équipe n'a encore aucun treasure hunt.</p>
         {% endif %}
+
+        <h2>Membre de l'équipe</h2>
+
+        <h2>Users</h2>
+
+        {% if team.users|length > 0 %}
+            <ul>
+                {% for user in team.users %}
+                    <li>
+                        {{ user.username }}
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>Cette équipe n'a aucun utilisateur.</p>
+        {% endif %}
+
         <a href="{{ path('app_team_edit', {id: team.id}) }}">
         <span class="btn btn-primary btn-sm"
               aria-label="Modifier">
