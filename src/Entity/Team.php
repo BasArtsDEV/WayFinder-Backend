@@ -102,7 +102,7 @@ class Team
     {
         if (!$this->users->contains($user)) {
             $this->users->add($user);
-            $user->setTeam($this);
+            $user->addTeam($this);
         }
 
         return $this;
@@ -112,8 +112,8 @@ class Team
     {
         if ($this->users->removeElement($user)) {
             // set the owning side to null (unless already changed)
-            if ($user->getTeam() === $this) {
-                $user->setTeam(null);
+            if ($user->getTeams()->contains($this)) {
+                $user->removeTeam($this);
             }
         }
 
