@@ -151,9 +151,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     )]
     private \DateTimeImmutable $createdAt;
 
-    #[ORM\ManyToOne(inversedBy: 'users')]
+    /**
+     * @var Collection<int, Team>
+     */
+    #[ORM\ManyToMany(targetEntity: Team::class, inversedBy: 'users')]
     #[ORM\JoinColumn(nullable: true)]
-    private ?Team $team = null;
+    private Collection $teams;
 
     /**
      * @var Collection<int, Enrollement>
@@ -163,6 +166,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function __construct()
     {
+        $this->teams = new ArrayCollection();
         $this->enrollements = new ArrayCollection();
     }
 
@@ -208,7 +212,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     public function getUserIdentifier(): string
     {
-        return (string) $this->email;
+        return $this->email;
     }
 
     /**
@@ -318,14 +322,29 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->createdAt = new \DateTimeImmutable();
     }
 
-    public function getTeam(): ?Team
+    /**
+     * @return Collection<int, Team>
+     */
+    public function getTeams(): Collection
     {
-        return $this->team;
+        return $this->teams;
     }
 
-    public function setTeam(?Team $team): static
+    public function addTeam(Team $team): static
     {
-        $this->team = $team;
+        if (!$this->teams->contains($team)) {
+            $this->teams->add($team);
+            $team->addUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTeam(Team $team): static
+    {
+        if ($this->teams->removeElement($team)) {
+            $team->removeUser($this);
+        }
 
         return $this;
     }
