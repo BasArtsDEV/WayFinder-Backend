@@ -97,4 +97,20 @@ final class RiddleController extends AbstractController
             'riddle' => $riddle,
         ]);
     }
+
+    #[Route('/{id}/delete', name: 'app_riddle_delete', methods: ['POST'])]
+    public function delete(
+        Request $request,
+        Riddle $riddle,
+        EntityManagerInterface $em,
+    ): Response {
+        $huntId = $riddle->getTreasureHunt()->getId();
+
+        if ($this->isCsrfTokenValid('delete'.$riddle->getId(), $request->getPayload()->getString('_token'))) {
+            $em->remove($riddle);
+            $em->flush();
+        }
+
+        return $this->redirectToRoute('app_treasure_hunt_edit', ['id' => $huntId]);
+    }
 }
