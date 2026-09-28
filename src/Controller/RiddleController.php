@@ -113,4 +113,23 @@ final class RiddleController extends AbstractController
 
         return $this->redirectToRoute('app_treasure_hunt_edit', ['id' => $huntId]);
     }
+
+    #[Route('/{id}/reorder/{direction}', name: 'app_riddle_reorder', methods: ['POST'])]
+    public function reorder(
+        Riddle $riddle,
+        string $direction,
+        EntityManagerInterface $em,
+    ): Response {
+        $currentIndex = $riddle->getIndex();
+        $newIndex = 'up' === $direction ? $currentIndex - 1 : $currentIndex + 1;
+
+        if ($newIndex > 0) {
+            $riddle->setIndex($newIndex);
+            $em->flush();
+        }
+
+        return $this->redirectToRoute('app_treasure_hunt_edit', [
+            'id' => $riddle->getTreasureHunt()->getId(),
+        ]);
+    }
 }
