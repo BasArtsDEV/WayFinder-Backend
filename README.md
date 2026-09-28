@@ -97,4 +97,4 @@ Where :
 
 ### Conceptual Data Model
 
-![MCD version finalisée](MCD_v11.png)
+![MCD version finalisée](MCD_v12.png)
