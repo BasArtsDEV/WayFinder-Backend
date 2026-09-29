@@ -62,6 +62,10 @@ class RiddleQCM extends Riddle
         orphanRemoval: true
     )]
     #[Groups(['qcm:read'])]
+    #[Assert\Count(
+        max: 4,
+        maxMessage: 'Vous ne pouvez pas ajouter plus de {{ limit }} choix de réponses.'
+    )]
     private Collection $choices;
 
     public function __construct()

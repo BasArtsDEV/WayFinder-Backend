@@ -28,7 +28,8 @@
             {{ form_row(form.question) }}
 
             <div class="mb-3">
-                <label class="form-label fw-bold">Choix de réponses</label>
+                <label class="form-label">Choix de réponses</label>
+
                 <div id="choices-wrapper"
                      data-prototype="{{ form_widget(form.choices.vars.prototype)|e('html_attr') }}"
                      data-index="{{ form.choices|length }}">
@@ -66,7 +67,21 @@
 
                 if (!wrapper || !addBtn) return;
 
+                const MAX_CHOICES = 4;
+
+                function updateButtonState() {
+                    const count = wrapper.querySelectorAll('.choice-item').length;
+                    if (count >= MAX_CHOICES) {
+                        addBtn.style.display = 'none';
+                    } else {
+                        addBtn.style.display = 'inline-block';
+                    }
+                }
+
                 addBtn.addEventListener('click', () => {
+                    const currentCount = wrapper.querySelectorAll('.choice-item').length;
+                    if (currentCount >= MAX_CHOICES) return;
+
                     let index = wrapper.dataset.index;
                     let newForm = wrapper.dataset.prototype.replace(/__name__/g, index);
 
@@ -76,13 +91,18 @@
 
                     wrapper.appendChild(div);
                     wrapper.dataset.index = parseInt(index) + 1;
+
+                    updateButtonState();
                 });
 
                 wrapper.addEventListener('click', (e) => {
                     if (e.target.classList.contains('remove-choice')) {
                         e.target.closest('.choice-item').remove();
+                        updateButtonState();
                     }
                 });
+
+                updateButtonState();
             });
         </script>
     {% endif %}
