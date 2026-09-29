@@ -42,11 +42,10 @@ class UserDenormalizer implements DenormalizerInterface, DenormalizerAwareInterf
         $context[self::ALREADY_CALLED] = true;
         $currentUser = $this->security->getUser();
 
-        if (!$currentUser instanceof PasswordAuthenticatedUserInterface) {
-            throw new \LogicException('No authenticated user found.');
-        }
-
-        if (isset($data['password']) && isset($this->passwordHasher)) {
+        if ($currentUser instanceof PasswordAuthenticatedUserInterface
+            && isset($data['password'])
+            && isset($this->passwordHasher)
+        ) {
             $data['password'] = $this->passwordHasher->hashPassword($currentUser, $data['password']);
         }
 

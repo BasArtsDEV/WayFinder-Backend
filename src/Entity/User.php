@@ -6,6 +6,7 @@ use ApiPlatform\Metadata\ApiProperty;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\Patch;
+use ApiPlatform\Metadata\Post;
 use ApiPlatform\OpenApi\Model\MediaType;
 use ApiPlatform\OpenApi\Model\Operation;
 use ApiPlatform\OpenApi\Model\Response;
@@ -13,6 +14,7 @@ use ApiPlatform\OpenApi\Model\Schema;
 use App\Controller\GetAvatarController;
 use App\Repository\UserRepository;
 use App\State\MeProvider;
+use App\State\UserRegistrationProcessor;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
@@ -74,6 +76,13 @@ use Symfony\Component\Validator\Constraints as Assert;
             denormalizationContext: ['groups' => ['user:write']],
             security: "object == user and is_granted('ROLE_USER')"
         ),
+        new Post(
+            uriTemplate: '/register',
+            denormalizationContext: ['groups' => ['user:create']],
+            normalizationContext: ['groups' => ['user:read']],
+            validationContext: ['groups' => ['Default']],
+            processor: UserRegistrationProcessor::class,
+        ),
     ]
 )]
 #[UniqueEntity('email')]
@@ -87,7 +96,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?int $id = null;
 
     #[ORM\Column(length: 180)]
-    #[Groups(['user:write', 'user:me'])]
+    #[Groups(['user:write', 'user:me', 'user:create'])]
     #[Assert\NotBlank]
     #[Assert\Email(
         message: 'L\'email "{{ value }}" n\'est pas une adresse email valide.'
@@ -104,11 +113,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * @var string The hashed password
      */
     #[ORM\Column]
-    #[Groups(['user:write'])]
+    #[Groups(['user:write', 'user:create'])]
+    #[ApiProperty(writable: true, readable: false)]
     private string $password;
 
     #[ORM\Column(length: 30)]
-    #[Groups(['user:read', 'user:write', 'user:me'])]
+    #[Groups(['user:read', 'user:write', 'user:me', 'user:create'])]
     #[Assert\NotBlank]
     #[Assert\Regex(
         pattern: '/^[\w\d_-]+$/',
@@ -118,7 +128,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private string $username;
 
     #[ORM\Column(length: 60)]
-    #[Groups(['user:read', 'user:write', 'user:me'])]
+    #[Groups(['user:read', 'user:write', 'user:me', 'user:create'])]
     #[Assert\NotBlank]
     #[Assert\Regex(
         pattern: '/^[\w\d\s-]+$/',
@@ -128,7 +138,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private string $firstName;
 
     #[ORM\Column(length: 60)]
-    #[Groups(['user:read', 'user:write', 'user:me'])]
+    #[Groups(['user:read', 'user:write', 'user:me', 'user:create'])]
     #[Assert\NotBlank]
     #[Assert\Regex(
         pattern: '/^[\w\d\s-]+$/',

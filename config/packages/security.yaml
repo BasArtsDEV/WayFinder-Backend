@@ -59,6 +59,7 @@ security:
         # Documentation et Login de l'API
         - { path: ^/api/?$, roles: PUBLIC_ACCESS }
         - { path: ^/api/login, roles: PUBLIC_ACCESS }
+        - { path: ^/api/register, roles: PUBLIC_ACCESS }
 
         # Gestion publique des utilisateurs et des avatars
         - { path: ^/api/users/\d+$, roles: PUBLIC_ACCESS }
