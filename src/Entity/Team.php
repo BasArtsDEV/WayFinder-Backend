@@ -48,6 +48,11 @@ class Team
     #[Assert\NotBlank]
     private string $name;
 
+    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[ORM\JoinColumn(nullable: true)]
+    #[Groups(['team:read', 'team:write', 'team:details'])]
+    private ?User $leader = null;
+
     /**
      * @var Collection<int, User>
      */
@@ -86,6 +91,18 @@ class Team
     public function setName(string $name): static
     {
         $this->name = $name;
+
+        return $this;
+    }
+
+    public function getLeader(): ?User
+    {
+        return $this->leader;
+    }
+
+    public function setLeader(?User $leader): static
+    {
+        $this->leader = $leader;
 
         return $this;
     }
