@@ -125,6 +125,19 @@ abstract class Riddle
         return $this;
     }
 
+    public function getImgBase64(): ?string
+    {
+        if (null === $this->img) {
+            return null;
+        }
+
+        if (is_resource($this->img)) {
+            return base64_encode(stream_get_contents($this->img));
+        }
+
+        return base64_encode($this->img);
+    }
+
     public function getImgDescription(): ?string
     {
         return $this->imgDescription;

@@ -55,6 +55,13 @@ final class RiddleController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $imgFile = $form->get('imgFile')->getData();
+
+            if ($imgFile) {
+                $binaryData = file_get_contents($imgFile->getPathname());
+                $riddle->setImg($binaryData);
+            }
+
             $em->persist($riddle);
             $em->flush();
 
