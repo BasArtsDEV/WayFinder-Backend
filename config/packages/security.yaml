@@ -34,9 +34,8 @@ security:
         main:
             entry_point: App\Security\ApiAuthenticationEntryPoint
             lazy: true
-            stateless: true
+            stateless: false
             provider: app_user_provider
-            jwt: ~
             form_login:
                 login_path: app_login
                 check_path: app_login
@@ -44,7 +43,6 @@ security:
                 default_target_path: app_home
             logout:
                 delete_cookies:
-                    BEARER: null
                     PHPSESSID: null
                 path: app_logout
 
