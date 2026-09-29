@@ -4,12 +4,14 @@ namespace App\EventSubscriber;
 
 use Lexik\Bundle\JWTAuthenticationBundle\Security\Http\Authentication\AuthenticationSuccessHandler;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Security\Http\Event\LoginSuccessEvent;
 
 class FormLoginJwtCookieSubscriber implements EventSubscriberInterface
 {
     public function __construct(
         private readonly AuthenticationSuccessHandler $authenticationSuccessHandler,
+        private RequestStack $request,
     ) {
     }
 
@@ -23,6 +25,9 @@ class FormLoginJwtCookieSubscriber implements EventSubscriberInterface
         $response = $event->getResponse();
 
         if ($response) {
+            $session = $this->request->getSession();
+            $session->getFlashBag()->add('success', 'Connexion réussie');
+
             $jwtResponse = $this->authenticationSuccessHandler->handleAuthenticationSuccess($user);
             $cookies = $jwtResponse->headers->getCookies();
 
