@@ -3,6 +3,7 @@
 namespace App\Form;
 
 use App\Entity\RiddleQCM;
+use App\Form\ChoiceItemType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -19,10 +20,11 @@ class RiddleQCMType extends RiddleType
                 'label' => 'Question posée',
             ])
             ->add('choices', CollectionType::class, [
-                'entry_type' => ChoiceType::class, // Ou ton formulaire ChoiceType personnalisé
+                'entry_type' => ChoiceItemType::class,
                 'allow_add' => true,
                 'allow_delete' => true,
                 'by_reference' => false,
+                'prototype' => true,
                 'label' => 'Choix de réponses',
             ]);
     }
