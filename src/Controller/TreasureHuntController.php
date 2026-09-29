@@ -92,20 +92,18 @@ final class TreasureHuntController extends AbstractController
     #[Route('/treasure_hunt/{id}/edit', name: 'app_treasure_hunt_edit', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
     public function edit(Request $request, TreasureHunt $treasureHunt, EntityManagerInterface $em): Response
     {
-        // Création du formulaire et ajout du bouton submit
         $form = $this->createForm(TreasureHuntType::class, $treasureHunt);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            // Enregistrer les données
             $em->flush();
 
-            // Redirection après succès
             return $this->redirectToRoute('app_treasure_hunt_show', ['id' => $treasureHunt->getId()]);
         }
 
         return $this->render('treasure_hunt/edit.html.twig', [
             'form' => $form->createView(),
+            'treasureHunt' => $treasureHunt,
         ]);
     }
 

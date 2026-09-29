@@ -94,7 +94,15 @@
                             {% endif %}
                         </div>
 
-                        <p class="text-muted mb-4">{{ riddle.description }}</p>
+                        <p class="text-muted mb-3">{{ riddle.description }}</p>
+
+                        {% if riddle.img %}
+                            <div class="mb-3 text-center">
+                                <img src="data:image/png;base64,{{ riddle.imgBase64 }}"
+                                     alt="{{ riddle.imgDescription ?? 'Image de l\'énigme' }}"
+                                     class="img-fluid rounded-3 border shadow-sm" style="max-height: 250px;" />
+                            </div>
+                        {% endif %}
 
                         <div class="bg-light p-3 rounded-3 mb-3">
                             {% if riddle is instanceof('App\\Entity\\RiddleQCM') %}
@@ -136,26 +144,30 @@
                             {% elseif riddle is instanceof('App\\Entity\\RiddleText') %}
                                 <p class="mb-1"><strong>Question :</strong> {{ riddle.question }}</p>
                                 <p class="mb-0 text-success"><strong>Réponse attendue :</strong> {{ riddle.expectedAnswer }}</p>
-                            {% else %}
-                                {% if riddle.question is defined %}
-                                    <p class="mb-1"><strong>Question :</strong> {{ riddle.question }}</p>
-                                {% endif %}
-                                {% if riddle.expectedAnswer is defined %}
-                                    <p class="mb-0 text-success"><strong>Réponse attendue :</strong> {{ riddle.expectedAnswer }}</p>
-                                {% endif %}
                             {% endif %}
                         </div>
 
                         <div class="d-flex justify-content-end align-items-center gap-2">
-                            <button class="btn btn-outline-secondary btn-sm rounded-circle d-flex align-items-center justify-content-center" style="width: 32px; height: 32px;" aria-label="Monter">
-                                ↑
-                            </button>
-                            <button class="btn btn-outline-secondary btn-sm rounded-circle d-flex align-items-center justify-content-center" style="width: 32px; height: 32px;" aria-label="Descendre">
-                                ↓
-                            </button>
-                            <a href="#" class="btn btn-outline-primary btn-sm rounded-pill px-3 fw-semibold">
+                            <form action="{{ path('app_riddle_reorder', {id: riddle.id, direction: 'up'}) }}" method="POST" class="d-inline">
+                                <button type="submit" class="btn btn-outline-secondary btn-sm rounded-circle d-flex align-items-center justify-content-center" style="width: 32px; height: 32px;" aria-label="Monter">
+                                    ↑
+                                </button>
+                            </form>
+                            <form action="{{ path('app_riddle_reorder', {id: riddle.id, direction: 'down'}) }}" method="POST" class="d-inline">
+                                <button type="submit" class="btn btn-outline-secondary btn-sm rounded-circle d-flex align-items-center justify-content-center" style="width: 32px; height: 32px;" aria-label="Descendre">
+                                    ↓
+                                </button>
+                            </form>
+                            <a href="{{ path('app_riddle_edit', {id: riddle.id}) }}" class="btn btn-outline-primary btn-sm rounded-pill px-3 fw-semibold">
                                 Éditer
                             </a>
+
+                            <form method="post" action="{{ path('app_riddle_delete', {id: riddle.id}) }}" class="d-inline" onsubmit="return confirm('Es-tu sûr de vouloir supprimer cette énigme ?');">
+                                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ riddle.id) }}">
+                                <button type="submit" class="btn btn-outline-danger btn-sm rounded-pill px-3 fw-semibold">
+                                    Supprimer
+                                </button>
+                            </form>
                         </div>
                     </div>
                 </div>
@@ -167,9 +179,17 @@
         </div>
 
         <div class="text-center mb-5">
-            <a href="#" class="btn btn-primary rounded-pill px-4 py-2.5 shadow-sm fw-semibold text-white">
-                + Ajouter une énigme
-            </a>
+            <div class="btn-group" data-turbo="false">
+                <button type="button" class="btn btn-primary rounded-pill px-4 py-2.5 shadow-sm fw-semibold text-white dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                    + Ajouter une énigme
+                </button>
+                <ul class="dropdown-menu">
+                    <li><a class="dropdown-item" href="{{ path('app_riddle_new', {huntId: treasureHunt.id, type: 'text'}) }}">Question simple</a></li>
+                    <li><a class="dropdown-item" href="{{ path('app_riddle_new', {huntId: treasureHunt.id, type: 'qcm'}) }}">Question QCM</a></li>
+                    <li><a class="dropdown-item" href="{{ path('app_riddle_new', {huntId: treasureHunt.id, type: 'gps'}) }}">Aller à des coordonnées GPS</a></li>
+                    <li><a class="dropdown-item" href="{{ path('app_riddle_new', {huntId: treasureHunt.id, type: 'qrcode'}) }}">Trouver un QR Code</a></li>
+                </ul>
+            </div>
         </div>
     </div>
 {% endblock %}

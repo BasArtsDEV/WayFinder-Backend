@@ -125,6 +125,19 @@ abstract class Riddle
         return $this;
     }
 
+    public function getImgBase64(): ?string
+    {
+        if (null === $this->img) {
+            return null;
+        }
+
+        if (is_resource($this->img)) {
+            return base64_encode(stream_get_contents($this->img));
+        }
+
+        return base64_encode($this->img);
+    }
+
     public function getImgDescription(): ?string
     {
         return $this->imgDescription;
@@ -235,5 +248,16 @@ abstract class Riddle
         $this->location = $location;
 
         return $this;
+    }
+
+    public function getTypeLabel(): string
+    {
+        return match (static::class) {
+            RiddleQCM::class => 'QCM',
+            RiddleGPS::class => 'GPS',
+            RiddleQRCode::class => 'QR Code',
+            RiddleText::class => 'Question simple',
+            default => 'Autre',
+        };
     }
 }
