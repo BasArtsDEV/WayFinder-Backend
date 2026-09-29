@@ -2,40 +2,27 @@
 
 namespace App\Form;
 
-use App\Entity\Location;
-use App\Entity\Riddle;
-use App\Entity\TreasureHunt;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
-use Symfony\Component\Form\AbstractType;
+use App\Entity\RiddleQRCode;
+use Symfony\Component\Form\Extension\Core\Type\UrlType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class RiddleQRCodeType extends AbstractType
+class RiddleQRCodeType extends RiddleType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
+        parent::buildForm($builder, $options);
+
         $builder
-            ->add('title')
-            ->add('description')
-            ->add('img')
-            ->add('imgDescription')
-            ->add('index')
-            ->add('secondsPenalty')
-            ->add('treasureHunt', EntityType::class, [
-                'class' => TreasureHunt::class,
-                'choice_label' => 'id',
-            ])
-            ->add('location', EntityType::class, [
-                'class' => Location::class,
-                'choice_label' => 'id',
-            ])
-        ;
+            ->add('url', UrlType::class, [
+                'label' => 'URL du QR Code',
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'data_class' => Riddle::class,
+            'data_class' => RiddleQRCode::class,
         ]);
     }
 }

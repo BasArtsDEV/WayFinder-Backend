@@ -2,40 +2,32 @@
 
 namespace App\Form;
 
-use App\Entity\Location;
-use App\Entity\Riddle;
-use App\Entity\TreasureHunt;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
-use Symfony\Component\Form\AbstractType;
+use App\Entity\RiddleGPS;
+use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class RiddleGPSType extends AbstractType
+class RiddleGPSType extends RiddleType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
+        parent::buildForm($builder, $options);
+
         $builder
-            ->add('title')
-            ->add('description')
-            ->add('img')
-            ->add('imgDescription')
-            ->add('index')
-            ->add('secondsPenalty')
-            ->add('treasureHunt', EntityType::class, [
-                'class' => TreasureHunt::class,
-                'choice_label' => 'id',
+            ->add('latitude', NumberType::class, [
+                'label' => 'Latitude',
+                'scale' => 7,
             ])
-            ->add('location', EntityType::class, [
-                'class' => Location::class,
-                'choice_label' => 'id',
-            ])
-        ;
+            ->add('longitude', NumberType::class, [
+                'label' => 'Longitude',
+                'scale' => 7,
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'data_class' => Riddle::class,
+            'data_class' => RiddleGPS::class,
         ]);
     }
 }
