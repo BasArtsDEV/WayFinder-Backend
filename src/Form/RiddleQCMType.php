@@ -25,7 +25,7 @@ class RiddleQCMType extends RiddleType
                 'allow_delete' => true,
                 'by_reference' => false,
                 'prototype' => true,
-                'label' => 'Choix de réponses',
+                'label' => false,
             ]);
     }
 
