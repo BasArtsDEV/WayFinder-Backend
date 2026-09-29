@@ -126,8 +126,10 @@
         "post-update-cmd": [
             "@auto-scripts"
         ],
+        "make:jwt:keys": "php bin/console lexik:jwt:generate-keypair --skip-if-exists",
         "start" : [
             "Composer\\Config::disableProcessTimeout",
+            "@make:jwt:keys",
             "symfony serve"
         ],
         "test:phpcs" : "php-cs-fixer fix --dry-run",
