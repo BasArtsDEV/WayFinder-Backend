@@ -16,10 +16,74 @@
         <h2>Créer une énigme - {{ type_label }}</h2>
 
         {{ form_start(form) }}
-        {{ form_widget(form) }}
 
-        <button type="submit" class="btn btn-success mt-3">Enregistrer l'énigme</button>
-        <a href="{{ path('app_treasure_hunt_show', {id: hunt.id}) }}" class="btn btn-secondary mt-3">Annuler</a>
+        {% if form.choices is defined %}
+            {{ form_row(form.title) }}
+            {{ form_row(form.description) }}
+            {{ form_row(form.imgFile) }}
+            {{ form_row(form.imgDescription) }}
+            {{ form_row(form.index) }}
+            {{ form_row(form.secondsPenalty) }}
+            {{ form_row(form.location) }}
+            {{ form_row(form.question) }}
+
+            <div class="mb-3">
+                <label class="form-label fw-bold">Choix de réponses</label>
+                <div id="choices-wrapper"
+                     data-prototype="{{ form_widget(form.choices.vars.prototype)|e('html_attr') }}"
+                     data-index="{{ form.choices|length }}">
+                    {% for choiceForm in form.choices %}
+                        <div class="card p-3 mb-2 border shadow-sm choice-item">
+                            {{ form_widget(choiceForm) }}
+                            <button type="button" class="btn btn-outline-danger btn-sm mt-2 remove-choice">Supprimer</button>
+                        </div>
+                    {% endfor %}
+                </div>
+
+                <button type="button" id="add-choice-btn" class="btn btn-outline-secondary btn-sm mt-2">
+                    + Ajouter un choix
+                </button>
+            </div>
+
+            {{ form_rest(form) }}
+        {% else %}
+            {{ form_widget(form) }}
+        {% endif %}
+
+        <div class="mt-3">
+            <button type="submit" class="btn btn-success">Enregistrer l'énigme</button>
+            <a href="{{ path('app_treasure_hunt_show', {id: hunt.id}) }}" class="btn btn-secondary">Annuler</a>
+        </div>
+
         {{ form_end(form) }}
     </div>
+
+    {% if form.choices is defined %}
+        <script>
+            document.addEventListener('DOMContentLoaded', () => {
+                const wrapper = document.getElementById('choices-wrapper');
+                const addBtn = document.getElementById('add-choice-btn');
+
+                if (!wrapper || !addBtn) return;
+
+                addBtn.addEventListener('click', () => {
+                    let index = wrapper.dataset.index;
+                    let newForm = wrapper.dataset.prototype.replace(/__name__/g, index);
+
+                    const div = document.createElement('div');
+                    div.className = 'card p-3 mb-2 border shadow-sm choice-item';
+                    div.innerHTML = newForm + '<button type="button" class="btn btn-outline-danger btn-sm mt-2 remove-choice">Supprimer</button>';
+
+                    wrapper.appendChild(div);
+                    wrapper.dataset.index = parseInt(index) + 1;
+                });
+
+                wrapper.addEventListener('click', (e) => {
+                    if (e.target.classList.contains('remove-choice')) {
+                        e.target.closest('.choice-item').remove();
+                    }
+                });
+            });
+        </script>
+    {% endif %}
 {% endblock %}
