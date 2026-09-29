@@ -18,7 +18,7 @@ security:
             security: false
 
         login:
-            pattern: ^/api/login
+            pattern: ^/api/(login|register)
             stateless: true
             json_login:
                 check_path: /api/login
@@ -54,6 +54,7 @@ security:
         # Documentation et Login de l'API
         - { path: ^/api/?$, roles: PUBLIC_ACCESS }
         - { path: ^/api/login, roles: PUBLIC_ACCESS }
+        - { path: ^/api/register, roles: PUBLIC_ACCESS }
 
         # Gestion publique des utilisateurs et des avatars
         - { path: ^/api/users/\d+$, roles: PUBLIC_ACCESS }
