@@ -1,55 +1,333 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Détails de l'équipe{% endblock %}
+{% block title %}Détails de l'équipe : {{ team.name }}{% endblock %}
 
 {% block main %}
+    <div class="team-layout-container">
 
-    <div class="team_details">
-        <span>Nom : {{ team.name }}</span>
+        <main class="team_details">
+            <header class="team-header">
+                <div class="header-left">
+                    <div class="team-badge-icon">🛡️</div>
+                    <div>
+                        <h1>{{ team.name }}</h1>
+                        <p class="text-subtitle">Tableau de bord de l'équipe</p>
+                    </div>
+                </div>
+                <div class="team-actions">
+                    <a href="{{ path('app_team_edit', {id: team.id}) }}" class="btn btn-primary">
+                        Modifier l'équipe
+                    </a>
+                    {{ include('team/partials/_delete_button.html.twig') }}
+                </div>
+            </header>
 
-        <h2>Treasure hunts</h2>
+            <section class="treasure-section">
+                <div class="section-header-flex">
+                    <h2>Chasses au trésor</h2>
+                    <div class="view-switchers">
+                        <button type="button" class="view-btn active" data-view="grid" title="Vue grille">⊞</button>
+                        <button type="button" class="view-btn" data-view="list" title="Vue liste">☰</button>
+                    </div>
+                </div>
 
-        {% if team.gettreasurehunts()|length > 0 %}
-            <ul>
-                {% for treasureHunt in team.gettreasurehunts() %}
-                    <li>
-                        <h3>{{ treasureHunt.title }}</h3>
-                        <p>{{ treasureHunt.description }}</p>
+                {% set treasurehunts = team.treasurehunts %}
 
-                        {% if treasureHunt.published %}
-                            <span>Publié</span>
-                        {% else %}
-                            <span>Non publié</span>
-                        {% endif %}
-                    </li>
-                {% endfor %}
-            </ul>
-        {% else %}
-            <p>Cette équipe n'a encore aucun treasure hunt.</p>
-        {% endif %}
+                {% if treasurehunts|length > 0 %}
+                    <div id="treasureContainer" class="treasure-grid">
+                        {% for treasureHunt in treasurehunts %}
+                            <div class="treasure-card">
+                                <div class="treasure-card-header">
+                                    <h3>{{ treasureHunt.title }}</h3>
+                                    <span class="status-badge {% if treasureHunt.published %}published{% else %}draft{% endif %}">
+                                        {{ treasureHunt.published ? 'Publié' : 'Non publié' }}
+                                    </span>
+                                </div>
+                                <p>{{ treasureHunt.description }}</p>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="empty-state">
+                        <p>Cette équipe n'a encore aucune chasse au trésor.</p>
+                    </div>
+                {% endif %}
+            </section>
+        </main>
 
-        <h2>Membre de l'équipe</h2>
+        <aside class="discord-sidebar">
+            <div class="sidebar-header">
+                <h3 class="sidebar-title">Membres - {{ team.users|length }}</h3>
+            </div>
 
-        <h2>Users</h2>
+            <div class="member-list">
+                {% if team.leader %}
+                    <div class="member-item leader-item">
+                        <span class="username">{{ team.leader.username }}</span>
+                        <span class="yellow-star" title="Chef d'équipe">⭐</span>
+                    </div>
+                    <hr class="leader-separator">
+                {% endif %}
 
-        {% if team.users|length > 0 %}
-            <ul>
                 {% for user in team.users %}
-                    <li>
-                        {{ user.username }}
-                    </li>
+                    {% if team.leader is null or user.id != team.leader.id %}
+                        <div class="member-item">
+                            <span class="username">{{ user.username }}</span>
+                        </div>
+                    {% endif %}
                 {% endfor %}
-            </ul>
-        {% else %}
-            <p>Cette équipe n'a aucun utilisateur.</p>
-        {% endif %}
 
-        <a href="{{ path('app_team_edit', {id: team.id}) }}">
-        <span class="btn btn-primary btn-sm"
-              aria-label="Modifier">
-            Modifier
-        </span>
-        </a>
-        {{ include('team/partials/_delete_button.html.twig') }}
+                {% if team.users|length == 0 and not team.leader %}
+                    <p class="no-member">Aucun membre.</p>
+                {% endif %}
+            </div>
+        </aside>
+
     </div>
+
+    <style>
+        body > main {
+            min-height: calc(100vh - 90px);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .team-layout-container {
+            display: flex;
+            width: 100%;
+            flex: 1;
+            align-items: stretch;
+        }
+
+        .team_details {
+            flex: 1;
+            padding: 3rem;
+            background-color: #f8fafc;
+            color: #1e293b;
+            box-sizing: border-box;
+        }
+
+        .team-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1.25rem;
+            margin-bottom: 2.5rem;
+            border-bottom: 1px solid #e2e8f0;
+            padding-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 1.25rem;
+        }
+
+        .team-badge-icon {
+            font-size: 2.5rem;
+            background: #e0f2fe;
+            padding: 0.75rem;
+            border-radius: 12px;
+        }
+
+        .team-header h1 {
+            margin: 0;
+            font-size: 2rem;
+            font-weight: 800;
+            color: #0f172a;
+        }
+
+        .text-subtitle {
+            margin: 0.25rem 0 0 0;
+            color: #64748b;
+            font-size: 0.95rem;
+        }
+
+        .section-header-flex {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .treasure-section h2 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin: 0;
+            color: #334155;
+        }
+
+        .view-switchers {
+            display: flex;
+            gap: 0.25rem;
+            background: #e2e8f0;
+            padding: 0.2rem;
+            border-radius: 6px;
+        }
+
+        .view-btn {
+            background: transparent;
+            border: none;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1rem;
+            color: #64748b;
+            transition: all 0.2s;
+        }
+
+        .view-btn.active {
+            background: #ffffff;
+            color: #0f172a;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+        }
+
+        .treasure-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .treasure-grid.list-view {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .treasure-card {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            padding: 1.25rem;
+            border-radius: 10px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            box-sizing: border-box;
+        }
+
+        .treasure-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .treasure-card h3 {
+            margin: 0;
+            font-size: 1.1rem;
+            color: #1e293b;
+        }
+
+        .status-badge {
+            font-size: 0.75rem;
+            padding: 0.25rem 0.6rem;
+            border-radius: 20px;
+            font-weight: 600;
+        }
+
+        .status-badge.published {
+            background-color: #dcfce7;
+            color: #166534;
+        }
+
+        .status-badge.draft {
+            background-color: #f1f5f9;
+            color: #475569;
+        }
+
+        .team-actions {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .discord-sidebar {
+            width: 280px;
+            background-color: #224912;
+            color: #8e9297;
+            padding: 1.5rem 1rem;
+            box-sizing: border-box;
+            border-left: 1px solid #202225;
+            flex-shrink: 0;
+            align-self: stretch;
+        }
+
+        .sidebar-title {
+            color: #e1e1e1;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+
+        .member-list {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .member-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px 10px;
+            border-radius: 4px;
+            color: #dcddde;
+            transition: background 0.2s, color 0.2s;
+            cursor: pointer;
+        }
+
+        .member-item:hover {
+            background-color: #34373c;
+            color: #ffffff;
+        }
+
+        .member-item.leader-item .username {
+            font-weight: 600;
+            color: #ffffff;
+        }
+
+        .yellow-star {
+            font-size: 0.9rem;
+            filter: drop-shadow(0 0 2px rgba(255, 215, 0, 0.6));
+        }
+
+        .leader-separator {
+            border: none;
+            height: 1px;
+            background-color: #4f545c;
+            margin: 6px 4px 10px 4px;
+        }
+
+        .no-member {
+            font-size: 0.85rem;
+            color: #72767d;
+            font-style: italic;
+            padding: 0 10px;
+        }
+    </style>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const viewButtons = document.querySelectorAll('.view-btn');
+            const treasureContainer = document.getElementById('treasureContainer');
+
+            if (viewButtons && treasureContainer) {
+                viewButtons.forEach(button => {
+                    button.addEventListener('click', function () {
+                        viewButtons.forEach(btn => btn.classList.remove('active'));
+                        this.classList.add('active');
+
+                        const viewType = this.getAttribute('data-view');
+                        if (viewType === 'list') {
+                            treasureContainer.classList.add('list-view');
+                        } else {
+                            treasureContainer.classList.remove('list-view');
+                        }
+                    });
+                });
+            }
+        });
+    </script>
 {% endblock %}
