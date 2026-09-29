@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Form;
+namespace App\Form\Riddle;
 
 use App\Entity\Location;
 use App\Entity\Riddle;
@@ -23,7 +23,7 @@ class RiddleType extends AbstractType
                 'label' => 'Titre de l\'énigme',
             ])
             ->add('description', TextareaType::class, [
-                'label' => 'Description / Consigne',
+                'label' => 'Description',
                 'required' => false,
             ])
             ->add('imgFile', FileType::class, [
@@ -43,15 +43,15 @@ class RiddleType extends AbstractType
                 ],
             ])
             ->add('imgDescription', TextType::class, [
-                'label' => 'Description de l\'image (Alt)',
+                'label' => 'Description de l\'image',
                 'required' => false,
             ])
             ->add('index', IntegerType::class, [
-                'label' => 'Ordre (Index)',
+                'label' => 'Position dans la liste des énigmes',
                 'empty_data' => '1',
             ])
             ->add('secondsPenalty', IntegerType::class, [
-                'label' => 'Pénalité (en secondes)',
+                'label' => 'Pénalité en secondes en cas de mauvaise de réponse',
                 'empty_data' => '0',
             ])
             ->add('location', EntityType::class, [

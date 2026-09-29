@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Form;
+namespace App\Form\Riddle;
 
 use App\Entity\RiddleGPS;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;

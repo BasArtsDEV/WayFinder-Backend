@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Form;
+namespace App\Form\Riddle;
 
 use App\Entity\RiddleQCM;
 use App\Form\ChoiceItemType;
