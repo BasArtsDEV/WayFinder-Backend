@@ -94,7 +94,7 @@ final class RiddleController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $em->flush();
 
-            return $this->redirectToRoute('app_treasure_hunt_edit', [
+            return $this->redirectToRoute('app_treasure_hunt_show', [
                 'id' => $riddle->getTreasureHunt()->getId(),
             ]);
         }
@@ -118,7 +118,7 @@ final class RiddleController extends AbstractController
             $em->flush();
         }
 
-        return $this->redirectToRoute('app_treasure_hunt_edit', ['id' => $huntId]);
+        return $this->redirectToRoute('app_treasure_hunt_show', ['id' => $huntId]);
     }
 
     #[Route('/{id}/reorder/{direction}', name: 'app_riddle_reorder', methods: ['POST'])]
