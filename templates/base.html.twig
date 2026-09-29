@@ -27,7 +27,7 @@
     <div class="container-fluid">
 
         <div class="d-flex align-items-baseline gap-3">
-            <a class="navbar-brand fw-bold fs-1 text-white m-0 lh-1" href="#">WayFinder</a>
+            <a class="navbar-brand fw-bold fs-1 text-white m-0 lh-1" href="{{ path('app_home') }}">WayFinder</a>
             <span class="navbar-mode text-white text-opacity-75 fw-bold fst-italic fs-4 d-none d-sm-inline">Mode création</span>
         </div>
 
@@ -95,7 +95,7 @@
                 </a>
             {% else %}
                 <div class="nav-item list-unstyled m-0">
-                    <a class="btn btn-light text-success px-4 py-2 rounded-pill fw-medium shadow-sm" href="">
+                    <a class="btn btn-light text-success px-4 py-2 rounded-pill fw-medium shadow-sm" href="{{ path('app_login') }}">
                         <i class="bi bi-box-arrow-in-right me-2"></i>Connexion
                     </a>
                 </div>
@@ -103,6 +103,14 @@
         </div>
     </div>
 </nav>
+
+<main>
+    {% for success in app.flashes('success') %}
+        <div class="alert alert-success" role="alert">
+            {{ success }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    {% endfor %}
 
 <main>
     {% block main %}{% endblock %}
