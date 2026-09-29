@@ -37,6 +37,7 @@ final class TeamFactory extends PersistentObjectFactory
 
         return [
             'name' => self::faker()->randomElement($names),
+            'leader' => UserFactory::new(),
         ];
     }
 
@@ -47,7 +48,11 @@ final class TeamFactory extends PersistentObjectFactory
     protected function initialize(): static
     {
         return $this
-            // ->afterInstantiate(function(Team $team): void {})
+            ->afterInstantiate(function (Team $team): void {
+                if ($team->getLeader() && !$team->getUsers()->contains($team->getLeader())) {
+                    $team->addUser($team->getLeader());
+                }
+            })
         ;
     }
 }

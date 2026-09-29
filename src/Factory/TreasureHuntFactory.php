@@ -33,13 +33,15 @@ final class TreasureHuntFactory extends PersistentObjectFactory
     #[\Override]
     protected function defaults(): array|callable
     {
+        $titles = json_decode(file_get_contents(__DIR__.'/../../data/treasurehunts_names.json'), true);
+
         return [
             'creationDate' => \DateTimeImmutable::createFromMutable(self::faker()->dateTime()),
             'description' => self::faker()->text(),
             'invitationCode' => strtoupper(self::faker()->bothify('??????')),
             'published' => self::faker()->boolean(),
             'team' => TeamFactory::random(),
-            'title' => self::faker()->text(120),
+            'title' => self::faker()->randomElement($titles),
         ];
     }
 

@@ -154,6 +154,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @var Collection<int, Team>
      */
+    #[ORM\OneToMany(targetEntity: Team::class, mappedBy: 'leader')]
+    private Collection $ledTeams;
+
+    /**
+     * @var Collection<int, Team>
+     */
     #[ORM\ManyToMany(targetEntity: Team::class, inversedBy: 'users')]
     #[ORM\JoinColumn(nullable: true)]
     private Collection $teams;
@@ -167,6 +173,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function __construct()
     {
         $this->teams = new ArrayCollection();
+        $this->ledTeams = new ArrayCollection();
         $this->enrollements = new ArrayCollection();
     }
 
@@ -344,6 +351,35 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         if ($this->teams->removeElement($team)) {
             $team->removeUser($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Team>
+     */
+    public function getLedTeams(): Collection
+    {
+        return $this->ledTeams;
+    }
+
+    public function addLedTeam(Team $ledTeam): static
+    {
+        if (!$this->ledTeams->contains($ledTeam)) {
+            $this->ledTeams->add($ledTeam);
+            $ledTeam->setLeader($this);
+        }
+
+        return $this;
+    }
+
+    public function removeLedTeam(Team $ledTeam): static
+    {
+        if ($this->ledTeams->removeElement($ledTeam)) {
+            if ($ledTeam->getLeader() === $this) {
+                $ledTeam->setLeader(null);
+            }
         }
 
         return $this;
