@@ -31,6 +31,26 @@ final class TreasureHuntController extends AbstractController
         ]);
     }
 
+    #[Route('/treasure_hunt/new', name: 'app_treasure_hunt_new', methods: ['GET', 'POST'])]
+    public function new(Request $request, EntityManagerInterface $em): Response
+    {
+        $treasureHunt = new TreasureHunt();
+
+        $form = $this->createForm(TreasureHuntType::class, $treasureHunt);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $em->persist($treasureHunt);
+            $em->flush();
+
+            return $this->redirectToRoute('app_treasure_hunt_show', ['id' => $treasureHunt->getId()]);
+        }
+
+        return $this->render('treasure_hunt/create.html.twig', [
+            'form' => $form,
+        ]);
+    }
+
     #[Route('/treasure_hunt/{id}', name: 'app_treasure_hunt_show', requirements: ['id' => '\d+'], methods: ['GET'])]
     public function show(#[MapEntity(expr: 'repository.find(id)')] TreasureHunt $treasureHunt): Response
     {
@@ -48,7 +68,7 @@ final class TreasureHuntController extends AbstractController
 
                 $map->addMarker(new Marker(
                     position: $point,
-                    title: $riddle->getLocationName() ?? 'Lieu de l\'énigme'
+                    title: $riddle->getLocationName() ?? "Lieu de l'énigme"
                 ));
             }
         }
@@ -56,7 +76,7 @@ final class TreasureHuntController extends AbstractController
         if ($hasGpsRiddles) {
             $map->options(
                 new GoogleOptions()
-                    ->mapId('692866589361')
+                ->mapId('692866589361')
             );
         }
 
@@ -64,30 +84,6 @@ final class TreasureHuntController extends AbstractController
             'treasureHunt' => $treasureHunt,
             'riddles' => $riddles,
             'map' => $hasGpsRiddles ? $map : null,
-        ]);
-    }
-
-    #[Route('/treasure_hunt/new', name: 'app_treasure_hunt_new')]
-    public function new(Request $request, EntityManagerInterface $em): Response
-    {
-        $treasureHunt = new TreasureHunt();
-
-        // Création du formulaire et ajout du bouton submit
-        $form = $this->createForm(TreasureHuntType::class, $treasureHunt);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $em->persist($treasureHunt);
-
-            // Enregistrer les données
-            $em->flush();
-
-            // Redirection après succès
-            return $this->redirectToRoute('app_treasure_hunt_show', ['id' => $treasureHunt->getId()]);
-        }
-
-        return $this->render('treasure_hunt/create.html.twig', [
-            'form' => $form->createView(),
         ]);
     }
 
@@ -104,7 +100,7 @@ final class TreasureHuntController extends AbstractController
         }
 
         return $this->render('treasure_hunt/edit.html.twig', [
-            'form' => $form->createView(),
+            'form' => $form,
             'treasureHunt' => $treasureHunt,
         ]);
     }
@@ -112,7 +108,7 @@ final class TreasureHuntController extends AbstractController
     #[Route('/treasure_hunt/{id}', name: 'app_treasure_hunt_delete', requirements: ['id' => '\d+'], methods: ['POST'])]
     public function delete(Request $request, TreasureHunt $treasureHunt, EntityManagerInterface $em): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$treasureHunt->getId(), $request->getPayload()->getString('_token'))) {
+        if ($this->isCsrfTokenValid('delete' . $treasureHunt->getId(), $request->getPayload()->getString('_token'))) {
             $em->remove($treasureHunt);
             $em->flush();
         }
