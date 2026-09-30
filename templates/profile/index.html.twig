@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Profil de {{ app.user.username }}{% endblock %}
+
+{% block main %}
+    {{ include('profile/partials/_profil.html.twig', {user: app.user}) }}
+
+    {{ include('profile/partials/_edit.html.twig', {
+        user: app.user,
+        form_action: path('app_profil_edit'),
+        submit_label: 'Enregistrer',
+    }) }}
+{% endblock %}
