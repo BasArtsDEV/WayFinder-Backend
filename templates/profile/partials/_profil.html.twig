@@ -18,12 +18,6 @@
 
         {% if user is same as(app.user) or is_granted('ROLE_ADMIN') %}
             <div class="d-flex justify-content-end gap-2 mb-4">
-                {% if is_granted('ROLE_ADMIN') %}
-                    <a href="{{ path('admin') }}" class="btn btn-primary border shadow-sm rounded-pill px-3 py-2 fw-medium">
-                        <i class="bi bi-speedometer2 me-1"></i> Panel Admin
-                    </a>
-                {% endif %}
-
                 {% if user is same as(app.user) %}
                     <button type="button" class="btn btn-light border shadow-sm rounded-pill px-3 py-2 fw-medium text-dark" data-bs-toggle="modal" data-bs-target="#editProfileModal">
                         <i class="bi bi-pencil-square me-1 text-success"></i> Modifier le profil
@@ -100,25 +94,25 @@
                             {% for team in user.teams %}
                                 {% set memberCount = team.users|length %}
 
-                                <div class="team-card-item p-3 rounded-3 bg-light border border-light">
+                                <a href="{{ path('app_team_show', {id: team.id}) }}" class="team-card-item p-3 rounded-3 bg-light border border-light">
                                     <div class="d-flex align-items-center justify-content-between">
                                         <div class="d-flex align-items-center gap-2 min-w-0">
-                                            <a href="{{ path('app_team_show', {id: team.id}) }}" class="fw-bold text-dark text-decoration-none hover-success text-truncate">
+                                            <span class="fw-bold text-dark text-decoration-none hover-success text-truncate">
                                                 {{ team.name }}
-                                            </a>
+                                            </span>
                                             <span class="text-muted fw-normal fs-6">|</span>
                                             <span class="text-secondary small text-nowrap">
-                                    {{ memberCount }} membre{% if memberCount > 1 %}s{% endif %}
-                                </span>
+                                                {{ memberCount }} membre{% if memberCount > 1 %}s{% endif %}
+                                            </span>
                                         </div>
 
                                         {% if team.leader and team.leader.id == user.id %}
                                             <span class="badge bg-warning text-dark fw-semibold px-2 py-1 rounded-pill ms-2" title="Chef d'équipe">
-                                    Chef
-                                </span>
+                                                Chef
+                                            </span>
                                         {% endif %}
                                     </div>
-                                </div>
+                                </a>
                             {% endfor %}
                         {% else %}
                             <div class="text-center py-4 text-muted">
@@ -179,11 +173,8 @@
         z-index: 3;
     }
 
-    .hover-success:hover {
-        color: #57a841 !important;
-    }
-
     .team-card-item {
+        text-decoration: none;
         transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
     }
 
