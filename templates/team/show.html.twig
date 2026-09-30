@@ -49,8 +49,8 @@
                                         <div class="d-flex justify-content-between align-items-start mb-2">
                                             <h4 class="fw-bold fs-5 text-dark mb-0 text-truncate">{{ treasureHunt.title }}</h4>
                                             <span class="status-badge {% if treasureHunt.published %}published{% else %}draft{% endif %}">
-                                            {{ treasureHunt.published ? 'Publié' : 'Brouillon' }}
-                                        </span>
+                                                {{ treasureHunt.published ? 'Publié' : 'Brouillon' }}
+                                            </span>
                                         </div>
                                         <p class="text-muted small mb-3 text-truncate-2">{{ treasureHunt.description }}</p>
 
@@ -66,17 +66,24 @@
                                                         {% if fillPercentage < 0 %}{% set fillPercentage = 0 %}
                                                         {% elseif fillPercentage > 100 %}{% set fillPercentage = 100 %}{% endif %}
 
-                                                        <div class="star-wrapper">
-                                                            <svg class="star empty" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
-                                                            <svg class="star filled" style="width: {{ fillPercentage }}%;" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
-                                                        </div>
+                                                        {% set gradId = 'star-grad-' ~ treasureHunt.id ~ '-' ~ i %}
+
+                                                        <svg class="star-single" viewBox="0 0 24 24">
+                                                            <defs>
+                                                                <linearGradient id="{{ gradId }}" x1="0%" y1="0%" x2="100%" y2="0%">
+                                                                    <stop offset="{{ fillPercentage }}%" stop-color="#ffc107" />
+                                                                    <stop offset="{{ fillPercentage }}%" stop-color="#e4e5e9" />
+                                                                </linearGradient>
+                                                            </defs>
+                                                            <path fill="url(#{{ gradId }})" d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
+                                                        </svg>
                                                     {% endfor %}
                                                 </div>
                                             </div>
 
                                             <span class="rating-number text-primary fw-medium small">
-                                            {{ feedbacks|length }} avis <i class="bi bi-arrow-right-short"></i>
-                                        </span>
+                                                {{ feedbacks|length }} avis <i class="bi bi-arrow-right-short"></i>
+                                            </span>
                                         </div>
                                     </a>
                                 {% endfor %}
@@ -195,31 +202,14 @@
         .star-rating {
             display: inline-flex;
             align-items: center;
-            gap: 1px;
+            gap: 2px;
             vertical-align: middle;
         }
 
-        .star-wrapper {
-            position: relative;
+        .star-single {
             width: 16px;
             height: 16px;
-            display: inline-block;
-        }
-
-        .star {
-            width: 16px;
-            height: 16px;
-            fill: #e4e5e9;
             display: block;
-            position: absolute;
-            top: 0;
-            left: 0;
-        }
-
-        .star.filled {
-            fill: #ffc107;
-            overflow: hidden;
-            white-space: nowrap;
         }
 
         .rating-container {
