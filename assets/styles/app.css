@@ -31,7 +31,7 @@
 }
 
 :root {
-    --app-main-background: #f0d6a4;
+    /* header */
     --app-header-background: #57a841;
 
     --app-header-button-border: #67bf4c;
@@ -77,6 +77,105 @@ body {
 .navbar.bg-success {
     background-color: var(--app-header-background) !important;
 }
+
+/* buttons */
+
+.btn-app-hypertext {
+    color: var(--app-button-background);
+    transition: background-color 0.4s;
+}
+
+.btn-app-hypertext:hover {
+    color: var(--app-button-background-hover);
+    text-decoration: underline !important;
+}
+
+.btn-app-primary {
+    cursor: pointer;
+
+    display: flex;
+    flex-direction: row;
+    gap: 0.5rem;
+    align-items: center;
+
+    padding: 0.6rem 1rem !important;
+    border: none !important;
+    border-radius: 50px !important;
+
+    font-family: 'Lexend', sans-serif !important;
+    font-weight: 500 !important;
+    font-size: 1.1rem !important;
+    color: var(--app-button-text) !important;
+    text-align: center;
+
+    background-color: var(--app-button-background) !important;
+
+    transition: background-color, 0.4s;
+}
+
+.btn-app-primary:hover {
+    background-color: var(--app-header-button-background-hover) !important;
+}
+
+.btn-app-secondary {
+    cursor: pointer;
+
+    display: flex;
+    flex-direction: row;
+    gap: 0.5rem;
+    align-items: center;
+
+    padding: 0.6rem 1rem !important;
+    border: none !important;
+    border-radius: 50px !important;
+
+    font-family: 'Lexend', sans-serif !important;
+    font-weight: 700 !important;
+    font-size: 1.1rem !important;
+    color: var(--app-button-secondary-text) !important;
+    text-align: center;
+
+    background-color: var(--app-button-secondary-background) !important;
+
+    transition: background-color, 0.4s;
+}
+
+.btn-app-secondary:hover {
+    background-color: var(--app-button-secondary-background-hover) !important;
+}
+
+.btn-app-icon {
+    width: 2rem;
+}
+
+.btn-app-primary > span:not(.btn-icon-wrapper),
+.btn-app-secondary > span:not(.btn-icon-wrapper) {
+    flex: 1;
+    text-align: center;
+}
+
+.btn-icon-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+
+    background-color: transparent;
+}
+
+.btn-app-secondary .btn-icon-wrapper {
+    background-color: transparent;
+}
+
+.btn-action-icon {
+    width: 42px;
+    height: 42px;
+    object-fit: contain;
+}
+
 
 .welcome-page {
     width: 100%;
