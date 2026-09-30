@@ -42,6 +42,8 @@ final class EnrollementFactory extends PersistentObjectFactory
             'treasureHunt' => TreasureHuntFactory::random(),
             'user' => UserFactory::random(),
             'riddle' => null,
+            'nbStars' => self::faker()->numberBetween(0, 5),
+            'feedback' => self::faker()->text(),
         ];
     }
 
