@@ -36,11 +36,22 @@
         .tracking-wider { letter-spacing: 0.08em; }
         .hover-emerald { transition: color 0.2s ease-in-out; }
         .hover-emerald:hover { color: #34d399 !important; }
+
+        .navbar-shadow {
+            box-shadow: 0 15px 35px 2px rgba(0, 0, 0, 0.65) !important;
+            z-index: 1030;
+        }
+
+        .footer-shadow {
+            position: relative;
+            box-shadow: 0 -15px 35px 2px rgba(0, 0, 0, 0.55) !important;
+            z-index: 10;
+        }
     </style>
 </head>
 <body class="d-flex flex-column min-vh-100 bg-light">
 
-<nav class="navbar navbar-expand-lg navbar-dark bg-theme-dark border-bottom border-theme sticky-top px-4 py-2 shadow-sm">
+<nav class="navbar navbar-expand-lg navbar-dark bg-theme-dark border-bottom border-theme sticky-top px-4 py-2 navbar-shadow">
     <div class="container-fluid align-items-center">
 
         <div class="d-flex align-items-center gap-3 col-lg-3">
@@ -132,7 +143,7 @@
     {% block main %}{% endblock %}
 </main>
 
-<footer class="pt-4 pb-3 bg-theme-dark border-top border-theme" style="color: var(--footer-text);">
+<footer class="pt-4 pb-3 bg-theme-dark border-top border-theme footer-shadow" style="color: var(--footer-text);">
     <div class="container">
 
         <div class="row gy-3 mb-3">
