@@ -20,99 +20,147 @@
         <script src="https://cdn.jsdelivr.net/npm/idiomorph"></script>
         <script src="https://cdn.jsdelivr.net/npm/frankenphp-hot-reload/+esm" type="module"></script>
     {% endif %}
-</head>
-<body>
-    <nav class="navbar navbar-expand-lg navbar-light bg-white px-4 py-3 shadow-sm border-bottom">
-        <div class="container-fluid align-items-center">
 
-            <div class="d-flex align-items-center gap-3 col-lg-3">
-                <a class="navbar-brand fw-bold fs-4 text-dark m-0 d-flex align-items-center gap-2" href="{{ path('app_home') }}">
+    <style>
+        .brand-gradient {
+            background: linear-gradient(135deg, #198754 0%, #20c997 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .social-link {
+            width: 38px;
+            height: 38px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease-in-out;
+        }
+        .social-link:hover {
+            transform: translateY(-3px);
+            background-color: #198754 !important;
+            color: #fff !important;
+            border-color: #198754 !important;
+        }
+    </style>
+</head>
+<body class="d-flex flex-column min-vh-100">
+<nav class="navbar navbar-expand-lg navbar-light bg-white px-4 py-3 shadow-sm border-bottom">
+    <div class="container-fluid align-items-center">
+
+        <div class="d-flex align-items-center gap-3 col-lg-3">
+            <a class="navbar-brand fw-bold fs-4 text-dark m-0 d-flex align-items-center gap-2" href="{{ path('app_home') }}">
                     <span class="bg-success text-white p-2 rounded-3 d-inline-flex align-items-center justify-content-center shadow-sm" style="width: 38px; height: 38px;">
                         <i class="bi bi-compass fs-4"></i>
                     </span>
-                    WayFinder
+                WayFinder
+            </a>
+            <span class="badge bg-success-subtle text-success border border-success-subtle px-2 py-1 rounded-pill d-none d-sm-inline">Mode création</span>
+        </div>
+
+        <button class="navbar-toggler border-0 shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        {% set currentRoute = app.request.attributes.get('_route') %}
+
+        <div class="collapse navbar-collapse justify-content-center col-lg-6" id="navbarNavAltMarkup">
+            <div class="navbar-nav align-items-lg-center gap-lg-4">
+
+                <a class="nav-link fw-semibold fs-5 d-flex align-items-center gap-2 position-relative py-2 {{ currentRoute == 'app_treasure_hunt' ? 'text-success active-underline' : 'text-secondary' }}"
+                   href="{{ path('app_treasure_hunt') }}">
+                    <i class="bi bi-tools"></i>
+                    <span>Créations</span>
                 </a>
-                <span class="badge bg-success-subtle text-success border border-success-subtle px-2 py-1 rounded-pill d-none d-sm-inline">Mode création</span>
+
+                <a class="nav-link fw-semibold fs-5 d-flex align-items-center gap-2 position-relative py-2 {{ currentRoute == 'app_team' ? 'text-success active-underline' : 'text-secondary' }}"
+                   href="{{ path('app_team') }}">
+                    <i class="bi bi-people-fill"></i>
+                    <span>Équipes</span>
+                </a>
+
+            </div>
+        </div>
+
+        <div class="d-flex align-items-center justify-content-end gap-3 mt-3 mt-lg-0 col-lg-3">
+            {% if app.user %}
+
+                <div class="nav-item dropdown list-unstyled m-0">
+                    <a class="nav-link dropdown-toggle btn btn-light border d-flex align-items-center gap-2 px-3 py-2 rounded-pill shadow-sm text-dark" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="bi bi-person-circle fs-5 text-success"></i>
+                        <span class="fw-medium">@{{ app.user.username }}</span>
+                    </a>
+
+                    <div class="dropdown-menu dropdown-menu-end shadow-sm border rounded-3 mt-2 p-2" aria-labelledby="userDropdown">
+                        <div class="dropdown-header px-3 py-2 text-uppercase fs-7 fw-bold text-muted">Mon Compte</div>
+
+                        {% if is_granted('ROLE_ADMIN') %}
+                            <a class="dropdown-item d-flex align-items-center gap-2 py-2 text-secondary rounded-2" href="{{ path('api_doc') }}">
+                                <i class="bi bi-code-slash text-success"></i>
+                                <span>Documentation API</span>
+                            </a>
+                            <div class="dropdown-divider my-2"></div>
+                        {% endif %}
+
+                        <a class="dropdown-item d-flex align-items-center gap-2 py-2 text-danger rounded-2" href="{{ logout_path() }}">
+                            <i class="bi bi-box-arrow-right"></i>
+                            <span>Déconnexion</span>
+                        </a>
+                    </div>
+                </div>
+
+                <a href="#" class="text-secondary hover-text-success fs-5 position-relative text-decoration-none p-2">
+                    <i class="bi bi-bell-fill"></i>
+                    <span class="position-absolute top-25 start-75 translate-middle p-1 bg-success border border-white rounded-circle"></span>
+                </a>
+            {% else %}
+                <div class="nav-item list-unstyled m-0">
+                    <a class="btn btn-success px-4 py-2 rounded-pill fw-medium shadow-sm" href="{{ path('app_login') }}">
+                        <i class="bi bi-box-arrow-in-right me-2"></i>Connexion
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+
+    </div>
+</nav>
+
+<main class="flex-grow-1">
+    {% for success in app.flashes('success') %}
+        <div class="alert alert-success m-3" role="alert">
+            {{ success }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    {% endfor %}
+
+    {% block main %}{% endblock %}
+</main>
+
+<footer class="bg-white border-top text-secondary py-4 mt-auto">
+    <div class="container">
+        <div class="row align-items-center gy-3">
+            <div class="col-md-6 text-center text-md-start">
+                <span class="fw-bold fs-5 brand-gradient">WayFinder</span>
+                <span class="mx-2 text-muted">|</span>
+                <small class="text-muted">&copy; {{ 'now'|date('Y') }} WayFinder. Tous droits réservés.</small>
             </div>
 
-            <button class="navbar-toggler border-0 shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-
-            {% set currentRoute = app.request.attributes.get('_route') %}
-
-            <div class="collapse navbar-collapse justify-content-center col-lg-6" id="navbarNavAltMarkup">
-                <div class="navbar-nav align-items-lg-center gap-lg-4">
-
-                    <a class="nav-link fw-semibold fs-5 d-flex align-items-center gap-2 position-relative py-2 {{ currentRoute == 'app_treasure_hunt' ? 'text-success active-underline' : 'text-secondary' }}"
-                       href="{{ path('app_treasure_hunt') }}">
-                        <i class="bi bi-tools"></i>
-                        <span>Créations</span>
+            <div class="col-md-6 text-center text-md-end">
+                <div class="d-inline-flex align-items-center gap-2">
+                    <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" class="social-link border rounded-circle text-secondary bg-light text-decoration-none" aria-label="Instagram">
+                        <i class="bi bi-instagram"></i>
                     </a>
-
-                    <a class="nav-link fw-semibold fs-5 d-flex align-items-center gap-2 position-relative py-2 {{ currentRoute == 'app_team' ? 'text-success active-underline' : 'text-secondary' }}"
-                       href="{{ path('app_team') }}">
-                        <i class="bi bi-people-fill"></i>
-                        <span>Équipes</span>
+                    <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" class="social-link border rounded-circle text-secondary bg-light text-decoration-none" aria-label="Facebook">
+                        <i class="bi bi-facebook"></i>
                     </a>
-
+                    <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" class="social-link border rounded-circle text-secondary bg-light text-decoration-none" aria-label="Twitter">
+                        <i class="bi bi-twitter"></i>
+                    </a>
                 </div>
             </div>
-
-            <div class="d-flex align-items-center justify-content-end gap-3 mt-3 mt-lg-0 col-lg-3">
-                {% if app.user %}
-
-                    <div class="nav-item dropdown list-unstyled m-0">
-                        <a class="nav-link dropdown-toggle btn btn-light border d-flex align-items-center gap-2 px-3 py-2 rounded-pill shadow-sm text-dark" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            <i class="bi bi-person-circle fs-5 text-success"></i>
-                            <span class="fw-medium">@{{ app.user.username }}</span>
-                        </a>
-
-                        <div class="dropdown-menu dropdown-menu-end shadow-sm border rounded-3 mt-2 p-2" aria-labelledby="userDropdown">
-                            <div class="dropdown-header px-3 py-2 text-uppercase fs-7 fw-bold text-muted">Mon Compte</div>
-
-                            {% if is_granted('ROLE_ADMIN') %}
-                                <a class="dropdown-item d-flex align-items-center gap-2 py-2 text-secondary rounded-2" href="{{ path('api_doc') }}">
-                                    <i class="bi bi-code-slash text-success"></i>
-                                    <span>Documentation API</span>
-                                </a>
-                                <div class="dropdown-divider my-2"></div>
-                            {% endif %}
-
-                            <a class="dropdown-item d-flex align-items-center gap-2 py-2 text-danger rounded-2" href="{{ logout_path() }}">
-                                <i class="bi bi-box-arrow-right"></i>
-                                <span>Déconnexion</span>
-                            </a>
-                        </div>
-                    </div>
-
-                    <a href="#" class="text-secondary hover-text-success fs-5 position-relative text-decoration-none p-2">
-                        <i class="bi bi-bell-fill"></i>
-                        <span class="position-absolute top-25 start-75 translate-middle p-1 bg-success border border-white rounded-circle"></span>
-                    </a>
-                {% else %}
-                    <div class="nav-item list-unstyled m-0">
-                        <a class="btn btn-success px-4 py-2 rounded-pill fw-medium shadow-sm" href="{{ path('app_login') }}">
-                            <i class="bi bi-box-arrow-in-right me-2"></i>Connexion
-                        </a>
-                    </div>
-                {% endif %}
-            </div>
-
         </div>
-    </nav>
+    </div>
+</footer>
 
-    <main>
-        {% for success in app.flashes('success') %}
-            <div class="alert alert-success" role="alert">
-                {{ success }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-        {% endfor %}
-
-        {% block main %}{% endblock %}
-    </main>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
 </body>
 </html>
