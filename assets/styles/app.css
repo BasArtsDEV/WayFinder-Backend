@@ -33,6 +33,40 @@
 :root {
     --app-main-background: #f0d6a4;
     --app-header-background: #57a841;
+
+    --app-header-button-border: #67bf4c;
+    --app-header-button-background: #4b9538;
+    --app-header-button-background-hover: #376e29;
+    --app-header-button-text: #ffffff;
+
+    --app-header-button-leave-background: #ffd3d3;
+    --app-header-button-leave-text: #ff5a5a;
+
+    /* general app */
+
+    --app-main-background: #f0d6a4;
+    --bs-body-bg: #f0d6a4 !important;
+    --app-text: #000000;
+
+    --app-button-background: #57a841;
+    --app-button-background-hover: #468e33;
+    --app-button-text: #ffffff;
+
+    --app-button-secondary-background: #ffffff;
+    --app-button-secondary-background-hover: #ececec;
+    --app-button-secondary-text: #000000;
+
+    --app-button-decline-background: #ff3c3c;
+    --app-button-decline-text: #ffffff;
+
+    --app-input-background: #ebebeb;
+    --app-input-border: #b1b2b4;
+
+    --app-small-info-box-background: #ffffff;
+    --app-small-info-box-text: #000000;
+
+    --app-box-background: #f0dfbb;
+
     --brand-primary-hover: #1b4332;
 }
 
