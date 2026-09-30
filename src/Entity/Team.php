@@ -9,6 +9,7 @@ use ApiPlatform\Metadata\Link;
 use App\Repository\TeamRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -71,6 +72,12 @@ class Team
     )]
     #[Groups(['team:read', 'team:details'])]
     private Collection $treasurehunts;
+
+    /**
+     * @var string|resource|null
+     */
+    #[ORM\Column(type: Types::BLOB, nullable: true)]
+    private $banner;
 
     public function __construct()
     {
@@ -162,6 +169,24 @@ class Team
                 $treasureHunt->setTeam(null);
             }
         }
+
+        return $this;
+    }
+
+    /**
+     * @return string|resource|null
+     */
+    public function getBanner()
+    {
+        return $this->banner;
+    }
+
+    /**
+     * @param string|resource|null $banner
+     */
+    public function setBanner($banner): static
+    {
+        $this->banner = $banner;
 
         return $this;
     }

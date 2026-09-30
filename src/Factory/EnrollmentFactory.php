@@ -2,14 +2,14 @@
 
 namespace App\Factory;
 
-use App\Entity\Enrollement;
-use App\Enum\EnrollementStatus;
+use App\Entity\Enrollment;
+use App\Enum\EnrollmentStatus;
 use Zenstruck\Foundry\Persistence\PersistentObjectFactory;
 
 /**
- * @extends PersistentObjectFactory<Enrollement>
+ * @extends PersistentObjectFactory<Enrollment>
  */
-final class EnrollementFactory extends PersistentObjectFactory
+final class EnrollmentFactory extends PersistentObjectFactory
 {
     /**
      * @see https://symfony.com/bundles/ZenstruckFoundryBundle/current/index.html#factories-as-services
@@ -23,7 +23,7 @@ final class EnrollementFactory extends PersistentObjectFactory
     #[\Override]
     public static function class(): string
     {
-        return Enrollement::class;
+        return Enrollment::class;
     }
 
     /**
@@ -38,10 +38,12 @@ final class EnrollementFactory extends PersistentObjectFactory
             'countdown' => self::faker()->randomNumber(),
             'registrationDate' => \DateTimeImmutable::createFromMutable(self::faker()->dateTime()),
             'scoreTotal' => self::faker()->randomNumber(),
-            'status' => self::faker()->randomElement(EnrollementStatus::cases()),
+            'status' => self::faker()->randomElement(EnrollmentStatus::cases()),
             'treasureHunt' => TreasureHuntFactory::random(),
             'user' => UserFactory::random(),
             'riddle' => null,
+            'nbStars' => self::faker()->numberBetween(0, 5),
+            'feedback' => self::faker()->text(),
         ];
     }
 
@@ -52,7 +54,7 @@ final class EnrollementFactory extends PersistentObjectFactory
     protected function initialize(): static
     {
         return $this
-            // ->afterInstantiate(function(Enrollement $enrollement): void {})
+            // ->afterInstantiate(function(Enrollment $enrollment): void {})
         ;
     }
 }

@@ -78,8 +78,8 @@ use Symfony\Component\Validator\Constraints as Assert;
         ),
         new Post(
             uriTemplate: '/register',
-            denormalizationContext: ['groups' => ['user:create']],
             normalizationContext: ['groups' => ['user:read']],
+            denormalizationContext: ['groups' => ['user:create']],
             validationContext: ['groups' => ['Default']],
             processor: UserRegistrationProcessor::class,
         ),
@@ -175,16 +175,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private Collection $teams;
 
     /**
-     * @var Collection<int, Enrollement>
+     * @var Collection<int, Enrollment>
      */
-    #[ORM\OneToMany(targetEntity: Enrollement::class, mappedBy: 'user')]
-    private Collection $enrollements;
+    #[ORM\OneToMany(targetEntity: Enrollment::class, mappedBy: 'user')]
+    private Collection $enrollments;
 
     public function __construct()
     {
         $this->teams = new ArrayCollection();
         $this->ledTeams = new ArrayCollection();
-        $this->enrollements = new ArrayCollection();
+        $this->enrollments = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -396,26 +396,26 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     /**
-     * @return Collection<int, Enrollement>
+     * @return Collection<int, Enrollment>
      */
-    public function getEnrollements(): Collection
+    public function getEnrollments(): Collection
     {
-        return $this->enrollements;
+        return $this->enrollments;
     }
 
-    public function addEnrollement(Enrollement $enrollement): static
+    public function addEnrollment(Enrollment $enrollment): static
     {
-        if (!$this->enrollements->contains($enrollement)) {
-            $this->enrollements->add($enrollement);
-            $enrollement->setUser($this);
+        if (!$this->enrollments->contains($enrollment)) {
+            $this->enrollments->add($enrollment);
+            $enrollment->setUser($this);
         }
 
         return $this;
     }
 
-    public function removeEnrollement(Enrollement $enrollement): static
+    public function removeEnrollment(Enrollment $enrollment): static
     {
-        $this->enrollements->removeElement($enrollement);
+        $this->enrollments->removeElement($enrollment);
 
         return $this;
     }

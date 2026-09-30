@@ -35,7 +35,7 @@ final class SubmissionFactory extends PersistentObjectFactory
     {
         return [
             'appliedPenalty' => self::faker()->randomElement([0, 15, 30, 60]),
-            'enrollement' => EnrollementFactory::random(),
+            'enrollment' => EnrollmentFactory::random(),
             'isRight' => self::faker()->boolean(),
             'resolutionTime' => self::faker()->randomNumber(),
             'submissionDate' => \DateTimeImmutable::createFromMutable(self::faker()->dateTime()),

@@ -9,46 +9,46 @@ use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Link;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
-use App\Enum\EnrollementStatus;
-use App\Repository\EnrollementRepository;
+use App\Enum\EnrollmentStatus;
+use App\Repository\EnrollmentRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
-#[ORM\Entity(repositoryClass: EnrollementRepository::class)]
+#[ORM\Entity(repositoryClass: EnrollmentRepository::class)]
 #[ApiResource(
     operations: [
         new Get(
-            uriTemplate: '/enrollements/{id}',
+            uriTemplate: '/enrollments/{id}',
             normalizationContext: [
-                'groups' => ['enrollement:read'],
+                'groups' => ['enrollment:read'],
             ],
             security: "is_granted('ROLE_USER')"
         ),
         new GetCollection(
-            uriTemplate: '/enrollements',
+            uriTemplate: '/enrollments',
             normalizationContext: [
-                'groups' => ['enrollement:read'],
+                'groups' => ['enrollment:read'],
             ],
             security: "is_granted('ROLE_USER')"
         ),
         new Post(
             normalizationContext: [
-                'groups' => ['enrollement:read'],
+                'groups' => ['enrollment:read'],
             ],
             denormalizationContext: [
-                'groups' => ['enrollement:write'],
+                'groups' => ['enrollment:write'],
             ],
             security: "is_granted('ROLE_USER')"
         ),
         new Patch(
             normalizationContext: [
-                'groups' => ['enrollement:read'],
+                'groups' => ['enrollment:read'],
             ],
             denormalizationContext: [
-                'groups' => ['enrollement:write'],
+                'groups' => ['enrollment:write'],
             ],
             security: "is_granted('ROLE_USER')"
         ),
@@ -56,7 +56,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
             security: "is_granted('ROLE_USER')"
         ),
         new GetCollection(
-            uriTemplate: '/treasure_hunts/{id}/enrollements',
+            uriTemplate: '/treasure_hunts/{id}/enrollments',
             uriVariables: [
                 'id' => new Link(toProperty: 'treasureHunt', fromClass: TreasureHunt::class),
             ],
@@ -66,58 +66,58 @@ use Symfony\Component\Serializer\Annotation\Groups;
             security: "is_granted('ROLE_USER')"
         ),
         new GetCollection(
-            uriTemplate: '/users/{id}/enrollements',
+            uriTemplate: '/users/{id}/enrollments',
             uriVariables: [
                 'id' => new Link(toProperty: 'user', fromClass: User::class),
             ],
-            normalizationContext: ['groups' => ['enrollement:read']],
+            normalizationContext: ['groups' => ['enrollment:read']],
             security: "is_granted('ROLE_USER')"
         ),
         new GetCollection(
-            uriTemplate: '/riddles/{id}/enrollements',
+            uriTemplate: '/riddles/{id}/enrollments',
             uriVariables: [
                 'id' => new Link(toProperty: 'riddle', fromClass: Riddle::class),
             ],
-            normalizationContext: ['groups' => ['enrollement:read']],
+            normalizationContext: ['groups' => ['enrollment:read']],
             security: "is_granted('ROLE_USER')"
         ),
         new Get(
-            uriTemplate: '/submissions/{id}/enrollement',
+            uriTemplate: '/submissions/{id}/enrollment',
             uriVariables: [
-                'id' => new Link(fromProperty: 'enrollement', fromClass: Submission::class),
+                'id' => new Link(fromProperty: 'enrollment', fromClass: Submission::class),
             ],
-            normalizationContext: ['groups' => ['enrollement:read']],
+            normalizationContext: ['groups' => ['enrollment:read']],
             security: "is_granted('ROLE_USER')"
         ),
     ]
 )]
-class Enrollement
+class Enrollment
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['enrollement:read'])]
+    #[Groups(['enrollment:read'])]
     private ?int $id = null;
 
-    #[Groups(['enrollement:read'])]
-    #[ORM\Column(enumType: EnrollementStatus::class)]
-    private EnrollementStatus $status;
+    #[Groups(['enrollment:read'])]
+    #[ORM\Column(enumType: EnrollmentStatus::class)]
+    private EnrollmentStatus $status;
 
     #[ORM\Column]
-    #[Groups(['enrollement:read'])]
+    #[Groups(['enrollment:read'])]
     private int $scoreTotal = 0;
 
     #[ORM\Column(type: Types::DATE_IMMUTABLE)]
-    #[Groups(['enrollement:read'])]
+    #[Groups(['enrollment:read'])]
     private \DateTimeImmutable $registrationDate;
 
     #[ORM\Column]
-    #[Groups(['enrollement:read'])]
+    #[Groups(['enrollment:read'])]
     private int $countdown;
 
-    #[ORM\ManyToOne(inversedBy: 'enrollements')]
+    #[ORM\ManyToOne(inversedBy: 'enrollments')]
     #[ORM\JoinColumn(nullable: false)]
-    #[Groups(['enrollement:read', 'enrollement:write'])]
+    #[Groups(['enrollment:read', 'enrollment:write'])]
     private TreasureHunt $treasureHunt;
 
     /**
@@ -125,21 +125,29 @@ class Enrollement
      */
     #[ORM\OneToMany(
         targetEntity: Submission::class,
-        mappedBy: 'enrollement',
+        mappedBy: 'enrollment',
         cascade: ['remove'],
         orphanRemoval: true
     )]
-    #[Groups(['enrollement:read'])]
+    #[Groups(['enrollment:read'])]
     private Collection $submissions;
 
-    #[ORM\ManyToOne(inversedBy: 'enrollements')]
-    #[Groups(['enrollement:read', 'enrollement:write'])]
+    #[ORM\ManyToOne(inversedBy: 'enrollments')]
+    #[Groups(['enrollment:read', 'enrollment:write'])]
     private ?Riddle $riddle = null;
 
-    #[Groups(['enrollement:read'])]
-    #[ORM\ManyToOne(inversedBy: 'enrollements')]
+    #[Groups(['enrollment:read'])]
+    #[ORM\ManyToOne(inversedBy: 'enrollments')]
     #[ORM\JoinColumn(nullable: false)]
     private User $user;
+
+    #[Groups(['enrollment:read', 'enrollment:write', 'enrollment:details'])]
+    #[ORM\Column(nullable: true)]
+    private ?int $nbStars = null;
+
+    #[Groups(['enrollment:read', 'enrollment:write', 'enrollment:details'])]
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $feedback = null;
 
     public function __construct()
     {
@@ -151,12 +159,12 @@ class Enrollement
         return $this->id;
     }
 
-    public function getStatus(): EnrollementStatus
+    public function getStatus(): EnrollmentStatus
     {
         return $this->status;
     }
 
-    public function setStatus(EnrollementStatus $status): static
+    public function setStatus(EnrollmentStatus $status): static
     {
         $this->status = $status;
 
@@ -226,7 +234,7 @@ class Enrollement
     ): static {
         if (!$this->submissions->contains($submission)) {
             $this->submissions->add($submission);
-            $submission->setEnrollement($this);
+            $submission->setEnrollment($this);
         }
 
         return $this;
@@ -236,8 +244,8 @@ class Enrollement
         Submission $submission,
     ): static {
         if ($this->submissions->removeElement($submission)) {
-            if ($submission->getEnrollement() === $this) {
-                $submission->setEnrollement(null);
+            if ($submission->getEnrollment() === $this) {
+                $submission->setEnrollment(null);
             }
         }
 
@@ -264,6 +272,30 @@ class Enrollement
     public function setUser(User $user): static
     {
         $this->user = $user;
+
+        return $this;
+    }
+
+    public function getNbStars(): ?int
+    {
+        return $this->nbStars;
+    }
+
+    public function setNbStars(?int $nbStars): static
+    {
+        $this->nbStars = $nbStars;
+
+        return $this;
+    }
+
+    public function getFeedback(): ?string
+    {
+        return $this->feedback;
+    }
+
+    public function setFeedback(?string $feedback): static
+    {
+        $this->feedback = $feedback;
 
         return $this;
     }

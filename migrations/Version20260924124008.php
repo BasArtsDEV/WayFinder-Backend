@@ -20,12 +20,12 @@ final class Version20260924124008 extends AbstractMigration
     public function up(Schema $schema): void
     {
         // this up() migration is auto-generated, please modify it to your needs
-        $this->addSql('ALTER TABLE enrollement ALTER status TYPE VARCHAR(255)');
+        $this->addSql('ALTER TABLE enrollment ALTER status TYPE VARCHAR(255)');
     }
 
     public function down(Schema $schema): void
     {
         // this down() migration is auto-generated, please modify it to your needs
-        $this->addSql('ALTER TABLE enrollement ALTER status TYPE VARCHAR(1)');
+        $this->addSql('ALTER TABLE enrollment ALTER status TYPE VARCHAR(1)');
     }
 }

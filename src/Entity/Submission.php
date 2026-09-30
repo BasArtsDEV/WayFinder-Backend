@@ -21,9 +21,9 @@ use Symfony\Component\Validator\Constraints as Assert;
         new GetCollection(normalizationContext: ['groups' => ['submission:read', 'submission:details']]),
 
         new GetCollection(
-            uriTemplate: '/enrollements/{id}/submissions',
+            uriTemplate: '/enrollments/{id}/submissions',
             uriVariables: [
-                'id' => new Link(toProperty: 'enrollement', fromClass: Enrollement::class),
+                'id' => new Link(toProperty: 'enrollment', fromClass: Enrollment::class),
             ],
             normalizationContext: ['groups' => ['submission:read', 'submission:details']],
         ),
@@ -77,7 +77,7 @@ class Submission
     #[ORM\ManyToOne(inversedBy: 'submissions')]
     #[ORM\JoinColumn(nullable: false)]
     #[Groups(['submission:read', 'submission:details'])]
-    private Enrollement $enrollement;
+    private Enrollment $enrollment;
 
     #[ORM\ManyToOne(inversedBy: 'submissions')]
     #[ORM\JoinColumn(nullable: false)]
@@ -149,14 +149,14 @@ class Submission
         return $this;
     }
 
-    public function getEnrollement(): ?Enrollement
+    public function getEnrollment(): ?Enrollment
     {
-        return $this->enrollement;
+        return $this->enrollment;
     }
 
-    public function setEnrollement(?Enrollement $enrollement): static
+    public function setEnrollment(?Enrollment $enrollment): static
     {
-        $this->enrollement = $enrollement;
+        $this->enrollment = $enrollment;
 
         return $this;
     }
