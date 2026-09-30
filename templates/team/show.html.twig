@@ -30,7 +30,7 @@
             <div class="row g-4">
 
                 <div class="col-lg-8">
-                    <div class="card border-0 shadow-sm rounded-4 p-4 h-100 bg-white">
+                    <div class="card border-0 shadow-sm rounded-4 p-4 h-100 theme-card-bg">
                         <div class="d-flex justify-content-between align-items-center mb-4">
                             <h3 class="fw-bold fs-4 text-dark m-0">Chasses au trésor</h3>
 
@@ -49,7 +49,7 @@
                                         <div class="d-flex justify-content-between align-items-start mb-2">
                                             <h4 class="fw-bold fs-5 text-dark mb-0 text-truncate">{{ treasureHunt.title }}</h4>
                                             <span class="status-badge {% if treasureHunt.published %}published{% else %}draft{% endif %}">
-                                                {{ treasureHunt.published ? 'Publié' : 'Brouillon' }}
+                                                {{ treasureHunt.published ? 'Publiée' : 'Edition' }}
                                             </span>
                                         </div>
                                         <p class="text-muted small mb-3 text-truncate-2">{{ treasureHunt.description }}</p>
