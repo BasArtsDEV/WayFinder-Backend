@@ -242,4 +242,34 @@ class TreasureHunt
 
         return $this;
     }
+
+    public function getAverageStars(): ?float
+    {
+        $total = 0;
+        $count = 0;
+
+        foreach ($this->enrollements as $enrollement) {
+            if (null !== $enrollement->getNbStars()) {
+                $total += $enrollement->getNbStars();
+                ++$count;
+            }
+        }
+
+        return $count > 0 ? round($total / $count, 1) : null;
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getFeedbacks(): array
+    {
+        $feedbacks = [];
+        foreach ($this->enrollements as $enrollement) {
+            if (null !== $enrollement->getFeedback()) {
+                $feedbacks[] = $enrollement->getFeedback();
+            }
+        }
+
+        return $feedbacks;
+    }
 }
