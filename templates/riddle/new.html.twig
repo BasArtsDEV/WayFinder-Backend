@@ -1,10 +1,10 @@
 {% extends 'base.html.twig' %}
 
 {% set type_labels = {
-    'text': 'Question simple',
-    'qcm': 'Question QCM',
-    'gps': 'Aller à des coordonnées GPS',
-    'qrcode': 'Trouver un QR Code'
+    text: 'Question simple',
+    qcm: 'Question QCM',
+    gps: 'Aller à des coordonnées GPS',
+    qrcode: 'Trouver un QR Code',
 } %}
 
 {% set type_label = type_labels[type] ?? 'Énigme' %}
