@@ -29,7 +29,6 @@
 
             <div class="row g-4">
 
-                <!-- Bloc des chasses au trésor élargi (col-lg-8) -->
                 <div class="col-lg-8">
                     <div class="card border-0 shadow-sm rounded-4 p-4 h-100 bg-white">
                         <div class="d-flex justify-content-between align-items-center mb-4">
@@ -91,15 +90,12 @@
                     </div>
                 </div>
 
-                <!-- Bloc des membres ajusté (col-lg-4) avec barre de progression -->
                 <div class="col-lg-4">
                     <div class="card border-0 shadow-sm rounded-4 p-4 h-100 bg-white">
                         <h3 class="fw-bold fs-5 text-dark mb-2 d-flex align-items-center gap-2">
                             <i class="bi bi-people-fill text-success"></i> Membres
-                            <span class="badge bg-success-subtle text-success fs-6 rounded-pill">{{ team.users|length }}</span>
                         </h3>
 
-                        <!-- Barre de progression de l'équipe (max 10 membres) -->
                         {% set maxMembers = 10 %}
                         {% set currentCount = team.users|length %}
                         {% set percentage = (currentCount / maxMembers) * 100 %}
