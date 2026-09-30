@@ -78,8 +78,8 @@ use Symfony\Component\Validator\Constraints as Assert;
         ),
         new Post(
             uriTemplate: '/register',
-            denormalizationContext: ['groups' => ['user:create']],
             normalizationContext: ['groups' => ['user:read']],
+            denormalizationContext: ['groups' => ['user:create']],
             validationContext: ['groups' => ['Default']],
             processor: UserRegistrationProcessor::class,
         ),
