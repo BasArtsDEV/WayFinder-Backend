@@ -3,6 +3,47 @@
 {% block title %}Détails de l'équipe : {{ team.name }}{% endblock %}
 
 {% block main %}
+    <style>
+        .rating-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 10px 0;
+        }
+
+        .star-rating {
+            display: flex;
+            gap: 2px;
+        }
+
+        .star-wrapper {
+            position: relative;
+            width: 20px;
+            height: 20px;
+        }
+
+        .star {
+            width: 20px;
+            height: 20px;
+            fill: #e4e5e9;
+        }
+
+        .star.filled {
+            position: absolute;
+            top: 0;
+            left: 0;
+            fill: #ffc107;
+            overflow: hidden;
+            white-space: nowrap;
+            transition: width 0.2s ease;
+        }
+
+        .rating-number {
+            font-size: 0.85rem;
+            color: #666;
+        }
+    </style>
+
     <div class="team-layout-container">
 
         <main class="team_details">
@@ -44,6 +85,34 @@
                                     </span>
                                 </div>
                                 <p>{{ treasureHunt.description }}</p>
+
+                                <div class="treasure-feedback-section">
+                                    {% set avgStars = treasureHunt.getAverageStars() ?? 0 %}
+
+                                    <div class="rating-container">
+                                        <strong>Note :</strong>
+                                        <div class="star-rating" title="{{ avgStars }} / 5">
+                                            {% for i in 1..5 %}
+                                                {% set fillPercentage = (avgStars - i + 1) * 100 %}
+                                                {% if fillPercentage < 0 %}
+                                                    {% set fillPercentage = 0 %}
+                                                {% elseif fillPercentage > 100 %}
+                                                    {% set fillPercentage = 100 %}
+                                                {% endif %}
+
+                                                <div class="star-wrapper">
+                                                    <svg class="star empty" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+                                                    <svg class="star filled" style="width: {{ fillPercentage }}%;" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+                                                </div>
+                                            {% endfor %}
+                                        </div>
+                                        {% if avgStars > 1 %}
+                                            <span class="rating-number">{{ avgStars }} étoiles</span>
+                                        {% else %}
+                                            <span class="rating-number">{{ avgStars }} étoile</span>
+                                        {% endif %}
+                                    </div>
+                                </div>
                             </div>
                         {% endfor %}
                     </div>
