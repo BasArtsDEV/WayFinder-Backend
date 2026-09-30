@@ -141,6 +141,14 @@ class Enrollement
     #[ORM\JoinColumn(nullable: false)]
     private User $user;
 
+    #[Groups(['enrollement:read', 'enrollement:write', 'enrollement:details'])]
+    #[ORM\Column(nullable: true)]
+    private ?int $nbStars = null;
+
+    #[Groups(['enrollement:read', 'enrollement:write', 'enrollement:details'])]
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $feedback = null;
+
     public function __construct()
     {
         $this->submissions = new ArrayCollection();
@@ -264,6 +272,30 @@ class Enrollement
     public function setUser(User $user): static
     {
         $this->user = $user;
+
+        return $this;
+    }
+
+    public function getNbStars(): ?int
+    {
+        return $this->nbStars;
+    }
+
+    public function setNbStars(?int $nbStars): static
+    {
+        $this->nbStars = $nbStars;
+
+        return $this;
+    }
+
+    public function getFeedback(): ?string
+    {
+        return $this->feedback;
+    }
+
+    public function setFeedback(?string $feedback): static
+    {
+        $this->feedback = $feedback;
 
         return $this;
     }
