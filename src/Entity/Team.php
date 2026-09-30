@@ -74,9 +74,9 @@ class Team
     private Collection $treasurehunts;
 
     /**
-     * @var string|resource|null
+     * @var string|null
      */
-    #[ORM\Column(type: Types::BLOB, nullable: true)]
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
     private $banner;
 
     public function __construct()
@@ -174,7 +174,7 @@ class Team
     }
 
     /**
-     * @return string|resource|null
+     * @return string|null
      */
     public function getBanner()
     {
@@ -182,7 +182,7 @@ class Team
     }
 
     /**
-     * @param string|resource|null $banner
+     * @param string|null $banner
      */
     public function setBanner($banner): static
     {
