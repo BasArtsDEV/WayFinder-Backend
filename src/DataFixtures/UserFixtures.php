@@ -2,6 +2,7 @@
 
 namespace App\DataFixtures;
 
+use App\Factory\TeamFactory;
 use App\Factory\UserFactory;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
@@ -25,6 +26,7 @@ class UserFixtures extends Fixture implements DependentFixtureInterface
             'firstName' => 'user',
             'lastName' => 'User',
             'roles' => ['ROLE_USER'],
+            'teams' => TeamFactory::randomRange(4, 4),
         ]);
 
         UserFactory::createOne([
