@@ -58,10 +58,10 @@ abstract class Riddle
     private TreasureHunt $treasureHunt;
 
     /**
-     * @var Collection<int, Enrollement>
+     * @var Collection<int, Enrollment>
      */
-    #[ORM\OneToMany(targetEntity: Enrollement::class, mappedBy: 'riddle')]
-    private Collection $enrollements;
+    #[ORM\OneToMany(targetEntity: Enrollment::class, mappedBy: 'riddle')]
+    private Collection $enrollments;
 
     /**
      * @var Collection<int, Submission>
@@ -80,7 +80,7 @@ abstract class Riddle
 
     public function __construct()
     {
-        $this->enrollements = new ArrayCollection();
+        $this->enrollments = new ArrayCollection();
         $this->submissions = new ArrayCollection();
     }
 
@@ -186,32 +186,38 @@ abstract class Riddle
         return $this;
     }
 
-    public function getEnrollements(): Collection
+    /**
+     * @return Collection<int, Enrollment>
+     */
+    public function getEnrollments(): Collection
     {
-        return $this->enrollements;
+        return $this->enrollments;
     }
 
-    public function addEnrollement(Enrollement $enrollement): static
+    public function addEnrollment(Enrollment $enrollment): static
     {
-        if (!$this->enrollements->contains($enrollement)) {
-            $this->enrollements->add($enrollement);
-            $enrollement->setRiddle($this);
+        if (!$this->enrollments->contains($enrollment)) {
+            $this->enrollments->add($enrollment);
+            $enrollment->setRiddle($this);
         }
 
         return $this;
     }
 
-    public function removeEnrollement(Enrollement $enrollement): static
+    public function removeEnrollment(Enrollment $enrollment): static
     {
-        if ($this->enrollements->removeElement($enrollement)) {
-            if ($enrollement->getRiddle() === $this) {
-                $enrollement->setRiddle(null);
+        if ($this->enrollments->removeElement($enrollment)) {
+            if ($enrollment->getRiddle() === $this) {
+                $enrollment->setRiddle(null);
             }
         }
 
         return $this;
     }
 
+    /**
+     * @return Collection<int, Submission>
+     */
     public function getSubmissions(): Collection
     {
         return $this->submissions;

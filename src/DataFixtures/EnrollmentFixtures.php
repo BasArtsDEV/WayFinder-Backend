@@ -2,16 +2,16 @@
 
 namespace App\DataFixtures;
 
-use App\Factory\EnrollementFactory;
+use App\Factory\EnrollmentFactory;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
 
-class EnrollementFixtures extends Fixture implements DependentFixtureInterface
+class EnrollmentFixtures extends Fixture implements DependentFixtureInterface
 {
     public function load(ObjectManager $manager): void
     {
-        EnrollementFactory::createMany(50);
+        EnrollmentFactory::createMany(50);
 
         $manager->flush();
     }

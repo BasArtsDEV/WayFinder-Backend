@@ -28,9 +28,9 @@ use Symfony\Component\Validator\Constraints as Assert;
             normalizationContext: ['groups' => ['hunt:read', 'hunt:details']],
         ),
         new Get(
-            uriTemplate: '/enrollements/{id}/treasure-hunt',
+            uriTemplate: '/enrollments/{id}/treasure-hunt',
             uriVariables: [
-                'id' => new Link(fromProperty: 'treasureHunt', fromClass: Enrollement::class),
+                'id' => new Link(fromProperty: 'treasureHunt', fromClass: Enrollment::class),
             ],
             normalizationContext: ['groups' => ['hunt:read', 'hunt:details']],
         ),
@@ -75,15 +75,15 @@ class TreasureHunt
     private Team $team;
 
     /**
-     * @var Collection<int, Enrollement>
+     * @var Collection<int, Enrollment>
      */
-    #[ORM\OneToMany(targetEntity: Enrollement::class,
+    #[ORM\OneToMany(targetEntity: Enrollment::class,
         mappedBy: 'treasureHunt',
         cascade: ['remove'],
         orphanRemoval: true
     )]
     #[Groups(['hunt:read', 'hunt:details'])]
-    private Collection $enrollements;
+    private Collection $enrollments;
 
     /**
      * @var Collection<int, Riddle>
@@ -102,7 +102,7 @@ class TreasureHunt
 
     public function __construct()
     {
-        $this->enrollements = new ArrayCollection();
+        $this->enrollments = new ArrayCollection();
         $this->riddles = new ArrayCollection();
     }
 
@@ -172,29 +172,29 @@ class TreasureHunt
     }
 
     /**
-     * @return Collection<int, Enrollement>
+     * @return Collection<int, Enrollment>
      */
-    public function getEnrollements(): Collection
+    public function getEnrollments(): Collection
     {
-        return $this->enrollements;
+        return $this->enrollments;
     }
 
-    public function addEnrollement(Enrollement $enrollement): static
+    public function addEnrollment(Enrollment $enrollment): static
     {
-        if (!$this->enrollements->contains($enrollement)) {
-            $this->enrollements->add($enrollement);
-            $enrollement->setTreasureHunt($this);
+        if (!$this->enrollments->contains($enrollment)) {
+            $this->enrollments->add($enrollment);
+            $enrollment->setTreasureHunt($this);
         }
 
         return $this;
     }
 
-    public function removeEnrollement(Enrollement $enrollement): static
+    public function removeEnrollment(Enrollment $enrollment): static
     {
-        if ($this->enrollements->removeElement($enrollement)) {
+        if ($this->enrollments->removeElement($enrollment)) {
             // set the owning side to null (unless already changed)
-            if ($enrollement->getTreasureHunt() === $this) {
-                $enrollement->setTreasureHunt(null);
+            if ($enrollment->getTreasureHunt() === $this) {
+                $enrollment->setTreasureHunt(null);
             }
         }
 
@@ -248,9 +248,9 @@ class TreasureHunt
         $total = 0;
         $count = 0;
 
-        foreach ($this->enrollements as $enrollement) {
-            if (null !== $enrollement->getNbStars()) {
-                $total += $enrollement->getNbStars();
+        foreach ($this->enrollments as $enrollment) {
+            if (null !== $enrollment->getNbStars()) {
+                $total += $enrollment->getNbStars();
                 ++$count;
             }
         }
@@ -264,9 +264,9 @@ class TreasureHunt
     public function getFeedbacks(): array
     {
         $feedbacks = [];
-        foreach ($this->enrollements as $enrollement) {
-            if (null !== $enrollement->getFeedback()) {
-                $feedbacks[] = $enrollement->getFeedback();
+        foreach ($this->enrollments as $enrollment) {
+            if (null !== $enrollment->getFeedback()) {
+                $feedbacks[] = $enrollment->getFeedback();
             }
         }
 

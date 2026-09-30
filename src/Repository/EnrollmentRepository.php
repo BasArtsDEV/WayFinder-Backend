@@ -2,17 +2,17 @@
 
 namespace App\Repository;
 
-use App\Entity\Enrollement;
+use App\Entity\Enrollment;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @extends ServiceEntityRepository<Enrollement>
+ * @extends ServiceEntityRepository<Enrollment>
  */
-class EnrollementRepository extends ServiceEntityRepository
+class EnrollmentRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, Enrollement::class);
+        parent::__construct($registry, Enrollment::class);
     }
 }

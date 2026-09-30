@@ -2,7 +2,7 @@
 
 namespace App\Enum;
 
-enum EnrollementStatus: string
+enum EnrollmentStatus: string
 {
     case NOT_STARTED = 'not_started';
     case PAUSED = 'paused';

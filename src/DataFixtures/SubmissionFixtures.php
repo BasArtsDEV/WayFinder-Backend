@@ -19,7 +19,7 @@ class SubmissionFixtures extends Fixture implements DependentFixtureInterface
     public function getDependencies(): array
     {
         return [
-            EnrollementFixtures::class,
+            EnrollmentFixtures::class,
             RiddleFixtures::class,
         ];
     }
