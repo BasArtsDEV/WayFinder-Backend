@@ -173,18 +173,12 @@ class Team
         return $this;
     }
 
-    /**
-     * @return string|null
-     */
-    public function getBanner()
+    public function getBanner(): ?string
     {
         return $this->banner;
     }
 
-    /**
-     * @param string|null $banner
-     */
-    public function setBanner($banner): static
+    public function setBanner(?string $banner): static
     {
         $this->banner = $banner;
 
