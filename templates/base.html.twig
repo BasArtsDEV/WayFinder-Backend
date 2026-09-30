@@ -22,99 +22,97 @@
     {% endif %}
 </head>
 <body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-white px-4 py-3 shadow-sm border-bottom">
+        <div class="container-fluid align-items-center">
 
-<nav class="navbar navbar-expand-lg navbar-dark bg-success px-4 py-3 shadow-sm">
-    <div class="container-fluid">
-
-        <div class="d-flex align-items-baseline gap-3">
-            <a class="navbar-brand fw-bold fs-1 text-white m-0 lh-1" href="{{ path('app_home') }}">WayFinder</a>
-            <span class="navbar-mode text-white text-opacity-75 fw-bold fst-italic fs-4 d-none d-sm-inline">Mode création</span>
-        </div>
-
-        <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-
-        {% set currentRoute = app.request.attributes.get('_route') %}
-
-        <div class="collapse navbar-collapse justify-content-center" id="navbarNavAltMarkup">
-            <div class="navbar-nav align-items-lg-center gap-lg-4">
-
-                <a class="nav-link fw-bold fs-3 d-flex align-items-center gap-2 {{ currentRoute == 'app_treasure_hunt' ? 'text-white active' : 'text-white-50' }}"
-                   {% if currentRoute == 'app_treasure_hunt' %}aria-current="page"{% endif %}
-                   href="{{ path('app_treasure_hunt') }}">
-                    <i class="bi bi-tools fs-3"></i>
-                    <span>Créations</span>
+            <div class="d-flex align-items-center gap-3 col-lg-3">
+                <a class="navbar-brand fw-bold fs-4 text-dark m-0 d-flex align-items-center gap-2" href="{{ path('app_home') }}">
+                    <span class="bg-success text-white p-2 rounded-3 d-inline-flex align-items-center justify-content-center shadow-sm" style="width: 38px; height: 38px;">
+                        <i class="bi bi-compass fs-4"></i>
+                    </span>
+                    WayFinder
                 </a>
-
-                <a class="nav-link fw-bold fs-3 d-flex align-items-center gap-2 {{ currentRoute == 'app_team' ? 'text-white active' : 'text-white-50' }}"
-                   {% if currentRoute == 'app_team' %}aria-current="page"{% endif %}
-                   href="{{ path('app_team') }}">
-                    <i class="bi bi-people-fill fs-3"></i>
-                    <span>Équipes</span>
-                </a>
-
-                <a class="nav-link fw-bold fs-3 d-flex align-items-center gap-2 {{ currentRoute == 'app_history' ? 'text-white active' : 'text-white-50' }}"
-                   {% if currentRoute == 'app_history' %}aria-current="page"{% endif %}
-                   href="#">
-                    <i class="bi bi-cloud-fill fs-3"></i>
-                    <span>Historique</span>
-                </a>
-
+                <span class="badge bg-success-subtle text-success border border-success-subtle px-2 py-1 rounded-pill d-none d-sm-inline">Mode création</span>
             </div>
-        </div>
 
-        <div class="d-flex align-items-center gap-3 mt-3 mt-lg-0">
-            {% if app.user %}
-                <div class="nav-item dropdown list-unstyled m-0">
-                    <a class="nav-link dropdown-toggle btn btn-light d-flex align-items-center gap-2 px-3 py-2 rounded-pill shadow-sm text-dark" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        <i class="bi bi-person-circle fs-5 text-secondary"></i>
-                        <span class="fw-medium">@{{ app.user.username }}</span>
+            <button class="navbar-toggler border-0 shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            {% set currentRoute = app.request.attributes.get('_route') %}
+
+            <div class="collapse navbar-collapse justify-content-center col-lg-6" id="navbarNavAltMarkup">
+                <div class="navbar-nav align-items-lg-center gap-lg-4">
+
+                    <a class="nav-link fw-semibold fs-5 d-flex align-items-center gap-2 position-relative py-2 {{ currentRoute == 'app_treasure_hunt' ? 'text-success active-underline' : 'text-secondary' }}"
+                       href="{{ path('app_treasure_hunt') }}">
+                        <i class="bi bi-tools"></i>
+                        <span>Créations</span>
                     </a>
 
-                    <div class="dropdown-menu dropdown-menu-end shadow-sm border-0 rounded-3 mt-2 p-2" aria-labelledby="userDropdown">
-                        <div class="dropdown-header px-3 py-2 text-uppercase fs-7 fw-bold text-muted">Mon Compte</div>
+                    <a class="nav-link fw-semibold fs-5 d-flex align-items-center gap-2 position-relative py-2 {{ currentRoute == 'app_team' ? 'text-success active-underline' : 'text-secondary' }}"
+                       href="{{ path('app_team') }}">
+                        <i class="bi bi-people-fill"></i>
+                        <span>Équipes</span>
+                    </a>
 
-                        {% if is_granted('ROLE_ADMIN') %}
-                            <a class="dropdown-item d-flex align-items-center gap-2 py-2 text-secondary rounded-2" href="{{ path('api_doc') }}">
-                                <i class="bi bi-code-slash"></i>
-                                <span>Documentation API</span>
+                </div>
+            </div>
+
+            <div class="d-flex align-items-center justify-content-end gap-3 mt-3 mt-lg-0 col-lg-3">
+                {% if app.user %}
+
+                    <div class="nav-item dropdown list-unstyled m-0">
+                        <a class="nav-link dropdown-toggle btn btn-light border d-flex align-items-center gap-2 px-3 py-2 rounded-pill shadow-sm text-dark" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-person-circle fs-5 text-success"></i>
+                            <span class="fw-medium">@{{ app.user.username }}</span>
+                        </a>
+
+                        <div class="dropdown-menu dropdown-menu-end shadow-sm border rounded-3 mt-2 p-2" aria-labelledby="userDropdown">
+                            <div class="dropdown-header px-3 py-2 text-uppercase fs-7 fw-bold text-muted">Mon Compte</div>
+
+                            {% if is_granted('ROLE_ADMIN') %}
+                                <a class="dropdown-item d-flex align-items-center gap-2 py-2 text-secondary rounded-2" href="{{ path('api_doc') }}">
+                                    <i class="bi bi-code-slash text-success"></i>
+                                    <span>Documentation API</span>
+                                </a>
+                                <div class="dropdown-divider my-2"></div>
+                            {% endif %}
+
+                            <a class="dropdown-item d-flex align-items-center gap-2 py-2 text-danger rounded-2" href="{{ logout_path() }}">
+                                <i class="bi bi-box-arrow-right"></i>
+                                <span>Déconnexion</span>
                             </a>
-                            <div class="dropdown-divider my-2"></div>
-                        {% endif %}
+                        </div>
+                    </div>
 
-                        <a class="dropdown-item d-flex align-items-center gap-2 py-2 text-danger rounded-2" href="{{ logout_path() }}">
-                            <i class="bi bi-box-arrow-right"></i>
-                            <span>Déconnexion</span>
+                    <a href="#" class="text-secondary hover-text-success fs-5 position-relative text-decoration-none p-2">
+                        <i class="bi bi-bell-fill"></i>
+                        <span class="position-absolute top-25 start-75 translate-middle p-1 bg-success border border-white rounded-circle"></span>
+                    </a>
+                {% else %}
+                    <div class="nav-item list-unstyled m-0">
+                        <a class="btn btn-success px-4 py-2 rounded-pill fw-medium shadow-sm" href="{{ path('app_login') }}">
+                            <i class="bi bi-box-arrow-in-right me-2"></i>Connexion
                         </a>
                     </div>
-                </div>
+                {% endif %}
+            </div>
 
-                <a href="#" class="text-white fs-5 position-relative text-decoration-none p-2">
-                    <i class="bi bi-bell-fill"></i>
-                </a>
-            {% else %}
-                <div class="nav-item list-unstyled m-0">
-                    <a class="btn btn-light text-success px-4 py-2 rounded-pill fw-medium shadow-sm" href="{{ path('app_login') }}">
-                        <i class="bi bi-box-arrow-in-right me-2"></i>Connexion
-                    </a>
-                </div>
-            {% endif %}
         </div>
-    </div>
-</nav>
+    </nav>
 
-<main>
-    {% for success in app.flashes('success') %}
-        <div class="alert alert-success" role="alert">
-            {{ success }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-    {% endfor %}
+    <main>
+        {% for success in app.flashes('success') %}
+            <div class="alert alert-success" role="alert">
+                {{ success }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endfor %}
 
-    {% block main %}{% endblock %}
-</main>
+        {% block main %}{% endblock %}
+    </main>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
 </body>
 </html>
