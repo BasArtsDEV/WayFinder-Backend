@@ -87,13 +87,15 @@
                                 <p>{{ treasureHunt.description }}</p>
 
                                 <div class="treasure-feedback-section">
-                                    {% set avgStars = treasureHunt.getAverageStars() ?? 0 %}
+                                    {% set avgstars = treasureHunt.getAverageStars() ?? 0 %}
+                                    {% set feedbacks = treasureHunt.getFeedbacks() %}
 
                                     <div class="rating-container">
-                                        <strong>Note :</strong>
-                                        <div class="star-rating" title="{{ avgStars }} / 5">
+                                        <span class="rating-number">{{ avgstars }}</span>
+
+                                        <div class="star-rating" title="{{ avgstars }} / 5">
                                             {% for i in 1..5 %}
-                                                {% set fillPercentage = (avgStars - i + 1) * 100 %}
+                                                {% set fillPercentage = (avgstars - i + 1) * 100 %}
                                                 {% if fillPercentage < 0 %}
                                                     {% set fillPercentage = 0 %}
                                                 {% elseif fillPercentage > 100 %}
@@ -106,11 +108,8 @@
                                                 </div>
                                             {% endfor %}
                                         </div>
-                                        {% if avgStars > 1 %}
-                                            <span class="rating-number">{{ avgStars }} étoiles</span>
-                                        {% else %}
-                                            <span class="rating-number">{{ avgStars }} étoile</span>
-                                        {% endif %}
+
+                                        <span class="rating-number">{{ feedbacks|length }} avis</span>
                                     </div>
                                 </div>
                             </div>
