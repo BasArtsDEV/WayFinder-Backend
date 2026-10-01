@@ -4,12 +4,16 @@
 
 .riddle-box {
     background-color: var(--app-dark-box-background);
-    border: solid 1px #e7c88d !important;
+    border: solid 1px #dfdfdf !important;
 }
 
 .riddle-box-in-box {
     background-color: var(--app-dark-box-inner-box-background);
-    border: solid 1px #e7c88d !important;
+    border: solid 1px #dfdfdf !important;
+}
+
+.badge {
+    background-color: var(--app-dark-box-inner-box-background);
 }
 
 

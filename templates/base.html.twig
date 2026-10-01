@@ -101,13 +101,18 @@
 </nav>
 
 <main class="flex-grow-1 d-flex flex-column">
-    {% for success in app.flashes('success') %}
-        <div class="container mt-3">
-            <div class="alert alert-success alert-dismissible fade show border-0 shadow-sm" role="alert">
-                {{ success }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+
+
+    {% for label, messages in app.flashes %}
+        {% set alertClass = label == 'error' ? 'danger' : label %}
+        {% for message in messages %}
+            <div class="container mt-3">
+                <div class="alert alert-{{ alertClass }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
             </div>
-        </div>
+        {% endfor %}
     {% endfor %}
 
     {% block main %}{% endblock %}

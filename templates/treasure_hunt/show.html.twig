@@ -47,26 +47,57 @@
                             <p class="text-dark mb-0">{{ treasureHunt.creationDate|date('d/m/Y') }}</p>
                         </div>
                         <div>
-                            <span class="d-block text-muted mb-1" style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px;">Code d'invitation</span>
-                            <div class="bg-white border rounded px-3 py-1.5 d-inline-flex align-items-center gap-2"
-                                 style="cursor: pointer; transition: all 0.2s ease;"
-                                 onclick="navigator.clipboard.writeText('{{ treasureHunt.invitationCode }}'); alert('Code copié !');"
-                                 title="Cliquer pour copier">
-                                <span class="text-dark fw-bold" id="invitationCodeText">{{ treasureHunt.invitationCode }}</span>
-                                <i class="bi bi-copy text-primary"></i>
-                            </div>
+                            {% if treasureHunt.published %}
+                                <span class="d-block text-muted mb-1" style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px;">Code d'invitation</span>
+                                <div class="bg-white border rounded px-3 py-1.5 d-inline-flex align-items-center justify-content-between gap-3"
+                                     style="cursor: pointer; transition: all 0.2s ease; min-width: 120px;"
+                                     onclick="copyCode(this, '{{ treasureHunt.invitationCode }}')"
+                                     title="Cliquer pour copier">
+                                    <span class="text-dark fw-bold" id="invitationCodeText">{{ treasureHunt.invitationCode }}</span>
+                                    <i class="bi bi-clipboard text-success copy-icon"></i>
+                                </div>
+
+                                <script>
+                                    function copyCode(element, code) {
+                                        navigator.clipboard.writeText(code).then(() => {
+                                            const icon = element.querySelector('.copy-icon');
+
+                                            icon.classList.remove('bi-clipboard');
+                                            icon.classList.add('bi-check-lg');
+
+                                            setTimeout(() => {
+                                                icon.classList.remove('bi-check-lg');
+                                                icon.classList.add('bi-clipboard');
+                                            }, 2000);
+                                        });
+                                    }
+                                </script>
+                            {% endif %}
                         </div>
 
                         <div class="d-flex align-items-center gap-2 ms-md-2">
 
-                            <a href="{# to do #}" class="btn-app-primary btn btn-outline-primary rounded-pill px-3 py-2 fw-semibold d-flex align-items-center gap-1">
-                                <i class="bi bi-cloud-arrow-up-fill"></i>
-                            </a>
 
-                            <a href="{{ path('app_treasure_hunt_edit', {id: treasureHunt.id}) }}" class="btn-app-primary btn btn-outline-primary rounded-pill px-3 py-2 fw-semibold d-flex align-items-center gap-1">
-                                <i class="bi bi-pencil-fill"></i>
-                            </a>
-                            {{ include('treasure_hunt/partials/_delete_button.html.twig') }}
+                            {% if treasureHunt.published %}
+                                <form method="post" action="{{ path('app_treasure_hunt_unpublish', {'id': treasureHunt.id}) }}" class="d-inline">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('unpublish' ~ treasureHunt.id) }}">
+                                    <button type="submit" title="Dépublier" class="btn-app-danger btn btn-outline-primary rounded-pill px-3 py-2 fw-semibold d-flex align-items-center gap-1 border-0">
+                                        <i class="app-button-icon bi bi-sign-stop-fill"></i>Dépublier
+                                    </button>
+                                </form>
+                            {% else %}
+                                <form method="post" action="{{ path('app_treasure_hunt_publish', {'id': treasureHunt.id}) }}" class="d-inline">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('publish' ~ treasureHunt.id) }}">
+                                    <button type="submit" title="Publier" class="btn-app-primary btn btn-outline-primary rounded-pill px-3 py-2 fw-semibold d-flex align-items-center gap-1 border-0">
+                                        <i class="app-button-icon bi bi-cloud-arrow-up-fill"></i>Publier
+                                    </button>
+                                </form>
+
+                                <a href="{{ path('app_treasure_hunt_edit', {id: treasureHunt.id}) }}" title="Éditer" class="btn-app-primary btn btn-outline-primary rounded-pill px-3 py-2 fw-semibold d-flex align-items-center gap-1">
+                                    <i class="app-button-icon bi bi-pencil-fill"></i>Éditer
+                                </a>
+                                {{ include('treasure_hunt/partials/_delete_button.html.twig') }}
+                            {% endif %}
                         </div>
                     </div>
                 </div>
@@ -90,19 +121,19 @@
                             </div>
 
                             {% if riddle is instanceof('App\\Entity\\RiddleQCM') %}
-                                <span class="badge bg-white text-success px-3 py-2 rounded-pill fs-6 fw-bold d-inline-flex align-items-center gap-2 border">
+                                <span class="badge text-success px-3 py-2 rounded-pill fs-6 fw-bold d-inline-flex align-items-center gap-2 border">
                                     <i class="bi bi-card-checklist"></i> QCM
                                 </span>
                             {% elseif riddle is instanceof('App\\Entity\\RiddleGPS') %}
-                                <span class="badge bg-white text-success px-3 py-2 rounded-pill fs-6 fw-bold d-inline-flex align-items-center gap-2 border">
+                                <span class="badge text-success px-3 py-2 rounded-pill fs-6 fw-bold d-inline-flex align-items-center gap-2 border">
                                     <i class="bi bi-geo-alt"></i> GPS
                                 </span>
                             {% elseif riddle is instanceof('App\\Entity\\RiddleQRCode') %}
-                                <span class="badge bg-white text-success px-3 py-2 rounded-pill fs-6 fw-bold d-inline-flex align-items-center gap-2 border">
+                                <span class="badge text-success px-3 py-2 rounded-pill fs-6 fw-bold d-inline-flex align-items-center gap-2 border">
                                     <i class="bi bi-qr-code-scan"></i> QR Code
                                 </span>
                             {% else %}
-                                <span class="badge bg-white text-success px-3 py-2 rounded-pill fs-6 fw-bold d-inline-flex align-items-center gap-2 border">
+                                <span class="badge text-success px-3 py-2 rounded-pill fs-6 fw-bold d-inline-flex align-items-center gap-2 border">
                                     <i class="bi bi-question-circle"></i> Question simple
                                 </span>
                             {% endif %}
@@ -162,32 +193,36 @@
                         </div>
 
                         <div class="d-flex justify-content-end align-items-center gap-2">
-                            {# Up #}
-                            <form action="{{ path('app_riddle_reorder', {id: riddle.id, direction: 'up'}) }}" method="POST" class="d-inline">
-                                <button type="submit" class="btn-app-secondary btn-icon-only" aria-label="Monter">
-                                    <i class="bi bi-caret-up-fill"></i>
-                                </button>
-                            </form>
+                            {% if not treasureHunt.published %}
 
-                            {# Down #}
-                            <form action="{{ path('app_riddle_reorder', {id: riddle.id, direction: 'down'}) }}" method="POST" class="d-inline">
-                                <button type="submit" class="btn-app-secondary btn-icon-only" aria-label="Descendre">
-                                    <i class="bi bi-caret-down-fill"></i>
-                                </button>
-                            </form>
+                                {# Up #}
+                                <form action="{{ path('app_riddle_reorder', {id: riddle.id, direction: 'up'}) }}" method="POST" class="d-inline">
+                                    <button type="submit" class="btn-app-secondary btn-icon-only" aria-label="Monter" title="Monter l'énigme au dessus">
+                                        <i class="bi bi-caret-up-fill"></i>
+                                    </button>
+                                </form>
 
-                            {# Edit #}
-                            <a href="{{ path('app_riddle_edit', {id: riddle.id}) }}" class="btn-app-primary btn-icon-only" aria-label="Modifier">
-                                <i class="bi bi-pencil-fill"></i>
-                            </a>
+                                {# Down #}
+                                <form action="{{ path('app_riddle_reorder', {id: riddle.id, direction: 'down'}) }}" method="POST" class="d-inline">
+                                    <button type="submit" class="btn-app-secondary btn-icon-only" aria-label="Descendre" title="Descendre l'énigme en dessous">
+                                        <i class="bi bi-caret-down-fill"></i>
+                                    </button>
+                                </form>
 
-                            {# Delete #}
-                            <form method="post" action="{{ path('app_riddle_delete', {id: riddle.id}) }}" class="d-inline" onsubmit="return confirm('Es-tu sûr de vouloir supprimer cette énigme ?');">
-                                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ riddle.id) }}">
-                                <button type="submit" class="btn-app-danger btn-icon-only" aria-label="Supprimer">
-                                    <i class="bi bi-trash-fill"></i>
-                                </button>
-                            </form>
+                                {# Edit #}
+                                <a href="{{ path('app_riddle_edit', {id: riddle.id}) }}" title="Éditer" class="btn-app-primary btn-icon-only" aria-label="Modifier">
+                                    <i class="app-button-icon bi bi-pencil-fill"></i>Éditer
+                                </a>
+
+                                {# Delete #}
+                                <form method="post" action="{{ path('app_riddle_delete', {id: riddle.id}) }}" class="d-inline" onsubmit="return confirm('Es-tu sûr de vouloir supprimer cette énigme ?');">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ riddle.id) }}">
+                                    <button type="submit" class="btn-app-danger btn-icon-only" aria-label="Supprimer" title="Supprimer">
+                                        <i class="bi bi-trash-fill"></i>Supprimer
+                                    </button>
+                                </form>
+
+                            {% endif %}
                         </div>
                     </div>
                 </div>
@@ -199,17 +234,19 @@
         </div>
 
         <div class="text-center mb-5">
-            <div class="btn-group" data-turbo="false">
-                <button type="button" class="btn-app-primary" data-bs-toggle="dropdown" aria-expanded="false">
-                    <i class="bi bi-plus-circle-fill"></i>Ajouter une énigme
-                </button>
-                <ul class="dropdown-menu">
-                    <li><a class="dropdown-item" href="{{ path('app_riddle_new', {huntId: treasureHunt.id, type: 'text'}) }}"><i class="app-dropdown-icon bi bi-question-circle"></i>Question simple</a></li>
-                    <li><a class="dropdown-item" href="{{ path('app_riddle_new', {huntId: treasureHunt.id, type: 'qcm'}) }}"><i class="app-dropdown-icon bi bi-card-checklist"></i>Question QCM</a></li>
-                    <li><a class="dropdown-item" href="{{ path('app_riddle_new', {huntId: treasureHunt.id, type: 'gps'}) }}"><i class="app-dropdown-icon bi bi-geo-alt"></i>Aller à des coordonnées GPS</a></li>
-                    <li><a class="dropdown-item" href="{{ path('app_riddle_new', {huntId: treasureHunt.id, type: 'qrcode'}) }}"><i class="app-dropdown-icon bi bi-qr-code-scan"></i>Trouver un QR Code</a></li>
-                </ul>
-            </div>
+            {% if not treasureHunt.published %}
+                <div class="btn-group" data-turbo="false">
+                    <button type="button" class="btn-app-primary" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="bi bi-plus-circle-fill"></i>Ajouter une énigme
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="{{ path('app_riddle_new', {huntId: treasureHunt.id, type: 'text'}) }}"><i class="app-dropdown-icon bi bi-question-circle"></i>Question simple</a></li>
+                        <li><a class="dropdown-item" href="{{ path('app_riddle_new', {huntId: treasureHunt.id, type: 'qcm'}) }}"><i class="app-dropdown-icon bi bi-card-checklist"></i>Question QCM</a></li>
+                        <li><a class="dropdown-item" href="{{ path('app_riddle_new', {huntId: treasureHunt.id, type: 'gps'}) }}"><i class="app-dropdown-icon bi bi-geo-alt"></i>Aller à des coordonnées GPS</a></li>
+                        <li><a class="dropdown-item" href="{{ path('app_riddle_new', {huntId: treasureHunt.id, type: 'qrcode'}) }}"><i class="app-dropdown-icon bi bi-qr-code-scan"></i>Trouver un QR Code</a></li>
+                    </ul>
+                </div>
+            {% endif %}
         </div>
     </div>
 {% endblock %}
