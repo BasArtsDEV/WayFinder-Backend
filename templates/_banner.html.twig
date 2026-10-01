@@ -1,0 +1,13 @@
+<div class="{{ container_class|default('banner-container') }}">
+    {% if banner %}
+        {% if banner starts with 'http' or banner starts with '/' or banner starts with 'data:' %}
+            <img src="{{ banner }}" alt="{{ alt|default('') }}" class="{{ img_class|default('banner-img') }}">
+        {% else %}
+            <img src="data:image/png;base64,{{ banner|e('html_attr') }}" alt="{{ alt|default('') }}" class="{{ img_class|default('banner-img') }}">
+        {% endif %}
+    {% else %}
+        <div class="{{ default_class|default('banner-default') }}"></div>
+    {% endif %}
+
+    {% block overlay %}{% endblock %}
+</div>
