@@ -108,7 +108,7 @@ final class TreasureHuntController extends AbstractController
     #[Route('/treasure_hunt/{id}', name: 'app_treasure_hunt_delete', requirements: ['id' => '\d+'], methods: ['POST'])]
     public function delete(Request $request, TreasureHunt $treasureHunt, EntityManagerInterface $em): Response
     {
-        if ($this->isCsrfTokenValid('delete' . $treasureHunt->getId(), $request->getPayload()->getString('_token'))) {
+        if ($this->isCsrfTokenValid('delete'.$treasureHunt->getId(), $request->getPayload()->getString('_token'))) {
             $em->remove($treasureHunt);
             $em->flush();
         }
