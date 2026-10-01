@@ -1,0 +1,186 @@
+<div class="user-profile-page">
+    <div class="profile-banner-container">
+        <div class="profile-banner-default"></div>
+
+        <div class="profile-banner-title-overlay">
+            <div class="profile-avatar-wrapper mb-3">
+                {{ include('profile/partials/_avatar.html.twig', {
+                    user: user,
+                    size: 140,
+                }) }}
+            </div>
+            <h1 class="fw-bold text-white display-5 mb-1 text-shadow">@{{ user.username }}</h1>
+            <p class="text-white-50 fs-5 mb-0 text-shadow">{{ user.firstName }} {{ user.lastName }}</p>
+        </div>
+    </div>
+
+    <div class="container profile-content-wrapper pb-5">
+
+        {% if user is same as(app.user) or is_granted('ROLE_ADMIN') %}
+            <div class="d-flex justify-content-end gap-2 mb-4">
+                {% if user is same as(app.user) %}
+                    <button type="button" class="btn btn-light border shadow-sm rounded-pill px-3 py-2 fw-medium text-dark" data-bs-toggle="modal" data-bs-target="#editProfileModal">
+                        <i class="bi bi-pencil-square me-1 text-success"></i> Modifier le profil
+                    </button>
+                {% endif %}
+            </div>
+        {% endif %}
+
+        <div class="row g-4">
+
+            <div class="col-lg-8">
+                <div class="card border-0 shadow-sm rounded-4 p-4 h-100 bg-white">
+                    <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom border-light">
+                        <h3 class="fw-bold fs-4 text-dark m-0 d-flex align-items-center gap-2">
+                            <i class="bi bi-person-vcard text-success"></i> Informations générales
+                        </h3>
+                    </div>
+
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <div class="info-item p-3 rounded-3 bg-light border border-light">
+                                <span class="text-muted small d-block mb-1">Nom d'utilisateur</span>
+                                <span class="fw-bold text-dark fs-6">@{{ user.username }}</span>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="info-item p-3 rounded-3 bg-light border border-light">
+                                <span class="text-muted small d-block mb-1">Adresse Email</span>
+                                <span class="fw-bold text-dark fs-6">{{ user.email }}</span>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="info-item p-3 rounded-3 bg-light border border-light">
+                                <span class="text-muted small d-block mb-1">Prénom & Nom</span>
+                                <span class="fw-bold text-dark fs-6">{{ user.firstName }} {{ user.lastName }}</span>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="info-item p-3 rounded-3 bg-light border border-light">
+                                <span class="text-muted small d-block mb-1">Date d'inscription</span>
+                                <span class="fw-bold text-dark fs-6">{{ user.createdAt|date('d/m/Y') }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4">
+                <div class="card border-0 shadow-sm rounded-4 p-4 h-100 bg-white">
+                    <h3 class="fw-bold fs-5 text-dark mb-2 d-flex align-items-center gap-2">
+                        <i class="bi bi-people-fill text-success"></i> Équipes
+                    </h3>
+
+                    {% set maxTeams = 5 %}
+                    {% set currentTeamsCount = user.teams|length %}
+                    {% set teamsPercentage = (currentTeamsCount / maxTeams) * 100 %}
+                    {% if teamsPercentage > 100 %}{% set teamsPercentage = 100 %}{% endif %}
+
+                    <div class="mb-4">
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <small class="text-muted" style="font-size: 0.8rem;">Équipes rejointes</small>
+                            <small class="fw-bold text-success" style="font-size: 0.8rem;">{{ currentTeamsCount }} / {{ maxTeams }}</small>
+                        </div>
+                        <div class="progress" style="height: 8px; background-color: #e9ecef; border-radius: 4px;">
+                            <div class="progress-bar bg-success rounded-pill" role="progressbar" style="width: {{ teamsPercentage }}%; transition: width 0.6s ease;" aria-valuenow="{{ currentTeamsCount }}" aria-valuemin="0" aria-valuemax="{{ maxTeams }}"></div>
+                        </div>
+                    </div>
+
+                    <div class="team-list d-flex flex-column gap-2">
+                        {% if user.teams|length > 0 %}
+                            {% for team in user.teams %}
+                                {% set memberCount = team.users|length %}
+
+                                <a href="{{ path('app_team_show', {id: team.id}) }}" class="team-card-item p-3 rounded-3 bg-light border border-light">
+                                    <div class="d-flex align-items-center justify-content-between">
+                                        <div class="d-flex align-items-center gap-2 min-w-0">
+                                            <span class="fw-bold text-dark text-decoration-none hover-success text-truncate">
+                                                {{ team.name }}
+                                            </span>
+                                            <span class="text-muted fw-normal fs-6">|</span>
+                                            <span class="text-secondary small text-nowrap">
+                                                {{ memberCount }} membre{% if memberCount > 1 %}s{% endif %}
+                                            </span>
+                                        </div>
+
+                                        {% if team.leader and team.leader.id == user.id %}
+                                            <span class="badge bg-warning text-dark fw-semibold px-2 py-1 rounded-pill ms-2" title="Chef d'équipe">
+                                                Chef
+                                            </span>
+                                        {% endif %}
+                                    </div>
+                                </a>
+                            {% endfor %}
+                        {% else %}
+                            <div class="text-center py-4 text-muted">
+                                <i class="bi bi-people display-6 text-secondary opacity-50 mb-2"></i>
+                                <p class="small mb-0">Aucune équipe rejointe pour le moment.</p>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<style>
+    .profile-banner-container {
+        width: 100%;
+        height: 340px;
+        position: relative;
+        background-color: #111827;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .profile-banner-default {
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(135deg, #1f2933 0%, #111827 100%);
+    }
+
+    .profile-banner-title-overlay {
+        position: absolute;
+        z-index: 2;
+        text-align: center;
+        padding: 0 20px;
+        top: 25px;
+    }
+
+    .profile-avatar-wrapper {
+        display: inline-block;
+        border-radius: 50%;
+        padding: 4px;
+        background: rgba(255, 255, 255, 0.15);
+        backdrop-filter: blur(8px);
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+    }
+
+    .text-shadow {
+        text-shadow: 0 4px 12px rgba(0, 0, 0, 0.6);
+    }
+
+    .profile-content-wrapper {
+        margin-top: -60px;
+        position: relative;
+        z-index: 3;
+    }
+
+    .team-card-item {
+        text-decoration: none;
+        transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+    }
+
+    .team-card-item:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(0,0,0,0.05);
+        border-color: #57a841 !important;
+    }
+</style>

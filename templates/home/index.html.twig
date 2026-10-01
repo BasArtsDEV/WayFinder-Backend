@@ -1,49 +1,33 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}WayFinder !{% endblock %}
+{% block title %}Accueil{% endblock %}
 
 {% block main %}
-    <div class="welcome-page d-flex justify-content-center align-items-center">
+    <div class="welcome-page h-100">
         <div class="welcome-card text-center">
-
             <div class="chest-container">
-                <!-- Utilisation d'une balise video pour stopper la lecture à la fin (playsinline autoplay muted) -->
-                <video
-                    src="{{ asset('icons/coffre-ouverture.mp4') }}"
-                    class="chest-img"
-                    autoplay
-                    muted
-                    playsinline>
-                </video>
+                <video src="{{ asset('icons/coffre-ouverture.mp4') }}" class="chest-img" autoplay muted playsinline></video>
             </div>
 
-            <h1 class="fw-bold mt-3">
-                Bienvenue !
-            </h1>
+            <h1 class="fw-bold mt-2">Bienvenue !</h1>
 
-            <p class="welcome-text">
-                Pour commencer à créer ou à jouer<br>
-                à une carte au trésor, veuillez<br>
-                utiliser un compte.
+            <p class="welcome-text mb-2">
+                Pour commencer à créer ou à jouer à une carte au trésor, veuillez utiliser un compte.
             </p>
 
             <hr class="separator">
 
-            <div class="actions-container d-flex flex-column flex-md-row justify-content-center align-items-center gap-3 w-100">
-
+            <div class="actions-container d-flex flex-column justify-content-center align-items-center gap-3 w-100">
                 <a href="{{ path('app_login') }}" class="btn welcome-btn login-btn d-flex align-items-center">
-                    <span class="btn-icon">
-                        <img src="{{ asset('icons/enter.png') }}" alt="Connexion" class="icon-img">
-                    </span>
+                    <span class="btn-icon"><img src="{{ asset('icons/enter.png') }}" alt="Connexion" class="icon-img"></span>
                     <span class="btn-text">Connexion</span>
                 </a>
 
                 <a href="{{ path('app_register') }}" class="btn welcome-btn register-btn d-flex align-items-center">
-                    <span class="btn-icon">
-                        <img src="{{ asset('icons/img.png') }}" alt="Créer un compte" class="icon-img">
-                    </span>
+                    <span class="btn-icon"><img src="{{ asset('icons/img.png') }}" alt="Créer un compte" class="icon-img"></span>
                     <span class="btn-text">Créer mon compte</span>
                 </a>
-
+            </div>
+        </div>
     </div>
 {% endblock %}

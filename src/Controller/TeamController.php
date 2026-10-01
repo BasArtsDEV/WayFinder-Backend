@@ -11,7 +11,9 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
+#[IsGranted('IS_AUTHENTICATED_REMEMBERED')]
 final class TeamController extends AbstractController
 {
     #[Route('/team', name: 'app_team')]
@@ -64,7 +66,7 @@ final class TeamController extends AbstractController
             $request->getPayload()->getString('_token')
         )) {
             foreach ($team->getUsers() as $user) {
-                $user->setTeam(null);
+                $user->removeTeam($team);
             }
 
             $em->remove($team);

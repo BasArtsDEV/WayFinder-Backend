@@ -114,7 +114,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     #[ORM\Column]
     #[Groups(['user:write', 'user:create'])]
-    #[ApiProperty(writable: true, readable: false)]
+    #[ApiProperty(readable: false, writable: true)]
     private string $password;
 
     #[ORM\Column(length: 30)]

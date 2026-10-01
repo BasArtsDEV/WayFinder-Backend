@@ -17,8 +17,9 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-#[Route('/riddle')]
+#[IsGranted('IS_AUTHENTICATED_REMEMBERED')]
 final class RiddleController extends AbstractController
 {
     #[Route('/treasure-hunt/{huntId}/new/{type}', name: 'app_riddle_new', methods: ['GET', 'POST'])]
