@@ -58,6 +58,7 @@ security:
         - { path: ^/api/?$, roles: PUBLIC_ACCESS }
         - { path: ^/api/login, roles: PUBLIC_ACCESS }
         - { path: ^/api/register, roles: PUBLIC_ACCESS }
+        - { path: ^/api/verify-email, roles: PUBLIC_ACCESS }
 
         # Gestion publique des utilisateurs et des avatars
         - { path: ^/api/users/\d+$, roles: PUBLIC_ACCESS }

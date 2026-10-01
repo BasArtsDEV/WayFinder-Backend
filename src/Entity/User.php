@@ -186,6 +186,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: Enrollment::class, mappedBy: 'user')]
     private Collection $enrollments;
 
+    #[ORM\Column]
+    private bool $isVerified = false;
+
     public function __construct()
     {
         $this->teams = new ArrayCollection();
@@ -426,6 +429,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function removeEnrollment(Enrollment $enrollment): static
     {
         $this->enrollments->removeElement($enrollment);
+
+        return $this;
+    }
+
+    public function isVerified(): bool
+    {
+        return $this->isVerified;
+    }
+
+    public function setIsVerified(bool $isVerified): static
+    {
+        $this->isVerified = $isVerified;
 
         return $this;
     }

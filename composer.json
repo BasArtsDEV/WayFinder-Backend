@@ -37,6 +37,7 @@
         "php": ">=8.4",
         "ext-ctype": "*",
         "ext-iconv": "*",
+        "ext-intl": "*",
         "api-platform/doctrine-orm": "^5.0.1",
         "api-platform/symfony": "^5.0.1",
         "doctrine/doctrine-bundle": "^3.3",
@@ -79,9 +80,9 @@
         "symfony/validator": "7.4.*",
         "symfony/web-link": "7.4.*",
         "symfony/yaml": "7.4.*",
+        "symfonycasts/verify-email-bundle": "^1.18",
         "twig/extra-bundle": "^2.12|^3.0",
-        "twig/twig": "^2.12|^3.30",
-        "ext-intl": "*"
+        "twig/twig": "^2.12|^3.30"
     },
     "config": {
         "allow-plugins": {
