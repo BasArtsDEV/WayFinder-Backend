@@ -25,6 +25,7 @@
                         <input type="text" class="form-control rounded-3" id="firstname-{{ user.id }}" name="firstName" value="{{ user.firstName }}" required>
                     </div>
 
+                    <!-- Champ Avatar -->
                     <div class="mb-3">
                         <label for="avatar-{{ user.id }}" class="form-label fw-semibold text-secondary">Avatar</label>
                         <input type="file" class="form-control rounded-3" id="avatar-{{ user.id }}" name="avatar" accept="image/*">
@@ -34,6 +35,16 @@
                                     user: user,
                                     size: 80,
                                 }) }}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="banner-{{ user.id }}" class="form-label fw-semibold text-secondary">Bannière</label>
+                        <input type="file" class="form-control rounded-3" id="banner-{{ user.id }}" name="banner" accept="image/*">
+                        {% if user.banner %}
+                            <div class="mt-3 text-center">
+                                <img src="{{ user.banner }}" alt="Bannière de {{ user.username }}" class="img-fluid rounded-3 style="max-height: 120px; object-fit: cover; width: 100%;">
                             </div>
                         {% endif %}
                     </div>
