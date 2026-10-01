@@ -97,21 +97,11 @@ Where :
 
 ### Accounts
 
-- Admin:
-    - Email: `admin@example.com`
-    - Username: `admin`
-    - Roles: `ROLE_ADMIN`
-
-- User:
-    - Email: `user@example.com`
-    - Username: `user`
-    - Roles: `ROLE_USER`
-    - Teams: 4 random teams assigned
-
-- Conceptor:
-    - Email: `conceptor@example.com`
-    - Username: `conceptor`
-    - Roles: `ROLE_CONCEPTOR`
+| Type de compte | Email                   | Username    | Rôles            | Mot de passe |
+|----------------|-------------------------|-------------|------------------|--------------|
+| **Admin**      | `admin@example.com`     | `admin`     | `ROLE_ADMIN`     | mdp          |
+| **User**       | `user@example.com`      | `user`      | `ROLE_USER`      | mdp          |
+| **Conceptor**  | `conceptor@example.com` | `conceptor` | `ROLE_CONCEPTOR` | mdp          |
 
 ### Conceptual Data Model
 

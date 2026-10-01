@@ -31,15 +31,11 @@ class TeamType extends AbstractType
                 'mapped' => false,
                 'required' => false,
                 'constraints' => [
-                    new File([
-                        'maxSize' => '5M',
-                        'mimeTypes' => [
-                            'image/jpeg',
-                            'image/png',
-                            'image/webp',
-                        ],
-                        'mimeTypesMessage' => 'Veuillez uploader une image valide (JPG, PNG, WEBP)',
-                    ]),
+                    new File(maxSize: '5M', mimeTypes: [
+                        'image/jpeg',
+                        'image/png',
+                        'image/webp',
+                    ], mimeTypesMessage: 'Veuillez uploader une image valide (JPG, PNG, WEBP)'),
                 ],
             ])
         ;
@@ -51,7 +47,8 @@ class TeamType extends AbstractType
 
             if ($file) {
                 $binaryData = file_get_contents($file->getPathname());
-                $team->setBanner(base64_encode($binaryData));
+                $mimeType = $file->getMimeType();
+                $team->setBanner('data:'.$mimeType.';base64,'.base64_encode($binaryData));
             }
         });
     }

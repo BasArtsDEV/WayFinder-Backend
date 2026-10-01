@@ -155,6 +155,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: Types::BLOB, nullable: true)]
     private $avatar;
 
+    /**
+     * @var string|null
+     */
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private $banner;
+
     #[ORM\Column(type: Types::DATE_IMMUTABLE)]
     #[Groups(['user:read', 'user:me'])]
     #[ApiProperty(
@@ -215,6 +221,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setAvatar($avatar): static
     {
         $this->avatar = $avatar;
+
+        return $this;
+    }
+
+    public function getBanner(): ?string
+    {
+        return $this->banner;
+    }
+
+    public function setBanner(?string $banner): static
+    {
+        $this->banner = $banner;
 
         return $this;
     }

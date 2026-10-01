@@ -51,8 +51,17 @@ final class ProfileController extends AbstractController
         /** @var UploadedFile $avatarFile */
         $avatarFile = $request->files->get('avatar');
 
-        $binaryData = file_get_contents($avatarFile->getPathname());
-        $user->setAvatar($binaryData);
+        /** @var UploadedFile $bannerFile */
+        $bannerFile = $request->files->get('banner');
+
+        if (null != $avatarFile) {
+            $binaryDataAvatar = file_get_contents($avatarFile->getPathname());
+            $user->setAvatar($binaryDataAvatar);
+        }
+        if (null != $bannerFile) {
+            $binaryDataBanner = file_get_contents($bannerFile->getPathname());
+            $user->setBanner(base64_encode($binaryDataBanner));
+        }
 
         $em->persist($user);
         $em->flush();
