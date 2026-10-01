@@ -7,6 +7,7 @@ use App\Entity\TreasureHunt;
 use App\Form\TreasureHuntType;
 use App\Repository\TreasureHuntRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Random\RandomException;
 use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -116,11 +117,22 @@ final class TreasureHuntController extends AbstractController
         return $this->redirectToRoute('app_treasure_hunt', [], Response::HTTP_SEE_OTHER);
     }
 
+    /**
+     * @throws RandomException
+     */
     #[Route('/treasure_hunt/{id}/publish', name: 'app_treasure_hunt_publish', requirements: ['id' => '\d+'], methods: ['POST'])]
     public function publish(Request $request, TreasureHunt $treasureHunt, EntityManagerInterface $em): Response
     {
         if ($this->isCsrfTokenValid('publish'.$treasureHunt->getId(), $request->getPayload()->getString('_token'))) {
+
+            if (count($treasureHunt->getRiddles()) === 0) {
+                $this->addFlash('error', 'Impossible de publier une chasse sans énigmes.');
+                return $this->redirectToRoute('app_treasure_hunt_show', ['id' => $treasureHunt->getId()]);
+            }
+
             $treasureHunt->setPublished(true);
+            $treasureHunt->generateInvitationCode();
+
             $em->flush();
 
             $this->addFlash('success', 'La chasse au trésor a été publiée avec succès.');
