@@ -79,6 +79,7 @@ composer start
 - ``fix:twigcs`` : Applies style fixes to Twig code
 - ``test:phpstan`` : Checks PHP code format depending on phpstan conditions
 - ``test:yaml`` : Does a verification for each YAML file within in config/
+- ``test:codeception`` : Run the code tests after initializing the test database
 - ``test`` : Runs all code checks
 - ``fix`` : Applies all code fixes
 - ``db`` : Recreates the DB, applies migrations, and loads fixtures
