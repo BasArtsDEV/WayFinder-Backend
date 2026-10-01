@@ -70,12 +70,12 @@
 
     --brand-primary-hover: #1b4332;
 
-    --app-dark-box-background: #ffe6b7;
-    --app-dark-box-inner-box-background: #ffeece;
+    --app-dark-box-background: #ffffff;
+    --app-dark-box-inner-box-background: #f8f9fa;
 
-    --brand-primary: #10b981;
-    --brand-dark: #111f1d;
-    --footer-text: #94a3b8;
+    --brand-primary: var(--app-header-background);
+    --brand-dark: var(--app-header-background);
+    --footer-text: var(--app-header-button-text);
     --border-theme: rgba(255, 255, 255, 0.1);
 }
 
@@ -92,7 +92,7 @@ h1 {
     font-weight: 700;
 }
 
-p, span {
+p, span, label {
     font-family: 'Lexend', sans-serif;
     font-weight: 300;
 }
@@ -110,6 +110,9 @@ p, span {
 .btn-app-hypertext {
     color: var(--app-button-background);
     transition: background-color 0.4s;
+    text-decoration: none !important;
+    font-family: 'Lexend', sans-serif;
+    font-weight: 300;
 }
 
 .btn-app-hypertext:hover {
@@ -172,6 +175,7 @@ p, span {
     font-size: 1.1rem !important;
     color: var(--app-button-secondary-text) !important;
     text-align: center;
+    text-decoration: none !important;
 
     background-color: var(--app-button-secondary-background) !important;
 
@@ -239,6 +243,17 @@ p, span {
     width: 42px;
     height: 42px;
     object-fit: contain;
+}
+
+.form-check-input:checked {
+    background-color: var(--app-button-background);
+    border-color: var(--app-button-background);
+}
+
+.form-check-input:focus {
+    border-color: #7ad55f;
+    outline: 0;
+    box-shadow: 0 0 0 .25rem rgba(93, 253, 13, 0.25);
 }
 
 .alert {
@@ -410,7 +425,7 @@ p, span {
 
 .crunchy-dropdown {
     min-width: 280px;
-    background-color: #141519 !important;
+    background-color: #f6f6f6 !important;
 }
 
 .crunchy-dropdown .dropdown-section {
@@ -421,11 +436,6 @@ p, span {
     font-size: 0.95rem;
     font-weight: 400;
     transition: background-color 0.2s ease, color 0.2s ease;
-}
-
-.crunchy-dropdown .dropdown-item:hover {
-    background-color: rgba(255, 255, 255, 0.07) !important;
-    color: #ffffff !important;
 }
 
 .crunchy-dropdown .dropdown-item i {

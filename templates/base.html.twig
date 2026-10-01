@@ -31,7 +31,7 @@
                      class="rounded-2" />
                 <span>WayFinder</span>
             </a>
-            <span class="badge bg-success-subtle text-success border border-success-subtle px-2 py-1 rounded-pill d-none d-xl-inline fs-8">Mode création</span>
+            <span class="badge bg-white bg-success-subtle text-success border border-success-subtle px-2 py-1 rounded-pill d-none d-xl-inline fs-8">Mode création</span>
         </div>
 
         <button class="navbar-toggler border-0 shadow-none ms-auto" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
@@ -73,7 +73,7 @@
                             <i class="bi bi-caret-down-fill crunchy-arrow"></i>
                         </a>
 
-                        <div class="dropdown-menu dropdown-menu-end dropdown-menu-dark crunchy-dropdown shadow-lg mt-2 p-0 rounded-3 border-0" aria-labelledby="userDropdown">
+                        <div class="dropdown-menu dropdown-menu-end dropdown-menu crunchy-dropdown shadow-lg mt-2 p-0 rounded-3 border-0" aria-labelledby="userDropdown">
 
                             <div class="p-3 d-flex align-items-center justify-content-between">
                                 <div class="d-flex align-items-center gap-3">
@@ -83,17 +83,13 @@
                                             size: 48,
                                         }) }}
                                     </div>
-                                    <span class="fw-bold text-white fs-5">@{{ app.user.username }}</span>
+                                    <span class="fw-bold fs-5">@{{ app.user.username }}</span>
                                 </div>
-                                <a href="{{ path('app_profil') }}" class="text-light opacity-75 hover-emerald"><i class="bi bi-pencil fs-6"></i></a>
+                                <a href="{{ path('app_profil') }}" class="opacity-75"><i class="app-dropdown-icon bi bi-pencil fs-6"></i></a>
                             </div>
 
                             <div class="dropdown-section p-2 border-top border-theme">
-                                <a class="dropdown-item d-flex align-items-center gap-3 py-2 px-3 rounded-2 text-light" href="#">
-                                    <i class="bi bi-arrow-left-right fs-5"></i>
-                                    <span>Changer de profil</span>
-                                </a>
-                                <a class="dropdown-item d-flex align-items-center gap-3 py-2 px-3 rounded-2 text-light" href="{{ path('app_profil') }}">
+                                <a class="dropdown-item d-flex align-items-center gap-3 py-2 px-3 rounded-2" href="{{ path('app_profil') }}">
                                     <i class="bi bi-gear fs-5"></i>
                                     <span>Paramètres</span>
                                 </a>
@@ -104,31 +100,31 @@
                                     <i class="bi bi-bookmark-fill fs-5"></i>
                                     <span>Mes favoris</span>
                                 </a>
-                                <a class="dropdown-item d-flex align-items-center gap-3 py-2 px-3 rounded-2 text-light" href="{{ path('app_treasure_hunt') }}">
+                                <a class="dropdown-item d-flex align-items-center gap-3 py-2 px-3 rounded-2" href="{{ path('app_treasure_hunt') }}">
                                     <i class="bi bi-map"></i>
                                     <span>Mes chasses</span>
                                 </a>
-                                <a class="dropdown-item d-flex align-items-center gap-3 py-2 px-3 rounded-2 text-light" href="#">
+                                <a class="dropdown-item d-flex align-items-center gap-3 py-2 px-3 rounded-2" href="#">
                                     <i class="bi bi-people"></i>
                                     <span>Mes équipes</span>
                                 </a>
                             </div>
 
                             <div class="dropdown-section p-2 border-top border-theme">
-                                <a class="dropdown-item d-flex align-items-center gap-3 py-2 px-3 rounded-2 text-light" href="#">
+                                <a class="dropdown-item d-flex align-items-center gap-3 py-2 px-3 rounded-2" href="#">
                                     <i class="bi bi-bell fs-5"></i>
                                     <span>Notifications</span>
                                 </a>
                                 {% if is_granted('ROLE_ADMIN') %}
-                                    <a class="dropdown-item d-flex align-items-center gap-3 py-2 px-3 rounded-2 text-light" href="{{ path('api_doc') }}">
-                                        <i class="bi bi-code-slash fs-5 text-success"></i>
-                                        <span>Documentation API</span>
+                                    <a class="dropdown-item d-flex align-items-center gap-3 py-2 px-3 rounded-2" href="{{ path('api_doc') }}">
+                                        <i class="bi bi-code-slash fs-5" style="color: var(--app-button-background)"></i>
+                                        <span style="color: var(--app-button-background)">Documentation API</span>
                                     </a>
                                 {% endif %}
                             </div>
 
                             <div class="dropdown-section p-2 border-top border-theme">
-                                <a class="dropdown-item d-flex align-items-center gap-3 py-2 px-3 rounded-2 text-light" href="{{ logout_path() }}">
+                                <a class="dropdown-item d-flex align-items-center gap-3 py-2 px-3 rounded-2" href="{{ logout_path() }}">
                                     <i class="bi bi-box-arrow-right fs-5"></i>
                                     <span>Se déconnecter</span>
                                 </a>
@@ -137,7 +133,7 @@
                         </div>
                     </div>
                 {% else %}
-                    <a class="btn text-white px-4 py-2 rounded-pill fw-medium shadow-sm w-100 w-lg-auto text-center" style="background-color: var(--brand-primary); border: none;" href="{{ path('app_login') }}">
+                    <a class="btn-app-secondary" style="background-color: var(--brand-primary); border: none;" href="{{ path('app_login') }}">
                         <i class="bi bi-box-arrow-in-right me-1"></i> Connexion
                     </a>
                 {% endif %}
