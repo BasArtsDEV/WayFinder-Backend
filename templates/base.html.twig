@@ -21,9 +21,9 @@
 <body class="d-flex flex-column min-vh-100">
 
 <nav class="navbar navbar-expand-lg navbar-dark bg-theme-dark border-bottom border-theme sticky-top px-4 py-2 navbar-shadow">
-    <div class="container-fluid align-items-center">
+    <div class="container-fluid align-items-center position-relative">
 
-        <div class="d-flex align-items-center gap-3 col-lg-3">
+        <div class="d-flex align-items-center gap-3">
             <a class="navbar-brand fw-bold fs-4 text-white m-0 d-flex align-items-center gap-2" href="{{ path('app_home') }}">
                 <img src="{{ asset('icons/app-icon.png') }}"
                      alt="Logo WayFinder"
@@ -34,14 +34,14 @@
             <span class="badge bg-success-subtle text-success border border-success-subtle px-2 py-1 rounded-pill d-none d-xl-inline fs-8">Mode création</span>
         </div>
 
-        <button class="navbar-toggler border-0 shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <button class="navbar-toggler border-0 shadow-none ms-auto" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
             <span class="navbar-toggler-icon"></span>
         </button>
 
-        <div class="collapse navbar-collapse justify-content-between col-lg-9" id="navbarNav">
+        <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
 
             {% set currentRoute = app.request.attributes.get('_route') %}
-            <div class="navbar-nav align-items-lg-center gap-lg-2 my-2 my-lg-0">
+            <div class="navbar-nav align-items-lg-center gap-lg-2 my-2 my-lg-0 navbar-centered-links">
                 <a class="nav-link text-light opacity-75 px-3 py-2 rounded-3 fw-semibold d-flex align-items-center gap-2 {{ currentRoute == 'app_treasure_hunt' ? 'active text-white opacity-100' : '' }}"
                    href="{{ path('app_treasure_hunt') }}">
                     <i class="bi bi-map"></i>
@@ -55,14 +55,7 @@
                 </a>
             </div>
 
-            <form action="{{ path('app_treasure_hunt') }}" method="GET" class="search-bar-container my-2 my-lg-0" id="globalSearchForm">
-                <div class="input-group rounded overflow-hidden" style="background-color: rgba(255, 255, 255, 0.05);">
-                    <span class="input-group-text bg-transparent border-0 text-secondary"><i class="bi bi-search"></i></span>
-                    <input type="search" name="q" value="{{ app.request.query.get('q') }}" class="form-control bg-transparent border-0 text-white shadow-none placeholder-glow custom-search-input" placeholder="Rechercher une chasse..." aria-label="Recherche">
-                </div>
-            </form>
-
-            <div class="d-flex align-items-center gap-3">
+            <div class="d-flex align-items-center gap-3 ms-lg-auto">
                 {% if app.user %}
                     <div class="nav-item dropdown">
                         <a class="btn btn-outline-light d-flex align-items-center gap-2 px-3 py-1.5 rounded-pill shadow-sm" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown">
