@@ -12,11 +12,13 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\UX\Map\Bridge\Google\GoogleOptions;
 use Symfony\UX\Map\Map;
 use Symfony\UX\Map\Marker;
 use Symfony\UX\Map\Point;
 
+#[IsGranted('IS_AUTHENTICATED_REMEMBERED')]
 final class TreasureHuntController extends AbstractController
 {
     #[Route('/treasure_hunt', name: 'app_treasure_hunt')]

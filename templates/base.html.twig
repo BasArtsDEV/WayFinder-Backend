@@ -87,9 +87,9 @@
             </div>
 
             <form action="{{ path('app_treasure_hunt') }}" method="GET" class="search-bar-container my-2 my-lg-0" id="globalSearchForm">
-                <div class="input-group">
-                    <span class="input-group-text bg-white bg-opacity-10 border-0 text-light opacity-75"><i class="bi bi-search"></i></span>
-                    <input type="search" name="q" value="{{ app.request.query.get('q') }}" class="form-control bg-white bg-opacity-10 border-0 text-white placeholder-glow" placeholder="Rechercher une chasse..." aria-label="Recherche">
+                <div class="input-group rounded overflow-hidden" style="background-color: rgba(255, 255, 255, 0.05);">
+                    <span class="input-group-text bg-transparent border-0 text-secondary"><i class="bi bi-search"></i></span>
+                    <input type="search" name="q" value="{{ app.request.query.get('q') }}" class="form-control bg-transparent border-0 text-white shadow-none placeholder-glow custom-search-input" placeholder="Rechercher une chasse..." aria-label="Recherche">
                 </div>
             </form>
 
