@@ -1,0 +1,15 @@
+.riddle-title-box {
+    background-color: var(--app-dark-box-background);
+}
+
+.riddle-box {
+    background-color: var(--app-dark-box-background);
+    border: solid 1px #e7c88d !important;
+}
+
+.riddle-box-in-box {
+    background-color: var(--app-dark-box-inner-box-background);
+    border: solid 1px #e7c88d !important;
+}
+
+
