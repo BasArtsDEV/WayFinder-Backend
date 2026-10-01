@@ -95,7 +95,12 @@
                                 <a href="{{ path('app_treasure_hunt_edit', {id: treasureHunt.id}) }}" title="Éditer" class="btn-app-primary btn btn-outline-primary rounded-pill px-3 py-2 fw-semibold d-flex align-items-center gap-1">
                                     <i class="app-button-icon bi bi-pencil-fill"></i>Éditer
                                 </a>
-                                {{ include('treasure_hunt/partials/_delete_button.html.twig') }}
+
+                                {{ include('_delete_button.html.twig', {
+                                    action_path: path('app_treasure_hunt_delete', {id: treasureHunt.id}),
+                                    csrf_token_name: 'delete' ~ treasureHunt.id,
+                                    confirm_message: 'Es-tu sûr de vouloir supprimer cette chasse aux trésors ?',
+                                }) }}
                             {% endif %}
                         </div>
                     </div>
@@ -214,12 +219,11 @@
                                 </a>
 
                                 {# Delete #}
-                                <form method="post" action="{{ path('app_riddle_delete', {id: riddle.id}) }}" class="d-inline" onsubmit="return confirm('Es-tu sûr de vouloir supprimer cette énigme ?');">
-                                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ riddle.id) }}">
-                                    <button type="submit" class="btn-app-danger btn-icon-only" aria-label="Supprimer" title="Supprimer">
-                                        <i class="bi bi-trash-fill"></i>Supprimer
-                                    </button>
-                                </form>
+                                {{ include('_delete_button.html.twig', {
+                                    action_path: path('app_riddle_delete', {id: riddle.id}),
+                                    csrf_token_name: 'delete' ~ riddle.id,
+                                    confirm_message: 'Es-tu sûr de vouloir supprimer cette énigme ?',
+                                }) }}
 
                             {% endif %}
                         </div>
