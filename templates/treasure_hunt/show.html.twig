@@ -77,16 +77,15 @@
 
                         <div class="d-flex align-items-center gap-2 ms-md-2">
 
-
                             {% if treasureHunt.published %}
-                                <form method="post" action="{{ path('app_treasure_hunt_unpublish', {'id': treasureHunt.id}) }}" class="d-inline">
+                                <form method="post" action="{{ path('app_treasure_hunt_unpublish', {id: treasureHunt.id}) }}" class="d-inline">
                                     <input type="hidden" name="_token" value="{{ csrf_token('unpublish' ~ treasureHunt.id) }}">
                                     <button type="submit" title="Dépublier" class="btn-app-danger btn btn-outline-primary rounded-pill px-3 py-2 fw-semibold d-flex align-items-center gap-1 border-0">
                                         <i class="app-button-icon bi bi-sign-stop-fill"></i>Dépublier
                                     </button>
                                 </form>
                             {% else %}
-                                <form method="post" action="{{ path('app_treasure_hunt_publish', {'id': treasureHunt.id}) }}" class="d-inline">
+                                <form method="post" action="{{ path('app_treasure_hunt_publish', {id: treasureHunt.id}) }}" class="d-inline">
                                     <input type="hidden" name="_token" value="{{ csrf_token('publish' ~ treasureHunt.id) }}">
                                     <button type="submit" title="Publier" class="btn-app-primary btn btn-outline-primary rounded-pill px-3 py-2 fw-semibold d-flex align-items-center gap-1 border-0">
                                         <i class="app-button-icon bi bi-cloud-arrow-up-fill"></i>Publier

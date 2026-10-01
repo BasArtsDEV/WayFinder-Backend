@@ -124,9 +124,9 @@ final class TreasureHuntController extends AbstractController
     public function publish(Request $request, TreasureHunt $treasureHunt, EntityManagerInterface $em): Response
     {
         if ($this->isCsrfTokenValid('publish'.$treasureHunt->getId(), $request->getPayload()->getString('_token'))) {
-
-            if (count($treasureHunt->getRiddles()) === 0) {
+            if (0 === count($treasureHunt->getRiddles())) {
                 $this->addFlash('error', 'Impossible de publier une chasse sans énigmes.');
+
                 return $this->redirectToRoute('app_treasure_hunt_show', ['id' => $treasureHunt->getId()]);
             }
 
