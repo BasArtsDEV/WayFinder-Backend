@@ -92,7 +92,7 @@ h1 {
     font-weight: 700;
 }
 
-p, span {
+p, span, label {
     font-family: 'Lexend', sans-serif;
     font-weight: 300;
 }
@@ -110,6 +110,7 @@ p, span {
 .btn-app-hypertext {
     color: var(--app-button-background);
     transition: background-color 0.4s;
+    text-decoration: none !important;
 }
 
 .btn-app-hypertext:hover {

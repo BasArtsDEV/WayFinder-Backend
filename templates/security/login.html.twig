@@ -50,16 +50,17 @@
                         <input type="checkbox" name="_remember_me" class="form-check-input mt-0">
                         <span>Se souvenir de moi</span>
                     </label>
-                    <a href="#" class="text-decoration-none text-dark fw-semibold hover-green">Mot de passe oublié ?</a>
+                    <a href="#" class="text-dark fw-semibold hover-green">Mot de passe oublié ?</a>
                 </div>
 
-                <button class="btn btn-login-submit" type="submit">
-                    CONNEXION
+                <button class="btn-app-primary btn-login-submit" type="submit">
+                    <i class="bi bi-box-arrow-in-right me-1"></i> Connexion
                 </button>
 
-                <div class="text-center mt-3">
-                    <a href="{{ path('app_register') }}" class="text-decoration-none text-secondary small hover-green">
-                        Pas encore de compte ? <strong class="text-success">Créer un compte</strong>
+                <div class="text-center mt-3 flex-row">
+                    <p style="margin-bottom: 0">Vous n'avez pas de compte ?</p>
+                    <a href="{{ path('app_register') }}" class="btn-app-hypertext">
+                        Créer un compte
                     </a>
                 </div>
             </form>
