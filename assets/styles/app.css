@@ -73,9 +73,9 @@
     --app-dark-box-background: #ffe6b7;
     --app-dark-box-inner-box-background: #ffeece;
 
-    --brand-primary: #10b981;
-    --brand-dark: #111f1d;
-    --footer-text: #94a3b8;
+    --brand-primary: var(--app-header-background);
+    --brand-dark: var(--app-header-background);
+    --footer-text: var(--app-header-button-text);
     --border-theme: rgba(255, 255, 255, 0.1);
 }
 
