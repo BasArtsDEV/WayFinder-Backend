@@ -8,17 +8,11 @@
 
 {% block main %}
     <div class="team-profile-page">
-        <div class="team-banner-container">
-            {% if team.banner %}
-                <img src="data:image/png;base64,{{ team.banner|e('html_attr') }}" alt="Bannière de {{ team.name }}" class="team-banner-img">
-            {% else %}
-                <div class="team-banner-default"></div>
-            {% endif %}
-
-            <div class="team-banner-title-overlay">
+        {% embed '_banner.html.twig' with {banner: team.banner} %}
+            {% block overlay %}
                 <h1 class="fw-bold text-white display-5 mb-0 text-shadow">{{ team.name }}</h1>
-            </div>
-        </div>
+            {% endblock %}
+        {% endembed %}
 
         <div class="container team-content-wrapper pb-5">
 
