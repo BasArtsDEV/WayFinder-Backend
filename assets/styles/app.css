@@ -143,6 +143,7 @@ p, span {
     font-size: 1.1rem !important;
     color: var(--app-button-text) !important;
     text-align: center;
+    text-decoration: none !important;
 
     background-color: var(--app-button-background) !important;
 
