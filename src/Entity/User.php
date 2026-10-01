@@ -89,6 +89,8 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\HasLifecycleCallbacks]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
+    public const int MAX_TEAMS = 5;
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -172,6 +174,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     #[ORM\ManyToMany(targetEntity: Team::class, inversedBy: 'users')]
     #[ORM\JoinColumn(nullable: true)]
+    #[Assert\Count(
+        max: self::MAX_TEAMS,
+        maxMessage: 'Un utilisateur ne peut appartenir qu\'à '.self::MAX_TEAMS.' équipes.'
+    )]
     private Collection $teams;
 
     /**
@@ -350,6 +356,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function addTeam(Team $team): static
     {
         if (!$this->teams->contains($team)) {
+            if (count($this->teams) >= self::MAX_TEAMS) {
+                throw new \LogicException('Un utilisateur ne peut appartenir qu\'à '.self::MAX_TEAMS.' équipes.');
+            }
+
             $this->teams->add($team);
             $team->addUser($this);
         }
