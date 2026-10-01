@@ -10,3 +10,5 @@ parameters:
         -
             message: '#Call to function method_exists\(\) with.*bootEnv.*will always evaluate to true#'
             path: tests/bootstrap.php
+    excludePaths:
+            - tests/Support/_generated/*
