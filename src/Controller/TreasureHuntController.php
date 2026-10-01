@@ -132,7 +132,7 @@ final class TreasureHuntController extends AbstractController
     #[Route('/treasure_hunt/{id}/unpublish', name: 'app_treasure_hunt_unpublish', requirements: ['id' => '\d+'], methods: ['POST'])]
     public function unpublish(Request $request, TreasureHunt $treasureHunt, EntityManagerInterface $em): Response
     {
-        if ($this->isCsrfTokenValid('unpublish' . $treasureHunt->getId(), $request->getPayload()->getString('_token'))) {
+        if ($this->isCsrfTokenValid('unpublish'.$treasureHunt->getId(), $request->getPayload()->getString('_token'))) {
             $treasureHunt->setPublished(false);
             $em->flush();
 
