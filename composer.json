@@ -139,11 +139,19 @@
         "fix:twigcs": "twig-cs-fixer fix templates/",
         "test:phpstan": "vendor/bin/phpstan analyse src tests",
         "test:yaml": "php bin/console lint:yaml config",
+        "test:codeception": [
+            "codecept clean",
+            "php bin/console doctrine:database:drop --quiet --force --env=test || true",
+            "php bin/console doctrine:database:create --quiet --env=test",
+            "php bin/console doctrine:schema:create --quiet --env=test",
+            "php vendor/bin/codecept run"
+        ],
         "test" : [
             "@test:phpcs",
             "@test:twigcs",
             "@test:phpstan",
-            "@test:yaml"
+            "@test:yaml",
+            "@test:codeception"
         ],
         "fix" : [
             "@fix:phpcs",
@@ -173,6 +181,7 @@
         "fix:twigcs": "Applies style fixes to Twig code",
         "test:phpstan": "Checks PHP code format depending on phpstan conditions",
         "test:yaml": "Does a verification for each yaml file within in config/",
+        "test:codeception": "Run the code tests after initializing the test database",
         "test": "Runs all code checks",
         "fix": "Applies all code fixes",
         "db": "Recreates the DB, applies migrations, and loads fixtures",
