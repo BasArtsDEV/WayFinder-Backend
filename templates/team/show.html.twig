@@ -103,7 +103,7 @@
                             <i class="bi bi-people-fill text-success"></i> Membres
                         </h3>
 
-                        {% set maxMembers = 10 %}
+                        {% set maxMembers = constant('App\\Entity\\Team::MAX_USERS') %}
                         {% set currentCount = team.users|length %}
                         {% set percentage = (currentCount / maxMembers) * 100 %}
                         {% if percentage > 100 %}{% set percentage = 100 %}{% endif %}
