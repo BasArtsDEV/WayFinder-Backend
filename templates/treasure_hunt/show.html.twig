@@ -49,13 +49,29 @@
                         <div>
                             {% if treasureHunt.published %}
                                 <span class="d-block text-muted mb-1" style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px;">Code d'invitation</span>
-                                <div class="bg-white border rounded px-3 py-1.5 d-inline-flex align-items-center gap-2"
-                                     style="cursor: pointer; transition: all 0.2s ease;"
-                                     onclick="navigator.clipboard.writeText('{{ treasureHunt.invitationCode }}'); alert('Code copié !');"
+                                <div class="bg-white border rounded px-3 py-1.5 d-inline-flex align-items-center justify-content-between gap-3"
+                                     style="cursor: pointer; transition: all 0.2s ease; min-width: 120px;"
+                                     onclick="copyCode(this, '{{ treasureHunt.invitationCode }}')"
                                      title="Cliquer pour copier">
                                     <span class="text-dark fw-bold" id="invitationCodeText">{{ treasureHunt.invitationCode }}</span>
-                                    <i class="bi bi-copy text-primary"></i>
+                                    <i class="bi bi-clipboard text-success copy-icon"></i>
                                 </div>
+
+                                <script>
+                                    function copyCode(element, code) {
+                                        navigator.clipboard.writeText(code).then(() => {
+                                            const icon = element.querySelector('.copy-icon');
+
+                                            icon.classList.remove('bi-clipboard');
+                                            icon.classList.add('bi-check-lg');
+                                            
+                                            setTimeout(() => {
+                                                icon.classList.remove('bi-check-lg');
+                                                icon.classList.add('bi-clipboard');
+                                            }, 2000);
+                                        });
+                                    }
+                                </script>
                             {% endif %}
                         </div>
 
