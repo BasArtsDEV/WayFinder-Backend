@@ -119,11 +119,24 @@ final class TreasureHuntController extends AbstractController
     #[Route('/treasure_hunt/{id}/publish', name: 'app_treasure_hunt_publish', requirements: ['id' => '\d+'], methods: ['POST'])]
     public function publish(Request $request, TreasureHunt $treasureHunt, EntityManagerInterface $em): Response
     {
-        if ($this->isCsrfTokenValid('publish' . $treasureHunt->getId(), $request->getPayload()->getString('_token'))) {
+        if ($this->isCsrfTokenValid('publish'.$treasureHunt->getId(), $request->getPayload()->getString('_token'))) {
             $treasureHunt->setPublished(true);
             $em->flush();
 
             $this->addFlash('success', 'La chasse au trésor a été publiée avec succès.');
+        }
+
+        return $this->redirectToRoute('app_treasure_hunt_show', ['id' => $treasureHunt->getId()]);
+    }
+
+    #[Route('/treasure_hunt/{id}/unpublish', name: 'app_treasure_hunt_unpublish', requirements: ['id' => '\d+'], methods: ['POST'])]
+    public function unpublish(Request $request, TreasureHunt $treasureHunt, EntityManagerInterface $em): Response
+    {
+        if ($this->isCsrfTokenValid('unpublish' . $treasureHunt->getId(), $request->getPayload()->getString('_token'))) {
+            $treasureHunt->setPublished(false);
+            $em->flush();
+
+            $this->addFlash('warning', 'La chasse au trésor n\'est plus publiée.');
         }
 
         return $this->redirectToRoute('app_treasure_hunt_show', ['id' => $treasureHunt->getId()]);
