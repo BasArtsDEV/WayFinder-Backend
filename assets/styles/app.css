@@ -398,6 +398,57 @@ p, span {
     z-index: 10;
 }
 
+.custom-profile-toggle::after {
+    display: none !important;
+}
+
+.profile-avatar-container img,
+.profile-avatar-container svg {
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.crunchy-dropdown {
+    min-width: 280px;
+    background-color: #141519 !important;
+}
+
+.crunchy-dropdown .dropdown-section {
+    border-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+.crunchy-dropdown .dropdown-item {
+    font-size: 0.95rem;
+    font-weight: 400;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.crunchy-dropdown .dropdown-item:hover {
+    background-color: rgba(255, 255, 255, 0.07) !important;
+    color: #ffffff !important;
+}
+
+.crunchy-dropdown .dropdown-item i {
+    width: 24px;
+    text-align: center;
+}
+
+.crunchy-arrow {
+    font-size: 0.75rem;
+    color: #ffffff;
+    opacity: 0.85;
+    transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.custom-profile-toggle:hover .crunchy-arrow,
+.custom-profile-toggle[aria-expanded="true"] .crunchy-arrow {
+    opacity: 1;
+}
+
+.custom-profile-toggle[aria-expanded="true"] .crunchy-arrow {
+    transform: rotate(180deg);
+}
+
 @media (min-width: 992px) {
     .navbar-centered-links {
         position: absolute;
