@@ -70,8 +70,8 @@
 
     --brand-primary-hover: #1b4332;
 
-    --app-dark-box-background: #ffe6b7;
-    --app-dark-box-inner-box-background: #ffeece;
+    --app-dark-box-background: #ffffff;
+    --app-dark-box-inner-box-background: #f8f9fa;
 
     --brand-primary: var(--app-header-background);
     --brand-dark: var(--app-header-background);
