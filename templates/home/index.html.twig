@@ -15,22 +15,40 @@
 
             <h1 class="fw-bold mt-2">Bienvenue !</h1>
 
-            <p class="welcome-text mb-2">
-                Pour commencer à créer ou à jouer à une carte au trésor, veuillez utiliser un compte.
-            </p>
+            {% if app.user %}
+                <p class="welcome-text mb-2">
+                    Ravi de te revoir, {{ app.user.username }} ! Prêt à reprendre l'aventure ?
+                </p>
+            {% else %}
+                <p class="welcome-text mb-2">
+                    Pour commencer à créer ou à jouer à une carte au trésor, veuillez utiliser un compte.
+                </p>
+            {% endif %}
 
             <hr class="separator">
 
             <div class="actions-container d-flex flex-column justify-content-center align-items-center gap-3 w-100">
-                <a href="{{ path('app_login') }}" class="btn welcome-btn login-btn d-flex align-items-center">
-                    <span class="btn-icon"><img src="{{ asset('icons/enter.png') }}" alt="Connexion" class="icon-img"></span>
-                    <span class="btn-text">Connexion</span>
-                </a>
+                {% if app.user %}
+                    <a href="{{ path('app_profil') }}" class="btn welcome-btn login-btn d-flex align-items-center">
+                        <span class="btn-icon"><img src="{{ asset('icons/enter.png') }}" alt="Tableau de bord" class="icon-img"></span>
+                        <span class="btn-text">Mon profil</span>
+                    </a>
 
-                <a href="{{ path('app_register') }}" class="btn welcome-btn register-btn d-flex align-items-center">
-                    <span class="btn-icon"><img src="{{ asset('icons/img.png') }}" alt="Créer un compte" class="icon-img"></span>
-                    <span class="btn-text">Créer mon compte</span>
-                </a>
+                    <a href="{{ path('app_logout') }}" class="btn welcome-btn register-btn d-flex align-items-center">
+                        <span class="btn-icon"><img src="{{ asset('icons/img.png') }}" alt="Déconnexion" class="icon-img"></span>
+                        <span class="btn-text">Déconnexion</span>
+                    </a>
+                {% else %}
+                    <a href="{{ path('app_login') }}" class="btn welcome-btn login-btn d-flex align-items-center">
+                        <span class="btn-icon"><img src="{{ asset('icons/enter.png') }}" alt="Connexion" class="icon-img"></span>
+                        <span class="btn-text">Connexion</span>
+                    </a>
+
+                    <a href="{{ path('app_register') }}" class="btn welcome-btn register-btn d-flex align-items-center">
+                        <span class="btn-icon"><img src="{{ asset('icons/img.png') }}" alt="Créer un compte" class="icon-img"></span>
+                        <span class="btn-text">Créer mon compte</span>
+                    </a>
+                {% endif %}
             </div>
         </div>
     </div>
