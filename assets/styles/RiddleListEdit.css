@@ -1,0 +1,13 @@
+.riddle-title-box {
+    background-color: var(--app-dark-box-background);
+}
+
+.riddle-box {
+    background-color: var(--app-dark-box-background);
+}
+
+.riddle-box-in-box {
+    background-color: var(--app-dark-box-inner-box-background);
+}
+
+
