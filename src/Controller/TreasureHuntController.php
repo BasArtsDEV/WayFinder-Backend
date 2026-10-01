@@ -115,4 +115,17 @@ final class TreasureHuntController extends AbstractController
 
         return $this->redirectToRoute('app_treasure_hunt', [], Response::HTTP_SEE_OTHER);
     }
+
+    #[Route('/treasure_hunt/{id}/publish', name: 'app_treasure_hunt_publish', requirements: ['id' => '\d+'], methods: ['POST'])]
+    public function publish(Request $request, TreasureHunt $treasureHunt, EntityManagerInterface $em): Response
+    {
+        if ($this->isCsrfTokenValid('publish' . $treasureHunt->getId(), $request->getPayload()->getString('_token'))) {
+            $treasureHunt->setPublished(true);
+            $em->flush();
+
+            $this->addFlash('success', 'La chasse au trésor a été publiée avec succès.');
+        }
+
+        return $this->redirectToRoute('app_treasure_hunt_show', ['id' => $treasureHunt->getId()]);
+    }
 }
