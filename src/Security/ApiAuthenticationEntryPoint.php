@@ -38,7 +38,7 @@ class ApiAuthenticationEntryPoint implements AuthenticationEntryPointInterface
         if (null != $session->getBag('flashes')) {
             /** @var FlashBagInterface $flashBag */
             $flashBag = $session->getBag('flashes');
-            $flashBag->add('note', 'Vous devez vous authentifier pour accéder à cette page.');
+            $flashBag->add('error', 'Vous devez vous authentifier pour accéder à cette page.');
         }
 
         return new RedirectResponse($this->urlGenerator->generate('app_login'));
