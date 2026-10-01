@@ -84,7 +84,7 @@ composer start
 - ``db`` : Recreates the DB, applies migrations, and loads fixtures
 - ``fix:db``: Resets the DB and migration history, dropping and recreating the database, generating a fresh initial migration, and running database setup.
 
-## JWT Public key and Private key
+## JWT Public key and Private key (generated during composer start)
 You might need to generate both a public and private key to access the **JWT** (Json Web Token) feature
 by running the follow command in your terminal :
 ```shell
@@ -94,6 +94,24 @@ php bin/console lexik:jwt:generate-keypair [--skip-if-exists] [--overwrite]
 Where :
 - `--overwrite` will regenerate the keys if they already exist.
 - `--skip-if-exists` to do nothing if they already exist.
+
+### Accounts
+
+- Admin:
+    - Email: `admin@example.com`
+    - Username: `admin`
+    - Roles: `ROLE_ADMIN`
+
+- User:
+    - Email: `user@example.com`
+    - Username: `user`
+    - Roles: `ROLE_USER`
+    - Teams: 4 random teams assigned
+
+- Conceptor:
+    - Email: `conceptor@example.com`
+    - Username: `conceptor`
+    - Roles: `ROLE_CONCEPTOR`
 
 ### Conceptual Data Model
 
