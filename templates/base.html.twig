@@ -17,40 +17,6 @@
     {% block javascripts %}
         {% block importmap %}{{ importmap('app') }}{% endblock %}
     {% endblock %}
-
-    <style>
-        :root {
-            --brand-primary: #10b981;
-            --brand-dark: #111f1d;
-            --footer-text: #94a3b8;
-            --border-theme: rgba(255, 255, 255, 0.1);
-        }
-
-        .bg-theme-dark {
-            background-color: var(--brand-dark) !important;
-        }
-
-        .border-theme {
-            border-color: var(--border-theme) !important;
-        }
-
-        .fs-7 { font-size: 0.85rem; }
-        .fs-8 { font-size: 0.75rem; }
-        .tracking-wider { letter-spacing: 0.08em; }
-        .hover-emerald { transition: color 0.2s ease-in-out; }
-        .hover-emerald:hover { color: #34d399 !important; }
-
-        .navbar-shadow {
-            box-shadow: 0 15px 35px 2px rgba(0, 0, 0, 0.65) !important;
-            z-index: 1030;
-        }
-
-        .footer-shadow {
-            position: relative;
-            box-shadow: 0 -15px 35px 2px rgba(0, 0, 0, 0.55) !important;
-            z-index: 10;
-        }
-    </style>
 </head>
 <body class="d-flex flex-column min-vh-100">
 
@@ -154,15 +120,11 @@
             <div class="col-lg-4 col-md-12">
                 <span class="text-uppercase tracking-wider fw-bold fs-8 d-block mb-1" style="color: var(--brand-primary);">WAYFINDER</span>
                 <h2 class="text-white fw-bold h4 mb-2">Votre terrain de jeu</h2>
-                <p class="small mb-0 pe-lg-4 text-light opacity-75" style="line-height: 1.5;">
-                    Transformez n'importe quel lieu en parcours interactif et vivez des aventures inédites en équipe.
-                </p>
             </div>
 
             <div class="col-lg-2 col-md-3 col-6">
                 <h6 class="text-uppercase fw-semibold fs-8 tracking-wider mb-2 text-light">Produit</h6>
                 <ul class="list-unstyled small d-flex flex-column gap-1 mb-0">
-                    <li><a href="#" class="text-light opacity-75 text-decoration-none hover-emerald">Comment ça marche</a></li>
                     <li><a href="#" class="text-light opacity-75 text-decoration-none hover-emerald">Créer un compte</a></li>
                 </ul>
             </div>
@@ -171,7 +133,6 @@
                 <h6 class="text-uppercase fw-semibold fs-8 tracking-wider mb-2 text-light">Ressources</h6>
                 <ul class="list-unstyled small d-flex flex-column gap-1 mb-0">
                     <li><a href="#" class="text-light opacity-75 text-decoration-none hover-emerald">Foire aux questions</a></li>
-                    <li><a href="#" class="text-light opacity-75 text-decoration-none hover-emerald">Guides & Tutoriels</a></li>
                 </ul>
             </div>
 
@@ -179,14 +140,12 @@
                 <h6 class="text-uppercase fw-semibold fs-8 tracking-wider mb-2 text-light">Société</h6>
                 <ul class="list-unstyled small d-flex flex-column gap-1 mb-0">
                     <li><a href="#" class="text-light opacity-75 text-decoration-none hover-emerald">Nous contacter</a></li>
-                    <li><a href="#" class="text-light opacity-75 text-decoration-none hover-emerald">Avis clients</a></li>
                 </ul>
             </div>
 
             <div class="col-lg-2 col-md-3 col-6">
                 <h6 class="text-uppercase fw-semibold fs-8 tracking-wider mb-2 text-light">Légal</h6>
                 <ul class="list-unstyled small d-flex flex-column gap-1 mb-0">
-                    <li><a href="#" class="text-light opacity-75 text-decoration-none hover-emerald">Conditions d'utilisation</a></li>
                     <li><a href="#" class="text-light opacity-75 text-decoration-none hover-emerald">Mentions légales</a></li>
                 </ul>
             </div>
@@ -195,7 +154,6 @@
         <div class="row align-items-center py-2 mb-2 gy-2 border-top border-bottom border-theme">
             <div class="col-md-6 text-center text-md-start">
                 <div class="d-flex gap-2 justify-content-center justify-content-md-start align-items-center">
-                    <span class="text-uppercase fw-bold fs-8 tracking-wider me-2" style="color: var(--brand-primary);">Application :</span>
                     <a href="#" class="btn btn-sm text-light d-inline-flex align-items-center gap-2 px-2 py-1 rounded-2 border-theme bg-white bg-opacity-10">
                         <i class="bi bi-apple fs-6"></i>
                         <span class="fw-medium fs-8">App Store</span>
