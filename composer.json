@@ -188,6 +188,9 @@
         }
     },
     "require-dev": {
+        "codeception/codeception": "^5.3",
+        "codeception/module-asserts": "^3.3",
+        "codeception/module-symfony": "^3.11",
         "doctrine/doctrine-fixtures-bundle": "^4.3",
         "friendsofphp/php-cs-fixer": "^3.95",
         "phpro/grumphp-shim": "^2.23",
