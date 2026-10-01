@@ -32,7 +32,7 @@
 
 :root {
     /* header */
-    --app-header-background: #57a841;
+    --app-header-background: #252525;
 
     --app-header-button-border: #67bf4c;
     --app-header-button-background: #4b9538;
@@ -425,7 +425,7 @@ p, span, label {
 
 .crunchy-dropdown {
     min-width: 280px;
-    background-color: #f6f6f6 !important;
+    background-color: #333333 !important;
 }
 
 .crunchy-dropdown .dropdown-section {
