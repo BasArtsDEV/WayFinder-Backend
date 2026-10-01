@@ -16,7 +16,10 @@ class TeamRepository extends ServiceEntityRepository
         parent::__construct($registry, Team::class);
     }
 
-    public function findAllTeamsOrderedByName()
+    /**
+     * @return Team[]
+     */
+    public function findAllTeamsOrderedByName(): array
     {
         return $this->createQueryBuilder('t')
             ->orderBy('t.name', 'ASC')
