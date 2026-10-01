@@ -64,7 +64,7 @@
 
                                             icon.classList.remove('bi-clipboard');
                                             icon.classList.add('bi-check-lg');
-                                            
+
                                             setTimeout(() => {
                                                 icon.classList.remove('bi-check-lg');
                                                 icon.classList.add('bi-clipboard');
@@ -121,19 +121,19 @@
                             </div>
 
                             {% if riddle is instanceof('App\\Entity\\RiddleQCM') %}
-                                <span class="badge bg-white text-success px-3 py-2 rounded-pill fs-6 fw-bold d-inline-flex align-items-center gap-2 border">
+                                <span class="badge text-success px-3 py-2 rounded-pill fs-6 fw-bold d-inline-flex align-items-center gap-2 border">
                                     <i class="bi bi-card-checklist"></i> QCM
                                 </span>
                             {% elseif riddle is instanceof('App\\Entity\\RiddleGPS') %}
-                                <span class="badge bg-white text-success px-3 py-2 rounded-pill fs-6 fw-bold d-inline-flex align-items-center gap-2 border">
+                                <span class="badge text-success px-3 py-2 rounded-pill fs-6 fw-bold d-inline-flex align-items-center gap-2 border">
                                     <i class="bi bi-geo-alt"></i> GPS
                                 </span>
                             {% elseif riddle is instanceof('App\\Entity\\RiddleQRCode') %}
-                                <span class="badge bg-white text-success px-3 py-2 rounded-pill fs-6 fw-bold d-inline-flex align-items-center gap-2 border">
+                                <span class="badge text-success px-3 py-2 rounded-pill fs-6 fw-bold d-inline-flex align-items-center gap-2 border">
                                     <i class="bi bi-qr-code-scan"></i> QR Code
                                 </span>
                             {% else %}
-                                <span class="badge bg-white text-success px-3 py-2 rounded-pill fs-6 fw-bold d-inline-flex align-items-center gap-2 border">
+                                <span class="badge text-success px-3 py-2 rounded-pill fs-6 fw-bold d-inline-flex align-items-center gap-2 border">
                                     <i class="bi bi-question-circle"></i> Question simple
                                 </span>
                             {% endif %}
