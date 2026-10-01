@@ -38,6 +38,8 @@ use Symfony\Component\Validator\Constraints as Assert;
 )]
 class Team
 {
+    public const int MAX_USERS = 10;
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -59,6 +61,10 @@ class Team
      */
     #[ORM\ManyToMany(targetEntity: User::class, mappedBy: 'teams')]
     #[Groups(['team:read', 'team:details'])]
+    #[Assert\Count(
+        max: self::MAX_USERS,
+        maxMessage: 'Une équipe ne peut pas contenir plus de '.self::MAX_USERS.' membres.'
+    )]
     private Collection $users;
 
     /**
@@ -125,6 +131,10 @@ class Team
     public function addUser(User $user): static
     {
         if (!$this->users->contains($user)) {
+            if (count($this->users) >= self::MAX_USERS) {
+                throw new \LogicException('Une équipe ne peut pas dépasser '.self::MAX_USERS.' membres.');
+            }
+
             $this->users->add($user);
             $user->addTeam($this);
         }
