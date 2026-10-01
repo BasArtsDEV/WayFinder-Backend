@@ -87,6 +87,9 @@ class RiddleQCM extends Riddle
         return $this;
     }
 
+    /**
+     * @return Collection<int, Choice>
+     */
     public function getChoices(): Collection
     {
         return $this->choices;

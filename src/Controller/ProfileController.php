@@ -60,7 +60,8 @@ final class ProfileController extends AbstractController
         }
         if (null != $bannerFile) {
             $binaryDataBanner = file_get_contents($bannerFile->getPathname());
-            $user->setBanner(base64_encode($binaryDataBanner));
+            $mimeType = $bannerFile->getMimeType();
+            $user->setBanner('data:'.$mimeType.';base64,'.base64_encode($binaryDataBanner));
         }
 
         $em->persist($user);
