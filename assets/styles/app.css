@@ -69,6 +69,9 @@
     --app-box-background: #f0dfbb;
 
     --brand-primary-hover: #1b4332;
+
+    --app-dark-box-background: #ffe6b7;
+    --app-dark-box-inner-box-background: #ffeece;
 }
 
 body {
@@ -77,6 +80,24 @@ body {
 
 .navbar.bg-success {
     background-color: var(--app-header-background) !important;
+}
+
+h1 {
+    font-family: 'Lexend', sans-serif;
+    font-weight: 700;
+}
+
+p, span {
+    font-family: 'Lexend', sans-serif;
+    font-weight: 300;
+}
+
+.bg-success {
+    background-color: var(--app-button-background) !important;
+}
+
+.text-success {
+    color: var(--app-button-background) !important;
 }
 
 /* buttons */
@@ -89,6 +110,16 @@ body {
 .btn-app-hypertext:hover {
     color: var(--app-button-background-hover);
     text-decoration: underline !important;
+}
+
+.app-dropdown-icon {
+    color: var(--app-button-background);
+    margin-right: 0.5rem;
+}
+
+.app-button-icon {
+    color: var(--app-button-text);
+    margin-right: 0.5rem;
 }
 
 .btn-app-primary {
