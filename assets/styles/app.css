@@ -57,6 +57,7 @@
     --app-button-secondary-text: #000000;
 
     --app-button-decline-background: #ff3c3c;
+    --app-button-decline-background-hover: #d12f2f;
     --app-button-decline-text: #ffffff;
 
     --app-input-background: #ebebeb;
@@ -142,6 +143,33 @@ body {
 
 .btn-app-secondary:hover {
     background-color: var(--app-button-secondary-background-hover) !important;
+}
+
+.btn-app-danger {
+    cursor: pointer;
+
+    display: flex;
+    flex-direction: row;
+    gap: 0.5rem;
+    align-items: center;
+
+    padding: 0.6rem 1rem !important;
+    border: none !important;
+    border-radius: 50px !important;
+
+    font-family: 'Lexend', sans-serif !important;
+    font-weight: 700 !important;
+    font-size: 1.1rem !important;
+    color: var(--app-button-text) !important;
+    text-align: center;
+
+    background-color: var(--app-button-decline-background) !important;
+
+    transition: background-color, 0.4s;
+}
+
+.btn-app-danger:hover {
+    background-color: var(--app-button-decline-background-hover) !important;
 }
 
 .btn-app-icon {
