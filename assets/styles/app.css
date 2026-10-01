@@ -111,6 +111,8 @@ p, span, label {
     color: var(--app-button-background);
     transition: background-color 0.4s;
     text-decoration: none !important;
+    font-family: 'Lexend', sans-serif;
+    font-weight: 300;
 }
 
 .btn-app-hypertext:hover {
