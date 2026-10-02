@@ -16,6 +16,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: TreasureHuntRepository::class)]
+#[ORM\HasLifecycleCallbacks]
 #[ApiResource(
     operations: [
         new Get(normalizationContext: ['groups' => ['hunt:read', 'hunt:details']]),
@@ -283,5 +284,13 @@ class TreasureHunt
         $this->invitationCode = strtoupper(bin2hex($bytes));
 
         return $this;
+    }
+
+    #[ORM\PrePersist]
+    public function setCreationDateValue(): void
+    {
+        if (!isset($this->creationDate)) {
+            $this->creationDate = new \DateTimeImmutable();
+        }
     }
 }
