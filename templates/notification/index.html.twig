@@ -1,20 +1,101 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello NotificationController!{% endblock %}
+{% block title %}Vos notifications{% endblock %}
 
-{% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('styles/notification/notification.css') }}">
+{% endblock %}
 
-<div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
+{% block main %}
+    <div class="notification-container">
+        <header class="eventpage-header">
+            <div class="event-title-block">
+                <h1 class="notifpage-title-text">Vos notifications</h1>
+                <p class="eventpage-subtitle">Vous trouverez ci-dessous vos notifications</p>
+            </div>
 
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code>C:/Users/Limeen/Documents/!IUT_Reims/Annee_3/dev/sae5-01-back/src/Controller/NotificationController.php</code></li>
-        <li>Your template at <code>C:/Users/Limeen/Documents/!IUT_Reims/Annee_3/dev/sae5-01-back/templates/notification/index.html.twig</code></li>
-    </ul>
-</div>
+            {% if notifications is not empty %}
+                <div class="header-actions">
+                    <a href="{{ path('app_notification_delete_all') }}" class="button-red icon-btn">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                            <path d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5M8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5m3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0"></path>
+                        </svg>
+                        <span>Tout supprimer</span>
+                    </a>
+                </div>
+            {% endif %}
+        </header>
+
+        <div class="eventpage-content">
+            <div class="notif-box-modern">
+                {% if notifications is not empty %}
+                    {% for notification in notifications %}
+
+                        {% set meta = notification.metadata|json_decode %}
+
+                        <div class="notif-card-modern">
+                            <div class="notif-card-content">
+                                <div class="notif-card-title">
+                                    <i class="fa-solid fa-user-group"></i>
+                                    {{ notification.title|trans }}
+                                </div>
+
+                                <a class="notif-card-description"
+                                    {% if notification.targetTeam %}
+                                        href="{{ path('app_team_show', {'id': notification.targetTeam.id}) }}"
+                                    {% endif %}
+                                   style="text-decoration: none">
+                                    {{ notification.description|trans({
+                                        '%username%': notification.targetUser ? notification.targetUser.username|capitalize : '',
+                                        '%team%': notification.targetTeam ? notification.targetTeam.name : ''
+                                    }) }}
+                                </a>
+
+                                <div class="notif-card-footer">
+                                    <span class="notif-card-date">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor" viewBox="0 0 16 16">
+                                            <path d="M8 3.5a.5.5 0 0 0-1 0V9a.5.5 0 0 0 .252.434l3.5 2a.5.5 0 0 0 .496-.868L8 8.71z"></path>
+                                            <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16m7-8A7 7 0 1 1 1 8a7 7 0 0 1 14 0"></path>
+                                        </svg>
+                                        {{ notification.date|format_datetime(pattern="d MMMM yyyy ' - ' HH:mm", locale=app.request.locale) }}
+                                    </span>
+                                </div>
+
+                                {% if notification.type in ['team_join_request', 'team_invitation'] %}
+                                    <div class="notif-actions-block mt-4">
+                                        <form action="{{ path('app_notification_action', {id: notification.id, action: 'accept'}) }}" method="POST" style="display: inline-block; margin-right: 0.5rem;">
+                                            <button type="submit" class="button-blue">
+                                                <i class="fa-regular fa-circle-check"></i> {{ 'notification.buttons.accept'|trans }}
+                                            </button>
+                                        </form>
+
+                                        <form action="{{ path('app_notification_action', {id: notification.id, action: 'decline'}) }}" method="POST" style="display: inline-block;">
+                                            <button type="submit" class="button-red">
+                                                <i class="fa-regular fa-circle-xmark"></i> {{ 'notification.buttons.decline'|trans }}
+                                            </button>
+                                        </form>
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                            <div class="notif-card-actions">
+                                <a href="{{ path('app_notification_delete', {notificationId: notification.id}) }}" class="delete-notif-btn" title="Supprimer">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                                        <path d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5M8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5m3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0"></path>
+                                    </svg>
+                                </a>
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="empty-notif-state">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="#cbd5e0" viewBox="0 0 16 16">
+                            <path d="M8 16a2 2 0 0 0 2-2H6a2 2 0 0 0 2 2M8 1.918l-.797.161A4 4 0 0 0 4 6c0 .628-.134 2.197-.459 3.742-.16.767-.376 1.566-.663 2.258h10.244c-.287-.692-.502-1.49-.663-2.258C12.134 8.197 12 6.628 12 6a4 4 0 0 0-3.203-3.92zM14.22 12c.223.447.481.801.78 1H1c.299-.199.557-.553.78-1C2.68 10.2 3 6.88 3 6c0-2.42 1.72-4.44 4.005-4.901a1 1 0 1 1 1.99 0A5 5 0 0 1 13 6c0 .88.32 4.2 1.22 6z"></path>
+                        </svg>
+                        <p>Vous n'avez aucune notification.</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
 {% endblock %}
