@@ -166,4 +166,29 @@ final class NotificationController extends AbstractController
 
         return $this->redirectToRoute('app_notification');
     }
+
+    /**
+     * Clear all notifications for the current user.
+     */
+    #[Route('/notification/delete-all', name: 'app_notification_delete_all')]
+    public function deleteAllNotifications(NotificationRepository $repository, EntityManagerInterface $entityManager): Response
+    {
+        /** @var User $user */
+        $user = $this->getUser();
+
+        $notifications = $repository->findByAny($user);
+
+        foreach ($notifications as $notification) {
+            $notification->removeReceiveNotif($user);
+
+            if ($notification->getReceiveNotif()->isEmpty()) {
+                $entityManager->remove($notification);
+            }
+        }
+
+        $entityManager->flush();
+        $this->addFlash('info', 'Toutes les notifications ont été supprimées.');
+
+        return $this->redirectToRoute('app_notification');
+    }
 }
