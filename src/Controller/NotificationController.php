@@ -9,7 +9,6 @@ use App\Repository\NotificationRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Routing\Requirement\Requirement;
@@ -46,6 +45,7 @@ final class NotificationController extends AbstractController
 
         if (!$leader) {
             $this->addFlash('danger', 'Cette équipe n\'a pas de chef.');
+
             return $this->redirectToRoute('app_notification');
         }
 
@@ -76,6 +76,7 @@ final class NotificationController extends AbstractController
 
         if ($team->getLeader() !== $leader) {
             $this->addFlash('danger', 'Seul le chef d\'équipe peut inviter des membres.');
+
             return $this->redirectToRoute('app_notification');
         }
 
@@ -91,6 +92,53 @@ final class NotificationController extends AbstractController
         $entityManager->flush();
 
         $this->addFlash('success', sprintf('Invitation envoyée à %s.', $guest->getUsername()));
+
+        return $this->redirectToRoute('app_notification');
+    }
+
+    /**
+     * Process accepting or declining a join request or invitation.
+     */
+    #[Route('/notification/{id}/action/{action}', name: 'app_notification_action', requirements: ['id' => Requirement::DIGITS, 'action' => 'accept|decline'], methods: ['POST'])]
+    public function handleAction(
+        Notification $notification,
+        string $action,
+        EntityManagerInterface $entityManager,
+    ): Response {
+        /** @var User $currentUser */
+        $currentUser = $this->getUser();
+
+        if (!$notification->getReceiveNotif()->contains($currentUser)) {
+            $this->addFlash('danger', 'Accès non autorisé.');
+
+            return $this->redirectToRoute('app_notification');
+        }
+
+        $team = $notification->getTargetTeam();
+
+        if ('accept' === $action && $team) {
+            if (Notification::TYPE_TEAM_JOIN_REQUEST === $notification->getType()) {
+                // The leader accepts the applicant into the team
+                $applicant = $notification->getTargetUser();
+                if ($applicant) {
+                    $team->addUser($applicant);
+                    $this->addFlash('success', sprintf('%s a rejoint votre équipe !', $applicant->getUsername()));
+                }
+            } elseif (Notification::TYPE_TEAM_INVITATION === $notification->getType()) {
+                // The player accepts the leader's invitation
+                $team->addUser($currentUser);
+                $this->addFlash('success', sprintf('Vous avez rejoint l\'équipe "%s" !', $team->getName()));
+            }
+        } else {
+            $this->addFlash('info', 'Demande refusée.');
+        }
+
+        $notification->removeReceiveNotif($currentUser);
+        if ($notification->getReceiveNotif()->isEmpty()) {
+            $entityManager->remove($notification);
+        }
+
+        $entityManager->flush();
 
         return $this->redirectToRoute('app_notification');
     }
