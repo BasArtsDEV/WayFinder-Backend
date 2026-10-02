@@ -2,6 +2,10 @@
 
 namespace App\Tests\Controller\User;
 
+use App\Entity\User;
+use App\Factory\UserFactory;
+use App\Tests\Support\ControllerTester;
+
 class UserGetCest
 {
     /**
@@ -13,10 +17,27 @@ class UserGetCest
             'id' => 'integer',
             'email' => 'string',
             'username' => 'string',
-            'firstname' => 'string',
-            'lastname' => 'string',
+            'firstName' => 'string',
+            'lastName' => 'string',
             'createdAt' => 'string',
-            'dateNais' => 'string',
         ];
+    }
+
+    public function anonymousUserGetSimpleUserElement(ControllerTester $I): void
+    {
+        $data = [
+            'email' => 'test0123@gmail.com',
+            'firstName' => 'prenom',
+            'lastName' => 'nom',
+        ];
+
+        $user = UserFactory::createOne($data);
+        var_dump($user->getId());
+        $I->sendGet('/api/users/1');
+
+        $I->seeResponseCodeIsSuccessful();
+        $I->seeResponseIsJson();
+        $I->seeResponseIsAnEntity(User::class, '/api/users/1');
+        $I->seeResponseIsAnItem(self::expectedProperties(), $data);
     }
 }
