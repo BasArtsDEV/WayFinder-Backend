@@ -7,3 +7,10 @@ modules:
               app_path: 'src'
               environment: 'test'
         - Asserts:
+        - Doctrine:
+              depends: Symfony
+              cleanup: true
+        -   \App\Tests\Support\Helper\ApiPlatform:
+              url: ''
+              base_path: '/api'
+              depends: Symfony
