@@ -142,4 +142,28 @@ final class NotificationController extends AbstractController
 
         return $this->redirectToRoute('app_notification');
     }
+
+    /**
+     * Delete a notification.
+     */
+    #[Route('/notification/delete/{notificationId}', name: 'app_notification_delete', requirements: ['notificationId' => Requirement::DIGITS])]
+    public function deleteNotification(#[MapEntity(id: 'notificationId')] Notification $notification, EntityManagerInterface $entityManager): Response
+    {
+        /** @var User $user */
+        $user = $this->getUser();
+
+        if (!$notification->getReceiveNotif()->contains($user)) {
+            return $this->redirectToRoute('app_notification');
+        }
+
+        $notification->removeReceiveNotif($user);
+
+        if ($notification->getReceiveNotif()->isEmpty()) {
+            $entityManager->remove($notification);
+        }
+
+        $entityManager->flush();
+
+        return $this->redirectToRoute('app_notification');
+    }
 }
