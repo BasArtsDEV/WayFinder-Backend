@@ -80,7 +80,7 @@ use Symfony\Component\Validator\Constraints as Assert;
             uriTemplate: '/register',
             normalizationContext: ['groups' => ['user:read']],
             denormalizationContext: ['groups' => ['user:create']],
-            validationContext: ['groups' => ['Default']],
+            validationContext: ['groups' => ['Default', 'Registration']],
             processor: UserRegistrationProcessor::class,
         ),
     ]
@@ -117,6 +117,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     #[Groups(['user:write', 'user:create'])]
     #[ApiProperty(readable: false, writable: true)]
+    #[Assert\Regex(
+        pattern: '/^(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/',
+        message: 'Le mot de passe doit contenir au moins 8 caractères, une majuscule, un chiffre et un symbole',
+        groups: ['Registration']
+    )]
     private string $password;
 
     #[ORM\Column(length: 30)]
