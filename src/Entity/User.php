@@ -12,6 +12,7 @@ use ApiPlatform\OpenApi\Model\Operation;
 use ApiPlatform\OpenApi\Model\Response;
 use ApiPlatform\OpenApi\Model\Schema;
 use App\Controller\GetAvatarController;
+use App\Controller\GetBannerController;
 use App\Repository\UserRepository;
 use App\State\MeProvider;
 use App\State\UserRegistrationProcessor;
@@ -69,6 +70,33 @@ use Symfony\Component\Validator\Constraints as Assert;
                 ],
                 summary: 'Retrieves a user avatar',
                 description: 'Retrieves the PNG image corresponding to a user avatar',
+            ),
+        ),
+        new Get(
+            uriTemplate: '/users/{id}/banner',
+            formats: [
+                'png' => 'image/png',
+            ],
+            controller: GetBannerController::class,
+            openapi: new Operation(
+                responses: [
+                    '200' => new Response(
+                        description: 'The user banner',
+                        content: new \ArrayObject([
+                            'image/png' => new MediaType(
+                                schema: new Schema([
+                                    'type' => 'string',
+                                    'format' => 'binary',
+                                ])
+                            ),
+                        ])
+                    ),
+                    '404' => new Response(
+                        description: 'User does not exist'
+                    ),
+                ],
+                summary: 'Retrieves a user banner',
+                description: 'Retrieves the PNG image corresponding to a user banner',
             ),
         ),
         new Patch(
