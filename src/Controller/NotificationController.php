@@ -33,4 +33,35 @@ final class NotificationController extends AbstractController
             'notifications' => $notifications,
         ]);
     }
+
+    /**
+     * A player requests to join a team, creates a notification for the Team Leader.
+     */
+    #[Route('/team/{id}/request-join', name: 'app_team_request_join', requirements: ['id' => Requirement::DIGITS], methods: ['POST'])]
+    public function requestJoinTeam(Team $team, EntityManagerInterface $entityManager): Response
+    {
+        /** @var User $applicant */
+        $applicant = $this->getUser();
+        $leader = $team->getLeader();
+
+        if (!$leader) {
+            $this->addFlash('danger', 'Cette équipe n\'a pas de chef.');
+            return $this->redirectToRoute('app_notification');
+        }
+
+        $notification = new Notification();
+        $notification->setType(Notification::TYPE_TEAM_JOIN_REQUEST);
+        $notification->setTitle('Demande à rejoindre l\'équipe');
+        $notification->setDescription(sprintf('%s souhaite rejoindre votre équipe "%s".', $applicant->getUsername(), $team->getName()));
+        $notification->setTargetUser($applicant);
+        $notification->setTargetTeam($team);
+        $notification->addReceiveNotif($leader);
+
+        $entityManager->persist($notification);
+        $entityManager->flush();
+
+        $this->addFlash('success', 'Votre demande pour rejoindre l\'équipe a été envoyée au chef.');
+
+        return $this->redirectToRoute('app_notification');
+    }
 }
