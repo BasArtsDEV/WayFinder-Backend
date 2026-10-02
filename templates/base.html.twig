@@ -41,8 +41,8 @@
 
             {% set currentRoute = app.request.attributes.get('_route') %}
             <div class="navbar-nav align-items-lg-center gap-lg-2 my-2 my-lg-0 navbar-centered-links">
-                <a class="nav-link text-light opacity-75 px-3 py-2 rounded-3 fw-semibold d-flex align-items-center gap-2 {{ currentRoute == 'app_treasure_hunt' ? 'active text-white opacity-100' : '' }}"
-                   href="{{ path('app_treasure_hunt') }}">
+                <a class="nav-link text-light opacity-75 px-3 py-2 rounded-3 fw-semibold d-flex align-items-center gap-2 {{ currentRoute == 'app_treasure_hunt_mine' ? 'active text-white opacity-100' : '' }}"
+                   href="{{ path('app_treasure_hunt_mine') }}">
                     <i class="bi bi-map"></i>
                     <span>Créations</span>
                 </a>
