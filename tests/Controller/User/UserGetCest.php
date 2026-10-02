@@ -31,8 +31,7 @@ class UserGetCest
             'lastName' => 'nom',
         ];
 
-        $user = UserFactory::createOne($data);
-        var_dump($user->getId());
+        UserFactory::createOne($data);
         $I->sendGet('/api/users/1');
 
         $I->seeResponseCodeIsSuccessful();
