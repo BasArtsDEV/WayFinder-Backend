@@ -8,6 +8,9 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Entity(repositoryClass: NotificationRepository::class)]
 class Notification
 {
+    public const string TYPE_TEAM_JOIN_REQUEST = 'team_join_request';
+    public const string TYPE_TEAM_INVITATION = 'team_invitation';
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
