@@ -76,11 +76,6 @@ final class UserFactory extends PersistentObjectFactory
                 if (null !== $this->passwordHasher) {
                     $user->setPassword($this->passwordHasher->hashPassword($user, $user->getPassword()));
                 }
-
-                if (self::faker()->boolean()) {
-                    $team = TeamFactory::randomOrCreate();
-                    $user->addTeam($team);
-                }
             })
         ;
     }
