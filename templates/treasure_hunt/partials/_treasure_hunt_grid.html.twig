@@ -10,6 +10,13 @@
                 </div>
                 <p class="text-muted small mb-3 text-truncate-2">{{ treasureHunt.description }}</p>
 
+                {% if showTeam|default(false) %}
+                    <div class="d-flex align-items-center gap-2 mb-3 small text-muted">
+                        <i class="bi bi-people-fill text-success"></i>
+                        <span class="fw-medium">{{ treasureHunt.team.name }}</span>
+                    </div>
+                {% endif %}
+
                 <div class="treasure-feedback-section d-flex align-items-center justify-content-between pt-2 border-top border-light">
                     {% set avgstars = treasureHunt.getAverageStars() ?? 0 %}
                     {% set feedbacks = treasureHunt.getFeedbacks() %}

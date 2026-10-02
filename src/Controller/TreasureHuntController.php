@@ -32,6 +32,31 @@ final class TreasureHuntController extends AbstractController
         ]);
     }
 
+    #[Route('/treasure_hunt/mine', name: 'app_treasure_hunt_mine')]
+    public function myTreasureHunts(): Response
+    {
+        $user = $this->getUser();
+        if (!$user) {
+            return $this->redirectToRoute('app_login');
+        }
+
+        /** @var \App\Entity\User $user */
+        $treasureHunts = [];
+        foreach ($user->getTeams() as $team) {
+            foreach ($team->gettreasurehunts() as $th) {
+                $treasureHunts[] = $th;
+            }
+        }
+
+        usort($treasureHunts, function ($a, $b) {
+            return $b->getCreationDate() <=> $a->getCreationDate();
+        });
+
+        return $this->render('treasure_hunt/my_treasure_hunts.html.twig', [
+            'treasureHunts' => $treasureHunts,
+        ]);
+    }
+
     #[Route('/treasure_hunt/new', name: 'app_treasure_hunt_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $em): Response
     {
