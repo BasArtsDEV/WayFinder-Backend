@@ -40,6 +40,7 @@ class Notification
      * @var Collection<int, User>
      */
     #[ORM\ManyToMany(targetEntity: User::class)]
+    #[ORM\JoinTable(name: 'receive_notif')]
     private Collection $receiveNotif;
 
     /**
