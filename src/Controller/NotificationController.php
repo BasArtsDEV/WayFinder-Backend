@@ -28,14 +28,6 @@ final class NotificationController extends AbstractController
 
         $notifications = $repository->findByAny($user);
 
-        foreach ($notifications as $notification) {
-            if (is_string($notification->getMetadata())) {
-                $notification->parsedMetadata = json_decode($notification->getMetadata(), true);
-            } else {
-                $notification->parsedMetadata = $notification->getMetadata();
-            }
-        }
-
         return $this->render('notification/index.html.twig', [
             'notifications' => $notifications,
         ]);
