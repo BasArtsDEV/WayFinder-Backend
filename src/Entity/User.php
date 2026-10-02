@@ -126,7 +126,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?int $id = null;
 
     #[ORM\Column(length: 180)]
-    #[Groups(['user:write', 'user:me', 'user:create'])]
+    #[Groups(['user:read', 'user:write', 'user:me', 'user:create'])]
     #[Assert\NotBlank]
     #[Assert\Email(
         message: 'L\'email "{{ value }}" n\'est pas une adresse email valide.'
@@ -212,7 +212,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * @var Collection<int, Team>
      */
     #[ORM\ManyToMany(targetEntity: Team::class, inversedBy: 'users')]
-    #[ORM\JoinColumn(nullable: true)]
     #[Assert\Count(
         max: self::MAX_TEAMS,
         maxMessage: 'Un utilisateur ne peut appartenir qu\'à '.self::MAX_TEAMS.' équipes.'
