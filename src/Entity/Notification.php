@@ -3,6 +3,9 @@
 namespace App\Entity;
 
 use App\Repository\NotificationRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: NotificationRepository::class)]
@@ -29,10 +32,35 @@ class Notification
     private ?array $metadata = null;
 
     #[ORM\Column]
-    private ?\DateTime $date = null;
+    private ?\DateTimeImmutable $date = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $metadata = null;
+    /**
+     * Notification received by one or more users (Receive_notif).
+     *
+     * @var Collection<int, User>
+     */
+    #[ORM\ManyToMany(targetEntity: User::class)]
+    private Collection $receiveNotif;
+
+    /**
+     * User targeted by the action (Target_user).
+     */
+    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[ORM\JoinColumn(nullable: true)]
+    private ?User $targetUser = null;
+
+    /**
+     * Team targeted by the action (Target_team).
+     */
+    #[ORM\ManyToOne(targetEntity: Team::class)]
+    #[ORM\JoinColumn(nullable: true)]
+    private ?Team $targetTeam = null;
+
+    public function __construct()
+    {
+        $this->receiveNotif = new ArrayCollection();
+        $this->date = new \DateTimeImmutable();
+    }
 
     public function getId(): ?int
     {
@@ -92,21 +120,55 @@ class Notification
         return $this->date;
     }
 
-    public function setDate(\DateTime $date): static
+    public function setDate(\DateTimeImmutable $date): static
     {
         $this->date = $date;
 
         return $this;
     }
 
-    public function getMetadata(): ?string
+    /** @return Collection<int, User> */
+    public function getReceiveNotif(): Collection
     {
-        return $this->metadata;
+        return $this->receiveNotif;
     }
 
-    public function setMetadata(?string $metadata): static
+    public function addReceiveNotif(User $user): static
     {
-        $this->metadata = $metadata;
+        if (!$this->receiveNotif->contains($user)) {
+            $this->receiveNotif->add($user);
+        }
+
+        return $this;
+    }
+
+    public function removeReceiveNotif(User $user): static
+    {
+        $this->receiveNotif->removeElement($user);
+
+        return $this;
+    }
+
+    public function getTargetUser(): ?User
+    {
+        return $this->targetUser;
+    }
+
+    public function setTargetUser(?User $targetUser): static
+    {
+        $this->targetUser = $targetUser;
+
+        return $this;
+    }
+
+    public function getTargetTeam(): ?Team
+    {
+        return $this->targetTeam;
+    }
+
+    public function setTargetTeam(?Team $targetTeam): static
+    {
+        $this->targetTeam = $targetTeam;
 
         return $this;
     }
