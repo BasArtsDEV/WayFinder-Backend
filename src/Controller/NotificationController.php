@@ -17,11 +17,19 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 final class NotificationController extends AbstractController
 {
+    /**
+     * Display the current user's notifications list.
+     */
     #[Route('/notification', name: 'app_notification')]
-    public function index(): Response
+    public function index(NotificationRepository $repository): Response
     {
+        /** @var User $user */
+        $user = $this->getUser();
+
+        $notifications = $repository->findByAny($user);
+
         return $this->render('notification/index.html.twig', [
-            'controller_name' => 'NotificationController',
+            'notifications' => $notifications,
         ]);
     }
 }
