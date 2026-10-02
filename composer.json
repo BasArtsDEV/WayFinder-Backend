@@ -141,10 +141,9 @@
         "test:phpstan": "vendor/bin/phpstan analyse src tests",
         "test:yaml": "php bin/console lint:yaml config",
         "test:codeception": [
-            "codecept clean",
-            "php bin/console doctrine:database:drop --quiet --force --env=test || true",
-            "php bin/console doctrine:database:create --quiet --env=test",
-            "php bin/console doctrine:schema:create --quiet --env=test",
+            "php vendor/bin/codecept clean",
+            "bin/console doctrine:schema:drop --force --quiet --env=test",
+            "bin/console doctrine:schema:create --quiet --env=test",
             "php vendor/bin/codecept run"
         ],
         "test" : [
@@ -200,6 +199,8 @@
     "require-dev": {
         "codeception/codeception": "^5.3",
         "codeception/module-asserts": "^3.3",
+        "codeception/module-doctrine": "^3.3",
+        "codeception/module-rest": "^3.4",
         "codeception/module-symfony": "^3.11",
         "doctrine/doctrine-fixtures-bundle": "^4.3",
         "friendsofphp/php-cs-fixer": "^3.95",

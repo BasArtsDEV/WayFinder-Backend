@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Équipe : {{ team.name }}{% endblock %}
+{% block title %}{{ team.name|raw }}{% endblock %}
 
 {% block stylesheets %}
     <link href="{{ asset('styles/team/show.css') }}" type="text/css" rel="stylesheet" />

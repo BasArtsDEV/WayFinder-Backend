@@ -459,6 +459,17 @@ p, span, label {
     transform: rotate(180deg);
 }
 
+.crunchy-dropdown .dropdown-item:hover,
+.crunchy-dropdown .dropdown-item:focus {
+    background-color: #444444 !important;
+    color: #ffffff !important;
+}
+
+.crunchy-dropdown .dropdown-item:hover i,
+.crunchy-dropdown .dropdown-item:focus i {
+    color: #ffffff !important;
+}
+
 @media (min-width: 992px) {
     .navbar-centered-links {
         position: absolute;

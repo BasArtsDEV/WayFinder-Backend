@@ -61,7 +61,6 @@ final class UserFactory extends PersistentObjectFactory
                 strtolower(self::faker()->colorName().self::faker()->word()),
                 strtolower(self::faker()->dateTime()->format('M').self::faker()->firstName()),
             ]),
-            'avatar' => self::faker()->imageUrl(100, 100, 'people'),
             'isVerified' => true,
         ];
     }
@@ -76,11 +75,6 @@ final class UserFactory extends PersistentObjectFactory
             ->afterInstantiate(function (User $user) {
                 if (null !== $this->passwordHasher) {
                     $user->setPassword($this->passwordHasher->hashPassword($user, $user->getPassword()));
-                }
-
-                if (self::faker()->boolean()) {
-                    $team = TeamFactory::randomOrCreate();
-                    $user->addTeam($team);
                 }
             })
         ;

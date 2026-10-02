@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}{{ treasureHunt.title }} - Modification{% endblock %}
+{% block title %}{{ treasureHunt.title|raw }}{% endblock %}
 
 {% block stylesheets %}
     <link rel="stylesheet" href="{{ asset('styles/riddle/show.css') }}">
