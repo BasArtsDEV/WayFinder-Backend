@@ -25,6 +25,9 @@ class Notification
     #[ORM\Column(length: 2048, nullable: true)]
     private ?string $description = null;
 
+    #[ORM\Column(type: Types::JSON, nullable: true)]
+    private ?array $metadata = null;
+
     #[ORM\Column]
     private ?\DateTime $date = null;
 
@@ -72,7 +75,19 @@ class Notification
         return $this;
     }
 
-    public function getDate(): ?\DateTime
+    public function getMetadata(): ?array
+    {
+        return $this->metadata;
+    }
+
+    public function setMetadata(?array $metadata): static
+    {
+        $this->metadata = $metadata;
+
+        return $this;
+    }
+
+    public function getDate(): ?\DateTimeImmutable
     {
         return $this->date;
     }
