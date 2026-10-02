@@ -64,4 +64,34 @@ final class NotificationController extends AbstractController
 
         return $this->redirectToRoute('app_notification');
     }
+
+    /**
+     * The team leader invites a player, create a notification for the target User.
+     */
+    #[Route('/team/{id}/invite/{userId}', name: 'app_team_invite_user', requirements: ['id' => Requirement::DIGITS, 'userId' => Requirement::DIGITS], methods: ['POST'])]
+    public function inviteUserToTeam(Team $team, #[MapEntity(id: 'userId')] User $guest, EntityManagerInterface $entityManager): Response
+    {
+        /** @var User $leader */
+        $leader = $this->getUser();
+
+        if ($team->getLeader() !== $leader) {
+            $this->addFlash('danger', 'Seul le chef d\'équipe peut inviter des membres.');
+            return $this->redirectToRoute('app_notification');
+        }
+
+        $notification = new Notification();
+        $notification->setType(Notification::TYPE_TEAM_INVITATION);
+        $notification->setTitle('Invitation à rejoindre une équipe');
+        $notification->setDescription(sprintf('L\'équipe "%s" vous invite à rejoindre ses rangs !', $team->getName()));
+        $notification->setTargetUser($guest);
+        $notification->setTargetTeam($team);
+        $notification->addReceiveNotif($guest);
+
+        $entityManager->persist($notification);
+        $entityManager->flush();
+
+        $this->addFlash('success', sprintf('Invitation envoyée à %s.', $guest->getUsername()));
+
+        return $this->redirectToRoute('app_notification');
+    }
 }
