@@ -56,6 +56,7 @@
 
             <div class="d-flex align-items-center gap-3 ms-lg-auto">
                 {% if app.user %}
+                    {% set notifCount = app_notifications|length %}
                     <div class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle text-white d-flex align-items-center gap-2 p-0 custom-profile-toggle"
                            href="#"
@@ -63,11 +64,16 @@
                            role="button"
                            data-bs-toggle="dropdown"
                            aria-expanded="false">
-                            <div class="profile-avatar-container">
+                            <div class="profile-avatar-container position-relative">
                                 {{ include('profile/partials/_avatar.html.twig', {
                                     user: app.user,
                                     size: 38,
                                 }) }}
+                                {% if notifCount > 0 %}
+                                    <span class="position-absolute top-0 end-0 p-1 bg-danger border border-dark rounded-circle">
+                                        <span class="visually-hidden">Nouvelles notifications</span>
+                                    </span>
+                                {% endif %}
                             </div>
                             <i class="bi bi-caret-down-fill crunchy-arrow"></i>
                         </a>
@@ -113,6 +119,9 @@
                                 <a class="dropdown-item d-flex align-items-center gap-3 py-2 px-3 rounded-2  text-light" href="{{ path('app_notification') }}">
                                     <i class="bi bi-bell fs-5"></i>
                                     <span>Notifications</span>
+                                    {% if notifCount > 0 %}
+                                        <span class="badge rounded-pill bg-danger ms-auto">{{ notifCount > 99 ? '99+' : notifCount }}</span>
+                                    {% endif %}
                                 </a>
                             </div>
 
