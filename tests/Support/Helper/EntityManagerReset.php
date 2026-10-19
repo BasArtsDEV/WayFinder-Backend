@@ -34,6 +34,9 @@ EOF;
      */
     protected array $config = ['base_path' => '/api'];
 
+    /**
+     * @return array<class-string<Module>, string>
+     */
     public function _depends(): array
     {
         return [
@@ -109,8 +112,8 @@ EOF;
     protected static function getJsonLdPropertiesTypes(array $propertiesTypes): array
     {
         return array_merge([
-            '@context' => 'string:path',
-            '@id' => 'string:path',
+            '@context' => 'string',
+            '@id' => 'string',
             '@type' => 'string',
         ], $propertiesTypes);
     }
@@ -169,8 +172,8 @@ EOF;
     public function seeResponseIsACollection(string $className, string $collectionPath, array $propertiesTypes = []): void
     {
         $entityName = $this->getShortClassName($className);
-        $this->seeResponseMatchesJsonType(self::getJsonLdPropertiesTypes($propertiesTypes));
-        $this->seeResponseContainsJson([
+        $this->rest->seeResponseMatchesJsonType(self::getJsonLdPropertiesTypes($propertiesTypes));
+        $this->rest->seeResponseContainsJson([
             '@context' => $this->getBasePath().'/contexts/'.$entityName,
             '@type' => 'Collection',
             '@id' => $collectionPath,
@@ -190,5 +193,4 @@ EOF;
             $this->fail('Response is not JSON');
         }
     }
-
 }
