@@ -45,6 +45,7 @@ final class NotificationController extends AbstractController
 
         if (!$leader) {
             $this->addFlash('danger', 'Cette équipe n\'a pas de chef.');
+
             return $this->redirectToRoute('app_team_show', ['id' => $team->getId()]);
         }
 
@@ -57,6 +58,7 @@ final class NotificationController extends AbstractController
 
         if ($existingRequest) {
             $this->addFlash('warning', 'Vous avez déjà envoyé une demande pour rejoindre cette équipe.');
+
             return $this->redirectToRoute('app_team_show', ['id' => $team->getId()]);
         }
 
