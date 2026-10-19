@@ -268,7 +268,7 @@ textarea:focus {
 }
 
 .notif-card-modern:hover {
-    border-color: #0d6efd;
+    border-color: var(--app-button-background);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
 }
 
