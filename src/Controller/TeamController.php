@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Team;
+use App\Entity\User;
 use App\Form\TeamType;
 use App\Repository\TeamRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -74,6 +75,45 @@ final class TeamController extends AbstractController
         }
 
         return $this->redirectToRoute('app_team', [], Response::HTTP_SEE_OTHER);
+    }
+
+    #[Route('/team/{id}/leave', name: 'app_team_leave', requirements: ['id' => '\d+'], methods: ['POST'])]
+    public function leave(
+        Request $request,
+        Team $team,
+        EntityManagerInterface $em,
+    ): Response {
+        /** @var User $user */
+        $user = $this->getUser();
+
+        // CSRF token verification
+        if (!$this->isCsrfTokenValid('leave'.$team->getId(), $request->getPayload()->getString('_token'))) {
+            $this->addFlash('danger', 'Jeton CSRF invalide.');
+
+            return $this->redirectToRoute('app_team_show', ['id' => $team->getId()]);
+        }
+
+        // The leader cannot leave the team (they must delete it or pass on the role)
+        if ($team->getLeader() === $user) {
+            $this->addFlash('danger', 'En tant que chef d\'équipe, vous ne pouvez pas quitter l\'équipe. Vous devez la supprimer.');
+
+            return $this->redirectToRoute('app_team_show', ['id' => $team->getId()]);
+        }
+
+        // Verify that the user belongs to the team
+        if (!$team->getUsers()->contains($user)) {
+            $this->addFlash('danger', 'Vous ne faites pas partie de cette équipe.');
+
+            return $this->redirectToRoute('app_team_show', ['id' => $team->getId()]);
+        }
+
+        // Remove user
+        $team->removeUser($user);
+        $em->flush();
+
+        $this->addFlash('success', 'Vous avez quitté l\'équipe avec succès.');
+
+        return $this->redirectToRoute('app_team_show', ['id' => $team->getId()]);
     }
 
     #[Route('/team/{id}/edit', name: 'app_team_edit', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
