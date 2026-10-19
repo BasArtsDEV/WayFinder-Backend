@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\RiddleGPS;
 use App\Entity\TreasureHunt;
+use App\Entity\User;
 use App\Form\TreasureHuntType;
 use App\Repository\EnrollmentRepository;
 use App\Repository\TreasureHuntRepository;
@@ -43,7 +44,7 @@ final class TreasureHuntController extends AbstractController
             return $this->redirectToRoute('app_login');
         }
 
-        /** @var \App\Entity\User $user */
+        /** @var User $user */
         $treasureHunts = [];
         foreach ($user->getTeams() as $team) {
             foreach ($team->gettreasurehunts() as $th) {
@@ -82,7 +83,7 @@ final class TreasureHuntController extends AbstractController
 
     #[Route('/treasure_hunt/{id}', name: 'app_treasure_hunt_show', requirements: ['id' => '\d+'], methods: ['GET'])]
     public function show(
-        #[MapEntity(expr: 'repository.find(id)')] TreasureHunt $treasureHunt,
+        #[MapEntity(expr: 'repository.findByTeam(id)')] TreasureHunt $treasureHunt,
         EnrollmentRepository $enrollmentRepository,
         PaginatorInterface $paginator,
         #[MapQueryParameter(options: ['min_range' => 1])] int $page = 1,
