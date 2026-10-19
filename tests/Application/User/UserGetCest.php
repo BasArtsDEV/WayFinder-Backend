@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Tests\Controller\User;
+namespace App\Tests\Application\User;
 
 use App\Entity\User;
 use App\Factory\UserFactory;
-use App\Tests\Support\ControllerTester;
+use App\Tests\Support\ApplicationTester;
 
 class UserGetCest
 {
@@ -23,7 +23,7 @@ class UserGetCest
         ];
     }
 
-    public function anonymousUserGetSimpleUserElement(ControllerTester $I): void
+    public function anonymousUserGetSimpleUserElement(ApplicationTester $I): void
     {
         $data = [
             'email' => 'test0123@gmail.com',

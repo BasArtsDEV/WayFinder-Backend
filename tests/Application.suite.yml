@@ -1,0 +1,16 @@
+actor: ApplicationTester
+suite_namespace: App\Tests\Application
+modules:
+    # enable helpers as array
+    enabled:
+        -   Symfony:
+                app_path: 'src'
+                environment: 'test'
+        -   Asserts:
+        -   Doctrine:
+                depends: Symfony
+                cleanup: true
+        -   \App\Tests\Support\Helper\EntityManagerReset:
+                depends: [Symfony, REST]
+        -   REST:
+                depends: Symfony
