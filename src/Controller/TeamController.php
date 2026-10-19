@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Team;
 use App\Form\TeamType;
 use App\Repository\TeamRepository;
+use App\Repository\TreasureHuntRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -27,10 +28,19 @@ final class TeamController extends AbstractController
     }
 
     #[Route('/team/{id}', name: 'app_team_show', requirements: ['id' => '\d+'], methods: ['GET'])]
-    public function show(#[MapEntity(expr: 'repository.find(id)')] Team $team): Response
-    {
+    public function show(
+        #[MapEntity(expr: 'repository.findTeamWithMembers(id)')] ?Team $team,
+        TreasureHuntRepository $treasureHuntRepository,
+    ): Response {
+        if (!$team) {
+            throw $this->createNotFoundException('L\'équipe demandée n\'existe pas.');
+        }
+
+        $treasureHunts = $treasureHuntRepository->findForTeamWithEnrollments($team);
+
         return $this->render('team/show.html.twig', [
             'team' => $team,
+            'treasurehunts' => $treasureHunts,
         ]);
     }
 
