@@ -2,13 +2,11 @@
 
 namespace App\DataFixtures;
 
-use App\Factory\TeamFactory;
 use App\Factory\UserFactory;
 use Doctrine\Bundle\FixturesBundle\Fixture;
-use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
 
-class UserFixtures extends Fixture implements DependentFixtureInterface
+class UserFixtures extends Fixture
 {
     public function load(ObjectManager $manager): void
     {
@@ -26,7 +24,6 @@ class UserFixtures extends Fixture implements DependentFixtureInterface
             'firstName' => 'user',
             'lastName' => 'User',
             'roles' => ['ROLE_USER'],
-            'teams' => TeamFactory::randomRange(4, 4),
         ]);
 
         UserFactory::createOne([
@@ -40,12 +37,5 @@ class UserFixtures extends Fixture implements DependentFixtureInterface
         UserFactory::createMany(17);
 
         $manager->flush();
-    }
-
-    public function getDependencies(): array
-    {
-        return [
-            TeamFixtures::class,
-        ];
     }
 }
