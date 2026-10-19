@@ -131,6 +131,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Assert\Email(
         message: 'L\'email "{{ value }}" n\'est pas une adresse email valide.'
     )]
+    #[Assert\Unique]
     private string $email;
 
     /**
@@ -160,6 +161,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         message: 'Le pseudo ne peut contenir que des lettres, chiffres, _ ou -'
     )]
     #[ApiProperty(example: 'monusername')]
+    #[Assert\Unique]
     private string $username;
 
     #[ORM\Column(length: 60)]
