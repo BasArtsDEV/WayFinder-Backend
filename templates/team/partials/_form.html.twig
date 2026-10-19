@@ -3,11 +3,11 @@
 {% endblock %}
 
 <div class="form-wrapper-center">
-    {{ form_start(form, {attr: {id: 'teamForm', class: 'needs-validation w-100 my-auto'}}) }}
+    {{ form_start(form, { attr: { id: 'teamForm', class: 'needs-validation w-100 my-auto' } }) }}
 
     <div class="form-container">
         <div class="mb-4">
-            {{ form_label(form.name, null, {label_attr: {class: 'form-label fw-semibold text-dark fs-6'}}) }}
+            {{ form_label(form.name, null, { label_attr: { class: 'form-label fw-semibold text-dark fs-6' } }) }}
             {{ form_widget(form.name) }}
             {{ form_errors(form.name) }}
         </div>

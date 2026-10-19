@@ -37,6 +37,9 @@ class AppExtension extends AbstractExtension implements GlobalsInterface
         ];
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function decodeJson(?string $string): array
     {
         if (empty($string)) {

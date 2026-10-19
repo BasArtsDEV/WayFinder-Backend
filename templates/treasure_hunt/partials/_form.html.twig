@@ -3,24 +3,24 @@
 {% endblock %}
 
 <div class="form-wrapper-center">
-    {{ form_start(form, {attr: {id: 'customForm', class: 'needs-validation w-100 my-auto'}}) }}
+    {{ form_start(form, { attr: { id: 'customForm', class: 'needs-validation w-100 my-auto' } }) }}
 
     <div class="form-container">
         <div class="mb-4">
-            {{ form_label(form.title, null, {label_attr: {class: 'form-label fw-semibold text-dark fs-6'}}) }}
-            {{ form_widget(form.title, {attr: {class: 'form-control custom-input'}}) }}
+            {{ form_label(form.title, null, { label_attr: { class: 'form-label fw-semibold text-dark fs-6' } }) }}
+            {{ form_widget(form.title, { attr: { class: 'form-control custom-input' } }) }}
             {{ form_errors(form.title) }}
         </div>
 
         <div class="mb-4">
-            {{ form_label(form.description, null, {label_attr: {class: 'form-label fw-semibold text-dark fs-6'}}) }}
-            {{ form_widget(form.description, {attr: {class: 'form-control custom-input', rows: 4}}) }}
+            {{ form_label(form.description, null, { label_attr: { class: 'form-label fw-semibold text-dark fs-6' } }) }}
+            {{ form_widget(form.description, { attr: { class: 'form-control custom-input', rows: 4 } }) }}
             {{ form_errors(form.description) }}
         </div>
 
         <div class="mb-4">
-            {{ form_label(form.team, null, {label_attr: {class: 'form-label fw-semibold text-dark fs-6'}}) }}
-            {{ form_widget(form.team, {attr: {class: 'form-control custom-input'}}) }}
+            {{ form_label(form.team, null, { label_attr: { class: 'form-label fw-semibold text-dark fs-6' } }) }}
+            {{ form_widget(form.team, { attr: { class: 'form-control custom-input' } }) }}
             {{ form_errors(form.team) }}
         </div>
 

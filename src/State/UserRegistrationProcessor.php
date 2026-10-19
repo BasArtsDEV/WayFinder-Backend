@@ -56,7 +56,7 @@ readonly class UserRegistrationProcessor implements ProcessorInterface
         $frontendUrl = 'http://localhost:5173/verify-email?'.$queryString;
 
         // Sending the email
-        $email = (new TemplatedEmail())
+        $email = new TemplatedEmail()
             ->from(new Address('noreply@wayfinder.com', 'Support WayFinder'))
             ->to($result->getEmail())
             ->subject('Confirmez votre inscription')
