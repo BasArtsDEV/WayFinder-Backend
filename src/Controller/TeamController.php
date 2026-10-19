@@ -8,7 +8,9 @@ use App\Entity\User;
 use App\Form\TeamType;
 use App\Repository\NotificationRepository;
 use App\Repository\TeamRepository;
+use App\Repository\TreasureHuntRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -30,9 +32,16 @@ final class TeamController extends AbstractController
 
     #[Route('/team/{id}', name: 'app_team_show', requirements: ['id' => '\d+'], methods: ['GET'])]
     public function show(
-        Team $team,
+        #[MapEntity(expr: 'repository.findTeamWithMembers(id)')] ?Team $team,
+        TreasureHuntRepository $treasureHuntRepository,
         NotificationRepository $notificationRepository,
     ): Response {
+        if (!$team) {
+            throw $this->createNotFoundException('L\'équipe demandée n\'existe pas.');
+        }
+
+        $treasureHunts = $treasureHuntRepository->findForTeamWithEnrollments($team);
+
         /** @var User $user */
         $user = $this->getUser();
 
@@ -48,14 +57,15 @@ final class TeamController extends AbstractController
 
         if (!$isLeader && !$isMember) {
             $hasPendingRequest = null !== $notificationRepository->findOneBy([
-                'type' => Notification::TYPE_TEAM_JOIN_REQUEST,
-                'targetUser' => $user,
-                'targetTeam' => $team,
-            ]);
+                    'type' => Notification::TYPE_TEAM_JOIN_REQUEST,
+                    'targetUser' => $user,
+                    'targetTeam' => $team,
+                ]);
         }
 
         return $this->render('team/show.html.twig', [
             'team' => $team,
+            'treasurehunts' => $treasureHunts,
             'isLeader' => $isLeader,
             'isMember' => $isMember,
             'hasPendingRequest' => $hasPendingRequest,
