@@ -2,12 +2,13 @@
 
 namespace App\Controller;
 
+use App\Entity\Notification;
 use App\Entity\Team;
 use App\Entity\User;
 use App\Form\TeamType;
+use App\Repository\NotificationRepository;
 use App\Repository\TeamRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -28,10 +29,36 @@ final class TeamController extends AbstractController
     }
 
     #[Route('/team/{id}', name: 'app_team_show', requirements: ['id' => '\d+'], methods: ['GET'])]
-    public function show(#[MapEntity(expr: 'repository.find(id)')] Team $team): Response
-    {
+    public function show(
+        Team $team,
+        NotificationRepository $notificationRepository,
+    ): Response {
+        /** @var User $user */
+        $user = $this->getUser();
+
+        $leader = $team->getLeader();
+
+        $isLeader = null !== $leader
+            && $leader->getId() === $user->getId();
+
+        $isMember = $isLeader
+            || $team->getUsers()->contains($user);
+
+        $hasPendingRequest = false;
+
+        if (!$isLeader && !$isMember) {
+            $hasPendingRequest = null !== $notificationRepository->findOneBy([
+                'type' => Notification::TYPE_TEAM_JOIN_REQUEST,
+                'targetUser' => $user,
+                'targetTeam' => $team,
+            ]);
+        }
+
         return $this->render('team/show.html.twig', [
             'team' => $team,
+            'isLeader' => $isLeader,
+            'isMember' => $isMember,
+            'hasPendingRequest' => $hasPendingRequest,
         ]);
     }
 
