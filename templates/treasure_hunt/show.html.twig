@@ -44,7 +44,7 @@
                     <div class="col-md-7 d-flex flex-column flex-md-row justify-content-md-end align-items-md-center gap-3 text-sm">
                         <div>
                             <span class="d-block text-muted" style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px;">Création</span>
-                            <p class="text-dark mb-0">{{ treasureHunt.creationDate|date('d/m/Y') }}</p>
+                            <p class="text-dark mb-0">{{ treasureHunt.creationDate|date_formatter }}</p>
                         </div>
                         <div>
                             {% if treasureHunt.published %}
