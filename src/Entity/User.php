@@ -28,7 +28,22 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
-#[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_EMAIL', fields: ['email'])]
+#[ORM\UniqueConstraint(
+    name: 'UNIQ_IDENTIFIER_EMAIL',
+    fields: ['email']
+)]
+#[ORM\UniqueConstraint(
+    name: 'UNIQ_IDENTIFIER_USERNAME',
+    fields: ['username']
+)]
+#[UniqueEntity(
+    fields: ['email'],
+    message: 'Cette adresse email est déjà utilisée.'
+)]
+#[UniqueEntity(
+    fields: ['username'],
+    message: 'Ce nom d\'utilisateur est déjà utilisé.'
+)]
 #[ApiResource(
     operations: [
         new Get(
@@ -131,7 +146,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Assert\Email(
         message: 'L\'email "{{ value }}" n\'est pas une adresse email valide.'
     )]
-    #[Assert\Unique]
     private string $email;
 
     /**
@@ -161,7 +175,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         message: 'Le pseudo ne peut contenir que des lettres, chiffres, _ ou -'
     )]
     #[ApiProperty(example: 'monusername')]
-    #[Assert\Unique]
     private string $username;
 
     #[ORM\Column(length: 60)]
