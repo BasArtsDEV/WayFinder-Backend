@@ -91,7 +91,8 @@
             "phpro/grumphp-shim": true,
             "phpstan/extension-installer": true,
             "symfony/flex": true,
-            "symfony/runtime": true
+            "symfony/runtime": true,
+            "phpro/grumphp": true
         },
         "bump-after-update": true,
         "sort-packages": true
@@ -204,7 +205,7 @@
         "codeception/module-symfony": "^3.11",
         "doctrine/doctrine-fixtures-bundle": "^4.3",
         "friendsofphp/php-cs-fixer": "^3.95",
-        "phpro/grumphp-shim": "^2.23",
+        "phpro/grumphp": "^2.23",
         "phpstan/extension-installer": "^1.4",
         "phpstan/phpstan": "^2.2",
         "phpstan/phpstan-beberlei-assert": "^2.0",
