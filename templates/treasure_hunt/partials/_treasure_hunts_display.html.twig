@@ -9,12 +9,12 @@
         {% endif %}
         <ul class="nav nav-pills" id="pills-tab-{{ tabId }}" role="tablist">
             <li class="nav-item" role="presentation">
-                <button class="nav-link active rounded-start-pill rounded-end-0 border border-success" id="pills-grid-tab-{{ tabId }}" data-bs-toggle="pill" data-bs-target="#pills-grid-{{ tabId }}" type="button" role="tab" aria-controls="pills-grid-{{ tabId }}" aria-selected="true" title="Vue grille">
+                <button class="nav-link active rounded-start-pill rounded-end-0 border border-success" id="pills-grid-tab-{{ tabId }}" type="button" role="tab" aria-selected="true" title="Vue grille">
                     <i class="bi bi-grid-fill"></i>
                 </button>
             </li>
             <li class="nav-item" role="presentation">
-                <button class="nav-link rounded-end-pill rounded-start-0 border border-success border-start-0" id="pills-list-tab-{{ tabId }}" data-bs-toggle="pill" data-bs-target="#pills-list-{{ tabId }}" type="button" role="tab" aria-controls="pills-list-{{ tabId }}" aria-selected="false" title="Vue liste">
+                <button class="nav-link rounded-end-pill rounded-start-0 border border-success border-start-0" id="pills-list-tab-{{ tabId }}" type="button" role="tab" aria-selected="false" title="Vue liste">
                     <i class="bi bi-list-ul"></i>
                 </button>
             </li>
@@ -26,135 +26,131 @@
             color: #198754;
             background-color: transparent;
             padding: 0.35rem 0.85rem;
+            cursor: pointer;
         }
         .nav-pills .nav-link.active {
             background-color: #198754;
             color: white;
         }
-        .treasure-list-item {
+
+        #treasureContainer-{{ tabId }} .treasure-card {
             transition: transform 0.2s, box-shadow 0.2s;
         }
-        .treasure-list-item:hover {
+        #treasureContainer-{{ tabId }} .treasure-card:hover {
             transform: translateY(-2px);
             box-shadow: 0 .5rem 1rem rgba(0,0,0,.15)!important;
             border-color: #198754 !important;
         }
+
+        #treasureContainer-{{ tabId }}.is-list-view {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        #treasureContainer-{{ tabId }}.is-list-view .treasure-card {
+            display: flex;
+            flex-direction: column;
+        }
+
+        @media (min-width: 768px) {
+            #treasureContainer-{{ tabId }}.is-list-view .treasure-card {
+                flex-direction: row;
+                justify-content: space-between;
+                align-items: center;
+            }
+            #treasureContainer-{{ tabId }}.is-list-view .treasure-card .treasure-feedback-section {
+                flex-direction: column;
+                align-items: flex-end;
+                justify-content: space-between;
+                max-width: 200px;
+                border-top: none !important;
+                padding-top: 0 !important;
+                margin-top: 0 !important;
+            }
+        }
     </style>
 
-    <div class="tab-content" id="pills-tabContent-{{ tabId }}">
-        <div class="tab-pane fade show active" id="pills-grid-{{ tabId }}" role="tabpanel" aria-labelledby="pills-grid-tab-{{ tabId }}" tabindex="0">
-            <div id="treasureContainer" class="treasure-grid">
-                {% for treasureHunt in treasureHunts %}
-                    <a href="{{ path('app_treasure_hunt_show', { id: treasureHunt.id }) }}" class="treasure-card text-decoration-none">
-                        <div class="d-flex justify-content-between align-items-start mb-2">
-                            <h4 class="fw-bold fs-5 text-dark mb-0 text-truncate">{{ treasureHunt.title }}</h4>
-                            <span class="status-badge {% if treasureHunt.published %}published{% else %}draft{% endif %}">
-                                {{ treasureHunt.published ? 'Publiée' : 'Edition' }}
-                            </span>
+    <div id="treasureContainer-{{ tabId }}" class="treasure-grid">
+        {% for treasureHunt in treasureHunts %}
+            <a href="{{ path('app_treasure_hunt_show', { id: treasureHunt.id }) }}" class="treasure-card text-decoration-none card border shadow-sm rounded-4 p-3">
+                <div class="flex-grow-1 w-100">
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                        <h4 class="fw-bold fs-5 text-dark mb-0">{{ treasureHunt.title }}</h4>
+                        <span class="status-badge {% if treasureHunt.published %}published{% else %}draft{% endif %} m-0">
+                            {{ treasureHunt.published ? 'Publiée' : 'Edition' }}
+                        </span>
+                    </div>
+                    <p class="text-muted small mb-2 text-truncate-2">{{ treasureHunt.description }}</p>
+
+                    {% if showTeam|default(false) %}
+                        <div class="d-flex align-items-center gap-2 mb-2 small text-muted">
+                            <i class="bi bi-people-fill text-success"></i>
+                            <span class="fw-medium">{{ treasureHunt.team.name }}</span>
                         </div>
-                        <p class="text-muted small mb-3 text-truncate-2">{{ treasureHunt.description }}</p>
+                    {% endif %}
+                </div>
 
-                        {% if showTeam|default(false) %}
-                            <div class="d-flex align-items-center gap-2 mb-3 small text-muted">
-                                <i class="bi bi-people-fill text-success"></i>
-                                <span class="fw-medium">{{ treasureHunt.team.name }}</span>
-                            </div>
-                        {% endif %}
+                <div class="treasure-feedback-section d-flex align-items-center justify-content-between pt-2 border-top border-light mt-2 w-100">
+                    {% set avgstars = treasureHunt.getAverageStars() ?? 0 %}
+                    {% set feedbacks = treasureHunt.getFeedbacks() %}
 
-                        <div class="treasure-feedback-section d-flex align-items-center justify-content-between pt-2 border-top border-light">
-                            {% set avgstars = treasureHunt.getAverageStars() ?? 0 %}
-                            {% set feedbacks = treasureHunt.getFeedbacks() %}
+                    <div class="rating-container m-0">
+                        <span class="fw-bold text-dark small">{{ avgstars }}</span>
+                        <div class="star-rating" title="{{ avgstars }} / 5">
+                            {% for i in 1..5 %}
+                                {% set fillPercentage = (avgstars - i + 1) * 100 %}
+                                {% if fillPercentage < 0 %}{% set fillPercentage = 0 %}
+                                {% elseif fillPercentage > 100 %}{% set fillPercentage = 100 %}{% endif %}
 
-                            <div class="rating-container">
-                                <span class="fw-bold text-dark small">{{ avgstars }}</span>
-                                <div class="star-rating" title="{{ avgstars }} / 5">
-                                    {% for i in 1..5 %}
-                                        {% set fillPercentage = (avgstars - i + 1) * 100 %}
-                                        {% if fillPercentage < 0 %}{% set fillPercentage = 0 %}
-                                        {% elseif fillPercentage > 100 %}{% set fillPercentage = 100 %}{% endif %}
+                                {% set gradId = 'star-grad-' ~ tabId ~ '-' ~ treasureHunt.id ~ '-' ~ i %}
 
-                                        {% set gradId = 'star-grad-' ~ tabId ~ '-grid-' ~ treasureHunt.id ~ '-' ~ i %}
-
-                                        <svg class="star-single" viewBox="0 0 24 24">
-                                            <defs>
-                                                <linearGradient id="{{ gradId }}" x1="0%" y1="0%" x2="100%" y2="0%">
-                                                    <stop offset="{{ fillPercentage }}%" stop-color="#ffc107" />
-                                                    <stop offset="{{ fillPercentage }}%" stop-color="#e4e5e9" />
-                                                </linearGradient>
-                                            </defs>
-                                            <path fill="url(#{{ gradId }})" d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
-                                        </svg>
-                                    {% endfor %}
-                                </div>
-                            </div>
-
-                            <span class="rating-number text-primary fw-medium small">
-                                {{ feedbacks|length }} avis <i class="bi bi-arrow-right-short"></i>
-                            </span>
+                                <svg class="star-single" viewBox="0 0 24 24">
+                                    <defs>
+                                        <linearGradient id="{{ gradId }}" x1="0%" y1="0%" x2="100%" y2="0%">
+                                            <stop offset="{{ fillPercentage }}%" stop-color="#ffc107" />
+                                            <stop offset="{{ fillPercentage }}%" stop-color="#e4e5e9" />
+                                        </linearGradient>
+                                    </defs>
+                                    <path fill="url(#{{ gradId }})" d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
+                                </svg>
+                            {% endfor %}
                         </div>
-                    </a>
-                {% endfor %}
-            </div>
-        </div>
-        <div class="tab-pane fade" id="pills-list-{{ tabId }}" role="tabpanel" aria-labelledby="pills-list-tab-{{ tabId }}" tabindex="0">
-            <div class="d-flex flex-column gap-3">
-                {% for treasureHunt in treasureHunts %}
-                    <a href="{{ path('app_treasure_hunt_show', { id: treasureHunt.id }) }}" class="treasure-list-item card border text-decoration-none shadow-sm rounded-4">
-                        <div class="card-body d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-3">
-                            <div class="flex-grow-1 w-100">
-                                <div class="d-flex justify-content-between align-items-start mb-2">
-                                    <h4 class="fw-bold fs-5 text-dark mb-0">{{ treasureHunt.title }}</h4>
-                                    <span class="status-badge {% if treasureHunt.published %}published{% else %}draft{% endif %} m-0">
-                                        {{ treasureHunt.published ? 'Publiée' : 'Edition' }}
-                                    </span>
-                                </div>
-                                <p class="text-muted small mb-2">{{ treasureHunt.description }}</p>
+                    </div>
 
-                                {% if showTeam|default(false) %}
-                                    <div class="d-flex align-items-center gap-2 small text-muted">
-                                        <i class="bi bi-people-fill text-success"></i>
-                                        <span class="fw-medium">{{ treasureHunt.team.name }}</span>
-                                    </div>
-                                {% endif %}
-                            </div>
-
-                            <div class="treasure-feedback-section d-flex flex-md-column align-items-center align-items-md-end justify-content-between gap-2 mt-2 mt-md-0 w-100" style="max-width: 200px; border-top: none; padding-top: 0;">
-                                {% set avgstars = treasureHunt.getAverageStars() ?? 0 %}
-                                {% set feedbacks = treasureHunt.getFeedbacks() %}
-
-                                <div class="rating-container m-0">
-                                    <span class="fw-bold text-dark small">{{ avgstars }}</span>
-                                    <div class="star-rating" title="{{ avgstars }} / 5">
-                                        {% for i in 1..5 %}
-                                            {% set fillPercentage = (avgstars - i + 1) * 100 %}
-                                            {% if fillPercentage < 0 %}{% set fillPercentage = 0 %}
-                                            {% elseif fillPercentage > 100 %}{% set fillPercentage = 100 %}{% endif %}
-
-                                            {% set gradId = 'star-grad-' ~ tabId ~ '-list-' ~ treasureHunt.id ~ '-' ~ i %}
-
-                                            <svg class="star-single" viewBox="0 0 24 24">
-                                                <defs>
-                                                    <linearGradient id="{{ gradId }}" x1="0%" y1="0%" x2="100%" y2="0%">
-                                                        <stop offset="{{ fillPercentage }}%" stop-color="#ffc107" />
-                                                        <stop offset="{{ fillPercentage }}%" stop-color="#e4e5e9" />
-                                                    </linearGradient>
-                                                </defs>
-                                                <path fill="url(#{{ gradId }})" d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
-                                            </svg>
-                                        {% endfor %}
-                                    </div>
-                                </div>
-
-                                <span class="rating-number text-primary fw-medium small">
-                                    {{ feedbacks|length }} avis <i class="bi bi-arrow-right-short"></i>
-                                </span>
-                            </div>
-                        </div>
-                    </a>
-                {% endfor %}
-            </div>
-        </div>
+                    <span class="rating-number text-primary fw-medium small">
+                        {{ feedbacks|length }} avis <i class="bi bi-arrow-right-short"></i>
+                    </span>
+                </div>
+            </a>
+        {% endfor %}
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const gridBtn = document.getElementById('pills-grid-tab-{{ tabId }}');
+            const listBtn = document.getElementById('pills-list-tab-{{ tabId }}');
+            const container = document.getElementById('treasureContainer-{{ tabId }}');
+
+            if (gridBtn && listBtn && container) {
+                gridBtn.addEventListener('click', function() {
+                    gridBtn.classList.add('active');
+                    listBtn.classList.remove('active');
+                    gridBtn.setAttribute('aria-selected', 'true');
+                    listBtn.setAttribute('aria-selected', 'false');
+                    container.classList.remove('is-list-view');
+                });
+
+                listBtn.addEventListener('click', function() {
+                    listBtn.classList.add('active');
+                    gridBtn.classList.remove('active');
+                    listBtn.setAttribute('aria-selected', 'true');
+                    gridBtn.setAttribute('aria-selected', 'false');
+                    container.classList.add('is-list-view');
+                });
+            }
+        });
+    </script>
 {% else %}
     <div class="text-center py-5 text-muted">
         <i class="bi bi-folder2-open display-4 text-secondary opacity-50 mb-2"></i>
