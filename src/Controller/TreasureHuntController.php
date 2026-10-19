@@ -5,13 +5,16 @@ namespace App\Controller;
 use App\Entity\RiddleGPS;
 use App\Entity\TreasureHunt;
 use App\Form\TreasureHuntType;
+use App\Repository\EnrollmentRepository;
 use App\Repository\TreasureHuntRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Knp\Component\Pager\PaginatorInterface;
 use Random\RandomException;
 use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Attribute\MapQueryParameter;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\UX\Map\Bridge\Google\GoogleOptions;
@@ -78,8 +81,17 @@ final class TreasureHuntController extends AbstractController
     }
 
     #[Route('/treasure_hunt/{id}', name: 'app_treasure_hunt_show', requirements: ['id' => '\d+'], methods: ['GET'])]
-    public function show(#[MapEntity(expr: 'repository.find(id)')] TreasureHunt $treasureHunt): Response
-    {
+    public function show(
+        #[MapEntity(expr: 'repository.find(id)')] TreasureHunt $treasureHunt,
+        EnrollmentRepository $enrollmentRepository,
+        PaginatorInterface $paginator,
+        #[MapQueryParameter(options: ['min_range' => 1])] int $page = 1,
+    ): Response {
+        $feedbacks = $paginator->paginate(
+            $enrollmentRepository->queryFeedbacksOrderedByDate($treasureHunt),
+            $page,
+            options: ['distinct' => false],
+        );
         $riddles = $treasureHunt->getRiddles();
 
         $map = new Map()->zoom(13);
@@ -109,6 +121,7 @@ final class TreasureHuntController extends AbstractController
         return $this->render('treasure_hunt/show.html.twig', [
             'treasureHunt' => $treasureHunt,
             'riddles' => $riddles,
+            'feedbacks' => $feedbacks,
             'map' => $hasGpsRiddles ? $map : null,
         ]);
     }

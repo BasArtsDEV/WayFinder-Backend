@@ -13,7 +13,7 @@ class AppExtension extends AbstractExtension implements GlobalsInterface
 {
     public function __construct(
         private readonly NotificationRepository $notificationRepository,
-        private readonly Security $security
+        private readonly Security $security,
     ) {
     }
 
