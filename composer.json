@@ -140,11 +140,13 @@
         "fix:phpcs": "php-cs-fixer fix",
         "test:twigcs": "twig-cs-fixer lint templates/",
         "fix:twigcs": "twig-cs-fixer fix templates/",
-        "test:phpstan": "vendor/bin/phpstan analyse src tests",
+        "test:phpstan": [
+            "vendor/bin/codecept build",
+            "vendor/bin/phpstan analyse src tests"
+        ],
         "test:yaml": "php bin/console lint:yaml config",
         "test:codeception": [
             "php vendor/bin/codecept clean",
-            "php vendor/bin/codecept build",
             "bin/console doctrine:schema:drop --force --quiet --env=test",
             "bin/console doctrine:schema:create --quiet --env=test",
             "php vendor/bin/codecept run"
