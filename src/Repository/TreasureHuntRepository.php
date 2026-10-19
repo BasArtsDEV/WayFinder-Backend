@@ -40,4 +40,31 @@ class TreasureHuntRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    public function findByTeam(int $id): ?TreasureHunt
+    {
+        return $this->createQueryBuilder('tre')
+            ->leftJoin('tre.team', 'tea')
+            ->addSelect('tea')
+            ->leftJoin('tre.riddles', 'r')
+            ->addSelect('r')
+            ->where('tre.id = :id')
+            ->setParameter('id', $id)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
+    /**
+     * @return TreasureHunt[]
+     */
+    public function findForTeamWithEnrollments(Team $team): array
+    {
+        return $this->createQueryBuilder('th')
+            ->leftJoin('th.enrollments', 'e')
+            ->addSelect('e')
+            ->where('th.team = :team')
+            ->setParameter('team', $team)
+            ->getQuery()
+            ->getResult();
+    }
 }
