@@ -51,7 +51,7 @@ class Team
     #[Assert\NotBlank]
     private string $name;
 
-    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'ledTeams')]
     #[ORM\JoinColumn(nullable: true)]
     #[Groups(['team:read', 'team:write', 'team:details'])]
     private ?User $leader = null;

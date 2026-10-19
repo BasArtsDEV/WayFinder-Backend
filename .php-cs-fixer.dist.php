@@ -13,8 +13,11 @@ $finder = new PhpCsFixer\Finder()
 return new PhpCsFixer\Config()
     ->setRules([
         '@Symfony' => true,
-        'new_expression_parentheses' => false,
+        'new_expression_parentheses' => [
+            'use_parentheses' => false,
+        ],
     ])
     ->setFinder($finder)
     ->setParallelConfig(new PhpCsFixer\Runner\Parallel\ParallelConfig(4, 20))
-;
+    ->setCacheFile(__DIR__.'/var/cache/.php-cs-fixer.cache')
+    ;

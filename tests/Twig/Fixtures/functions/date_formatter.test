@@ -1,0 +1,28 @@
+--TEST--
+"date_formatter" filter
+--TEMPLATE--
+{{ date_formatter(less_than_5_minutes) }}
+{{ date_formatter(less_than_1_hour) }}
+{{ date_formatter(about_1_hour_ago) }}
+{{ date_formatter(about_5_hours_ago) }}
+{{ date_formatter(less_than_1_day) }}
+{{ date_formatter(less_than_6_days) }}
+{{ date_formatter(more_than_6_days) }}
+--DATA--
+return [
+    'less_than_5_minutes' => new \DateTimeImmutable('2023-01-01 20:16:50'),
+    'less_than_1_hour' => new \DateTimeImmutable('2023-01-01 21:11:00'),
+    'about_1_hour_ago' => new \DateTimeImmutable('2023-01-01 21:30:00'),
+    'about_5_hours_ago' => new \DateTimeImmutable('2023-01-02 01:50:00'),
+    'less_than_1_day' => new \DateTimeImmutable('2023-01-02 20:11:00'),
+    'less_than_6_days' => new \DateTimeImmutable('2023-01-05 00:59:00'),
+    'more_than_6_days' => new \DateTimeImmutable('2023-02-15 13:42:00'),
+]
+--EXPECT--
+A l&#039;instant
+il y a 59 minutes
+il y a 1 heure
+il y a 5 heures
+il y a 23 heures
+jeudi à 00:59
+le 15/02/2023 à 13:42

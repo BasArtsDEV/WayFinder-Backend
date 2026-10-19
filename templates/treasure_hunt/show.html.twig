@@ -35,7 +35,7 @@
                     <div class="col-md-5">
                         <p class="text-muted mb-0">
                             Créée par l'équipe
-                            <a href="{{ path('app_team_show', {id: treasureHunt.team.id}) }}" class="text-primary text-decoration-none fw-semibold">
+                            <a href="{{ path('app_team_show', { id: treasureHunt.team.id }) }}" class="text-primary text-decoration-none fw-semibold">
                                 {{ treasureHunt.team.name }}
                             </a>
                         </p>
@@ -44,7 +44,7 @@
                     <div class="col-md-7 d-flex flex-column flex-md-row justify-content-md-end align-items-md-center gap-3 text-sm">
                         <div>
                             <span class="d-block text-muted" style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px;">Création</span>
-                            <p class="text-dark mb-0">{{ treasureHunt.creationDate|date('d/m/Y') }}</p>
+                            <p class="text-dark mb-0">{{ treasureHunt.creationDate|date_formatter }}</p>
                         </div>
                         <div>
                             {% if treasureHunt.published %}
@@ -78,26 +78,26 @@
                         <div class="d-flex align-items-center gap-2 ms-md-2">
 
                             {% if treasureHunt.published %}
-                                <form method="post" action="{{ path('app_treasure_hunt_unpublish', {id: treasureHunt.id}) }}" class="d-inline">
+                                <form method="post" action="{{ path('app_treasure_hunt_unpublish', { id: treasureHunt.id }) }}" class="d-inline">
                                     <input type="hidden" name="_token" value="{{ csrf_token('unpublish' ~ treasureHunt.id) }}">
                                     <button type="submit" title="Dépublier" class="btn-app-danger btn btn-outline-primary rounded-pill px-3 py-2 fw-semibold d-flex align-items-center gap-1 border-0">
                                         <i class="app-button-icon bi bi-sign-stop-fill"></i>Dépublier
                                     </button>
                                 </form>
                             {% else %}
-                                <form method="post" action="{{ path('app_treasure_hunt_publish', {id: treasureHunt.id}) }}" class="d-inline">
+                                <form method="post" action="{{ path('app_treasure_hunt_publish', { id: treasureHunt.id }) }}" class="d-inline">
                                     <input type="hidden" name="_token" value="{{ csrf_token('publish' ~ treasureHunt.id) }}">
                                     <button type="submit" title="Publier" class="btn-app-primary btn btn-outline-primary rounded-pill px-3 py-2 fw-semibold d-flex align-items-center gap-1 border-0">
                                         <i class="app-button-icon bi bi-cloud-arrow-up-fill"></i>Publier
                                     </button>
                                 </form>
 
-                                <a href="{{ path('app_treasure_hunt_edit', {id: treasureHunt.id}) }}" title="Éditer" class="btn-app-primary btn btn-outline-primary rounded-pill px-3 py-2 fw-semibold d-flex align-items-center gap-1">
+                                <a href="{{ path('app_treasure_hunt_edit', { id: treasureHunt.id }) }}" title="Éditer" class="btn-app-primary btn btn-outline-primary rounded-pill px-3 py-2 fw-semibold d-flex align-items-center gap-1">
                                     <i class="app-button-icon bi bi-pencil-fill"></i>Éditer
                                 </a>
 
                                 {{ include('_delete_button.html.twig', {
-                                    action_path: path('app_treasure_hunt_delete', {id: treasureHunt.id}),
+                                    action_path: path('app_treasure_hunt_delete', { id: treasureHunt.id }),
                                     csrf_token_name: 'delete' ~ treasureHunt.id,
                                     confirm_message: 'Es-tu sûr de vouloir supprimer cette chasse aux trésors ?',
                                 }) }}
@@ -180,7 +180,7 @@
                                 <p class="mb-1"><strong>Lieu :</strong> {{ riddle.locationName ?? 'Non spécifié' }}</p>
                                 <p class="mb-3"><strong>Coordonnées :</strong> Latitude {{ riddle.latitude }}, Longitude {{ riddle.longitude }}</p>
                                 <div class="overflow-hidden rounded border">
-                                    {{ ux_map(map, {style: 'height: 250px; width: 100%;'}) }}
+                                    {{ ux_map(map, { style: 'height: 250px; width: 100%;' }) }}
                                 </div>
                             {% elseif riddle is instanceof('App\\Entity\\RiddleQRCode') %}
                                 <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3">
@@ -202,27 +202,27 @@
                             {% if not treasureHunt.published %}
 
                                 {# Up #}
-                                <form action="{{ path('app_riddle_reorder', {id: riddle.id, direction: 'up'}) }}" method="POST" class="d-inline">
+                                <form action="{{ path('app_riddle_reorder', { id: riddle.id, direction: 'up' }) }}" method="POST" class="d-inline">
                                     <button type="submit" class="btn-app-secondary btn-icon-only" aria-label="Monter" title="Monter l'énigme au dessus">
                                         <i class="bi bi-caret-up-fill"></i>
                                     </button>
                                 </form>
 
                                 {# Down #}
-                                <form action="{{ path('app_riddle_reorder', {id: riddle.id, direction: 'down'}) }}" method="POST" class="d-inline">
+                                <form action="{{ path('app_riddle_reorder', { id: riddle.id, direction: 'down' }) }}" method="POST" class="d-inline">
                                     <button type="submit" class="btn-app-secondary btn-icon-only" aria-label="Descendre" title="Descendre l'énigme en dessous">
                                         <i class="bi bi-caret-down-fill"></i>
                                     </button>
                                 </form>
 
                                 {# Edit #}
-                                <a href="{{ path('app_riddle_edit', {id: riddle.id}) }}" title="Éditer" class="btn-app-primary btn-icon-only" aria-label="Modifier">
+                                <a href="{{ path('app_riddle_edit', { id: riddle.id }) }}" title="Éditer" class="btn-app-primary btn-icon-only" aria-label="Modifier">
                                     <i class="app-button-icon bi bi-pencil-fill"></i>Éditer
                                 </a>
 
                                 {# Delete #}
                                 {{ include('_delete_button.html.twig', {
-                                    action_path: path('app_riddle_delete', {id: riddle.id}),
+                                    action_path: path('app_riddle_delete', { id: riddle.id }),
                                     csrf_token_name: 'delete' ~ riddle.id,
                                     confirm_message: 'Es-tu sûr de vouloir supprimer cette énigme ?',
                                 }) }}
@@ -245,10 +245,10 @@
                         <i class="bi bi-plus-circle-fill"></i>Ajouter une énigme
                     </button>
                     <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="{{ path('app_riddle_new', {huntId: treasureHunt.id, type: 'text'}) }}"><i class="app-dropdown-icon bi bi-question-circle"></i>Question simple</a></li>
-                        <li><a class="dropdown-item" href="{{ path('app_riddle_new', {huntId: treasureHunt.id, type: 'qcm'}) }}"><i class="app-dropdown-icon bi bi-card-checklist"></i>Question QCM</a></li>
-                        <li><a class="dropdown-item" href="{{ path('app_riddle_new', {huntId: treasureHunt.id, type: 'gps'}) }}"><i class="app-dropdown-icon bi bi-geo-alt"></i>Aller à des coordonnées GPS</a></li>
-                        <li><a class="dropdown-item" href="{{ path('app_riddle_new', {huntId: treasureHunt.id, type: 'qrcode'}) }}"><i class="app-dropdown-icon bi bi-qr-code-scan"></i>Trouver un QR Code</a></li>
+                        <li><a class="dropdown-item" href="{{ path('app_riddle_new', { huntId: treasureHunt.id, type: 'text' }) }}"><i class="app-dropdown-icon bi bi-question-circle"></i>Question simple</a></li>
+                        <li><a class="dropdown-item" href="{{ path('app_riddle_new', { huntId: treasureHunt.id, type: 'qcm' }) }}"><i class="app-dropdown-icon bi bi-card-checklist"></i>Question QCM</a></li>
+                        <li><a class="dropdown-item" href="{{ path('app_riddle_new', { huntId: treasureHunt.id, type: 'gps' }) }}"><i class="app-dropdown-icon bi bi-geo-alt"></i>Aller à des coordonnées GPS</a></li>
+                        <li><a class="dropdown-item" href="{{ path('app_riddle_new', { huntId: treasureHunt.id, type: 'qrcode' }) }}"><i class="app-dropdown-icon bi bi-qr-code-scan"></i>Trouver un QR Code</a></li>
                     </ul>
                 </div>
             {% endif %}

@@ -3,7 +3,7 @@
 {% block title %}Mon profil{% endblock %}
 
 {% block main %}
-    {{ include('profile/partials/_profil.html.twig', {user: app.user}) }}
+    {{ include('profile/partials/_profil.html.twig', { user: app.user }) }}
 
     {{ include('profile/partials/_edit.html.twig', {
         user: app.user,

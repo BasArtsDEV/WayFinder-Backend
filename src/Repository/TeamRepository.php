@@ -26,4 +26,17 @@ class TeamRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    public function findTeamWithMembers(int $id): ?Team
+    {
+        return $this->createQueryBuilder('t')
+            ->leftJoin('t.leader', 'l')
+            ->addSelect('l')
+            ->leftJoin('t.users', 'u')
+            ->addSelect('u')
+            ->where('t.id = :id')
+            ->setParameter('id', $id)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
 }

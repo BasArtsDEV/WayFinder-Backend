@@ -4,71 +4,72 @@ declare(strict_types=1);
 
 namespace App\Tests\Support\Helper;
 
+use Codeception\Lib\Interfaces\DependsOnModule;
+use Codeception\Module;
 use Codeception\Module\REST;
-use Codeception\Util\JsonType;
+use Codeception\Module\Symfony;
+use Codeception\TestInterface;
+use Doctrine\ORM\EntityManager;
+use Doctrine\Persistence\ManagerRegistry;
+use Zenstruck\Foundry\Configuration;
 
-class ApiPlatform extends REST
+class EntityManagerReset extends Module implements DependsOnModule
 {
+    private Symfony $symfony;
+    private REST $rest;
+
+    protected string $dependencyMessage = <<<EOF
+Set Symfony and REST as dependent modules:
+
+modules:
+    enabled:
+        - \App\Tests\Support\Helper\EntityManagerReset:
+            depends: [Symfony, REST]
+EOF;
+
     /**
      * Configuration in <suite>.suite.yml file.
      *
      * @var array<string, string>
      */
-    protected array $config = ['base_path' => ''];
+    protected array $config = ['base_path' => '/api'];
 
     /**
-     * Executed before suite.
-     *
-     * @param array<string, mixed> $settings
+     * @return array<class-string<Module>, string>
      */
-    public function _beforeSuite(array $settings = []): void
+    public function _depends(): array
     {
-        // Add custom filter to JsonType list to match paths (ex : /api/product/12)
-        JsonType::addCustomFilter('path', function ($value) {
-            return preg_match('@^'.$this->getBasePath().'(?:/\w+)*$@', $value);
-        });
+        return [
+            Symfony::class => $this->dependencyMessage,
+            REST::class => $this->dependencyMessage,
+        ];
     }
 
-    /**
-     * {@inheritDoc}
-     * Override to send HTTP headers.
-     *
-     * @param array<string, mixed>|string $params
-     * @param array<string, mixed>        $files
-     */
-    public function sendPatch(string $url, $params = [], array $files = []): ?string
+    public function _inject(Symfony $symfony, REST $rest): void
     {
-        $this->haveHttpHeader('Content-Type', 'application/merge-patch+json');
-
-        return parent::sendPatch($url, $params, $files);
+        $this->symfony = $symfony;
+        $this->rest = $rest;
     }
 
-    /**
-     * {@inheritDoc}
-     * Override to send HTTP headers.
-     *
-     * @param array<string, mixed>|string $params
-     * @param array<string, mixed>        $files
-     */
-    public function sendPost(string $url, $params = [], array $files = []): ?string
+    public function _before(TestInterface $test): void
     {
-        $this->haveHttpHeader('Content-Type', 'application/ld+json');
+        parent::_before($test);
 
-        return parent::sendPost($url, $params, $files);
+        /** @var ManagerRegistry $doctrine */
+        $doctrine = $this->symfony->grabService('doctrine');
+        /** @var EntityManager $manager */
+        $manager = $doctrine->getManager();
+        if (!$manager->isOpen()) {
+            $doctrine->resetManager();
+        }
     }
 
-    /**
-     * {@inheritDoc}
-     * Override to send HTTP headers.
-     *
-     * @param array<string, mixed>|string $params
-     * @param array<string, mixed>        $files
-     */
-    public function sendPut(string $url, $params = [], array $files = []): ?string
+    public function _after(TestInterface $test): void
     {
-        $this->haveHttpHeader('Content-Type', 'application/ld+json');
-
-        return parent::sendPut($url, $params, $files);
+        parent::_after($test);
+        if (Configuration::isBooted()) {
+            Configuration::shutdown();
+        }
     }
 
     /**
@@ -111,8 +112,8 @@ class ApiPlatform extends REST
     protected static function getJsonLdPropertiesTypes(array $propertiesTypes): array
     {
         return array_merge([
-            '@context' => 'string:path',
-            '@id' => 'string:path',
+            '@context' => 'string',
+            '@id' => 'string',
             '@type' => 'string',
         ], $propertiesTypes);
     }
@@ -124,7 +125,7 @@ class ApiPlatform extends REST
     {
         $entityName = $this->getShortClassName($className);
 
-        $this->seeResponseContainsJson([
+        $this->rest->seeResponseContainsJson([
             '@context' => $this->getBasePath().'/contexts/'.$entityName,
             '@type' => $entityName,
             '@id' => $entityPath,
@@ -142,7 +143,7 @@ class ApiPlatform extends REST
         $jsonResponse = $this->grabJsonResponse();
         $jsonLdPropertiesTypes = self::getJsonLdPropertiesTypes($propertiesTypes);
 
-        $this->seeResponseMatchesJsonType($jsonLdPropertiesTypes);
+        $this->rest->seeResponseMatchesJsonType($jsonLdPropertiesTypes);
 
         // Check if JSON response contains each expected property
         foreach ($jsonLdPropertiesTypes as $property => $type) {
@@ -171,8 +172,8 @@ class ApiPlatform extends REST
     public function seeResponseIsACollection(string $className, string $collectionPath, array $propertiesTypes = []): void
     {
         $entityName = $this->getShortClassName($className);
-        $this->seeResponseMatchesJsonType(self::getJsonLdPropertiesTypes($propertiesTypes));
-        $this->seeResponseContainsJson([
+        $this->rest->seeResponseMatchesJsonType(self::getJsonLdPropertiesTypes($propertiesTypes));
+        $this->rest->seeResponseContainsJson([
             '@context' => $this->getBasePath().'/contexts/'.$entityName,
             '@type' => 'Collection',
             '@id' => $collectionPath,
@@ -187,7 +188,7 @@ class ApiPlatform extends REST
     public function grabJsonResponse(): ?array
     {
         try {
-            return $this->grabDataFromResponseByJsonPath('$')[0];
+            return $this->rest->grabDataFromResponseByJsonPath('$')[0];
         } catch (\Exception) {
             $this->fail('Response is not JSON');
         }
