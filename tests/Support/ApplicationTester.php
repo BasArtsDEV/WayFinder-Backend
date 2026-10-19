@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace App\Tests\Support;
 
-use Codeception\Actor;
-
 /**
  * Inherited Methods.
  *
@@ -22,9 +20,9 @@ use Codeception\Actor;
  *
  * @SuppressWarnings(PHPMD)
  */
-class ControllerTester extends Actor
+class ApplicationTester extends \Codeception\Actor
 {
-    use _generated\ControllerTesterActions;
+    use _generated\ApplicationTesterActions;
 
     /*
      * Define custom actions here
