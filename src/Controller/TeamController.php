@@ -57,10 +57,10 @@ final class TeamController extends AbstractController
 
         if (!$isLeader && !$isMember) {
             $hasPendingRequest = null !== $notificationRepository->findOneBy([
-                    'type' => Notification::TYPE_TEAM_JOIN_REQUEST,
-                    'targetUser' => $user,
-                    'targetTeam' => $team,
-                ]);
+                'type' => Notification::TYPE_TEAM_JOIN_REQUEST,
+                'targetUser' => $user,
+                'targetTeam' => $team,
+            ]);
         }
 
         return $this->render('team/show.html.twig', [

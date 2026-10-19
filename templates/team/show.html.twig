@@ -8,7 +8,7 @@
 
 {% block main %}
     <div class="team-profile-page">
-        {% embed '_banner.html.twig' with {banner: team.banner} %}
+        {% embed '_banner.html.twig' with { banner: team.banner } %}
             {% block overlay %}
                 <h1 class="fw-bold text-white display-5 mb-0 text-shadow">{{ team.name }}</h1>
             {% endblock %}
@@ -18,18 +18,18 @@
             <div class="d-flex justify-content-end gap-2 mb-4">
                 {% if app.user %}
                     {% if isLeader %}
-                        <a href="{{ path('app_team_edit', {id: team.id}) }}" class="btn-app-secondary">
+                        <a href="{{ path('app_team_edit', { id: team.id }) }}" class="btn-app-secondary">
                             <i class="bi bi-pencil-square me-1"></i>Modifier
                         </a>
 
                         {{ include('_delete_button.html.twig', {
-                            action_path: path('app_team_delete', {id: team.id}),
+                            action_path: path('app_team_delete', { id: team.id }),
                             csrf_token_name: 'delete' ~ team.id,
                             confirm_message: 'En tant que chef, souhaitez-vous vraiment supprimer cette équipe ? Cette action est irréversible.',
                         }) }}
 
                     {% elseif isMember %}
-                        <form action="{{ path('app_team_leave', {id: team.id}) }}" method="POST" onsubmit="return confirm('Es-tu sûr de vouloir quitter cette équipe ?');">
+                        <form action="{{ path('app_team_leave', { id: team.id }) }}" method="POST" onsubmit="return confirm('Es-tu sûr de vouloir quitter cette équipe ?');">
                             <input type="hidden" name="_token" value="{{ csrf_token('leave' ~ team.id) }}">
                             <button type="submit" class="btn btn-app-danger">
                                 <i class="bi bi-person-dash-fill me-1"></i>Quitter
@@ -42,18 +42,18 @@
                         </button>
 
                     {% else %}
-                        <a class="btn-app-primary" href="{{ path('app_team_request_join', {id: team.id}) }}">
+                        <a class="btn-app-primary" href="{{ path('app_team_request_join', { id: team.id }) }}">
                             <i class="bi bi-person-plus-fill me-1"></i>Rejoindre
                         </a>
                     {% endif %}
 
                     {% if is_granted('ROLE_ADMIN') and not isLeader %}
-                        <a href="{{ path('app_team_edit', {id: team.id}) }}" class="btn-app-secondary">
+                        <a href="{{ path('app_team_edit', { id: team.id }) }}" class="btn-app-secondary">
                             <i class="bi bi-pencil-square me-1"></i>Modifier
                         </a>
 
                         {{ include('_delete_button.html.twig', {
-                            action_path: path('app_team_delete', {id: team.id}),
+                            action_path: path('app_team_delete', { id: team.id }),
                             csrf_token_name: 'delete' ~ team.id,
                             confirm_message: 'Es-tu sûr de vouloir supprimer cette équipe ?',
                         }) }}
