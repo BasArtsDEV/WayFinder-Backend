@@ -20,19 +20,22 @@ class Notification
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $type = null;
+    private string $type;
 
     #[ORM\Column(length: 255)]
-    private ?string $title = null;
+    private string $title;
 
     #[ORM\Column(length: 2048, nullable: true)]
     private ?string $description = null;
 
+    /**
+     * @var string[]|null
+     */
     #[ORM\Column(type: Types::JSON, nullable: true)]
     private ?array $metadata = null;
 
     #[ORM\Column]
-    private ?\DateTimeImmutable $date = null;
+    private \DateTimeImmutable $date;
 
     /**
      * Notification received by one or more users (Receive_notif).
@@ -104,11 +107,19 @@ class Notification
         return $this;
     }
 
+    /**
+     * @return string[]|null
+     */
     public function getMetadata(): ?array
     {
         return $this->metadata;
     }
 
+    /**
+     * @param string[]|null $metadata
+     *
+     * @return $this
+     */
     public function setMetadata(?array $metadata): static
     {
         $this->metadata = $metadata;
