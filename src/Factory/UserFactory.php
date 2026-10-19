@@ -13,11 +13,6 @@ final class UserFactory extends PersistentObjectFactory
 {
     private \Transliterator $transliterator;
 
-    /**
-     * @see https://symfony.com/bundles/ZenstruckFoundryBundle/current/index.html#factories-as-services
-     *
-     * @todo inject services if required
-     */
     public function __construct(
         private readonly ?UserPasswordHasherInterface $passwordHasher = null,
     ) {
@@ -38,11 +33,15 @@ final class UserFactory extends PersistentObjectFactory
         return preg_replace('/[^a-zA-Z]/', '-', $nameTransliterated);
     }
 
-    /**
-     * @see https://symfony.com/bundles/ZenstruckFoundryBundle/current/index.html#model-factories
-     *
-     * @todo add your default values here
-     */
+    private function randomUsername(): string
+    {
+        $base = strtolower($this->normalizeName(
+            self::faker()->colorName().self::faker()->word()
+        ));
+
+        return substr($base, 0, 24).self::faker()->unique()->numberBetween(1000, 9999);
+    }
+
     #[\Override]
     protected function defaults(): array|callable
     {
@@ -57,17 +56,12 @@ final class UserFactory extends PersistentObjectFactory
             'lastName' => $lastName,
             'password' => 'mdp',
             'roles' => ['ROLE_USER'],
-            'username' => self::faker()->unique()->randomElement([
-                strtolower(self::faker()->colorName().self::faker()->word()),
-                strtolower(self::faker()->dateTime()->format('M').self::faker()->firstName()),
-            ]),
+            'username' => $this->randomUsername(),
+            'avatar' => self::faker()->imageUrl(100, 100, 'people'),
             'isVerified' => true,
         ];
     }
 
-    /**
-     * @see https://symfony.com/bundles/ZenstruckFoundryBundle/current/index.html#initialization
-     */
     #[\Override]
     protected function initialize(): static
     {

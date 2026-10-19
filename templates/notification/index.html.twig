@@ -16,7 +16,7 @@
 
             {% if notifications is not empty %}
                 <div class="header-actions">
-                    <a href="{{ path('app_notification_delete_all') }}" class="button-red icon-btn">
+                    <a href="{{ path('app_notification_delete_all') }}" class="btn-app-danger">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
                             <path d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5M8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5m3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0"></path>
                         </svg>
@@ -64,14 +64,14 @@
                                 {% if notification.type in ['team_join_request', 'team_invitation'] %}
                                     <div class="notif-actions-block mt-4">
                                         <form action="{{ path('app_notification_action', {id: notification.id, action: 'accept'}) }}" method="POST" style="display: inline-block; margin-right: 0.5rem;">
-                                            <button type="submit" class="button-blue">
-                                                <i class="fa-regular fa-circle-check"></i> {{ 'notification.buttons.accept'|trans }}
+                                            <button type="submit" class="btn-app-primary">
+                                                <i class="bi bi-check-circle-fill"></i> Accepter
                                             </button>
                                         </form>
 
                                         <form action="{{ path('app_notification_action', {id: notification.id, action: 'decline'}) }}" method="POST" style="display: inline-block;">
-                                            <button type="submit" class="button-red">
-                                                <i class="fa-regular fa-circle-xmark"></i> {{ 'notification.buttons.decline'|trans }}
+                                            <button type="submit" class="btn-app-danger">
+                                                <i class="bi bi-slash-circle"></i> Refuser
                                             </button>
                                         </form>
                                     </div>
@@ -79,7 +79,7 @@
                             </div>
 
                             <div class="notif-card-actions">
-                                <a href="{{ path('app_notification_delete', {notificationId: notification.id}) }}" class="delete-notif-btn" title="Supprimer">
+                                <a href="{{ path('app_notification_delete', {notificationId: notification.id}) }}" class="btn-app-danger" title="Supprimer">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
                                         <path d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5M8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5m3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0"></path>
                                     </svg>

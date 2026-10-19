@@ -36,8 +36,8 @@ final class NotificationController extends AbstractController
     /**
      * A player requests to join a team, creates a notification for the Team Leader.
      */
-    #[Route('/team/{id}/request-join', name: 'app_team_request_join', requirements: ['id' => Requirement::DIGITS], methods: ['POST'])]
-    public function requestJoinTeam(Team $team, EntityManagerInterface $entityManager): Response
+    #[Route('/team/{id}/request-join', name: 'app_team_request_join', requirements: ['id' => Requirement::DIGITS], methods: ['GET'])]
+    public function requestJoinTeam(Team $team, EntityManagerInterface $entityManager, NotificationRepository $notificationRepository): Response
     {
         /** @var User $applicant */
         $applicant = $this->getUser();
@@ -46,7 +46,20 @@ final class NotificationController extends AbstractController
         if (!$leader) {
             $this->addFlash('danger', 'Cette équipe n\'a pas de chef.');
 
-            return $this->redirectToRoute('app_notification');
+            return $this->redirectToRoute('app_team_show', ['id' => $team->getId()]);
+        }
+
+        // Check whether a request is already in progress for this team by this user
+        $existingRequest = $notificationRepository->findOneBy([
+            'type' => Notification::TYPE_TEAM_JOIN_REQUEST,
+            'targetUser' => $applicant,
+            'targetTeam' => $team,
+        ]);
+
+        if ($existingRequest) {
+            $this->addFlash('warning', 'Vous avez déjà envoyé une demande pour rejoindre cette équipe.');
+
+            return $this->redirectToRoute('app_team_show', ['id' => $team->getId()]);
         }
 
         $notification = new Notification();
@@ -62,7 +75,7 @@ final class NotificationController extends AbstractController
 
         $this->addFlash('success', 'Votre demande pour rejoindre l\'équipe a été envoyée au chef.');
 
-        return $this->redirectToRoute('app_notification');
+        return $this->redirectToRoute('app_team_show', ['id' => $team->getId()]);
     }
 
     /**

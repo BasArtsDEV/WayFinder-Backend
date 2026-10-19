@@ -203,6 +203,7 @@ p, span, label {
     font-size: 1.1rem !important;
     color: var(--app-button-text) !important;
     text-align: center;
+    text-decoration: none;
 
     background-color: var(--app-button-decline-background) !important;
 

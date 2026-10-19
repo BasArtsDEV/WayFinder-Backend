@@ -28,7 +28,22 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
-#[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_EMAIL', fields: ['email'])]
+#[ORM\UniqueConstraint(
+    name: 'UNIQ_IDENTIFIER_EMAIL',
+    fields: ['email']
+)]
+#[ORM\UniqueConstraint(
+    name: 'UNIQ_IDENTIFIER_USERNAME',
+    fields: ['username']
+)]
+#[UniqueEntity(
+    fields: ['email'],
+    message: 'Cette adresse email est déjà utilisée.'
+)]
+#[UniqueEntity(
+    fields: ['username'],
+    message: 'Ce nom d\'utilisateur est déjà utilisé.'
+)]
 #[ApiResource(
     operations: [
         new Get(

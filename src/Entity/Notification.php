@@ -47,14 +47,14 @@ class Notification
      * User targeted by the action (Target_user).
      */
     #[ORM\ManyToOne(targetEntity: User::class)]
-    #[ORM\JoinColumn(nullable: true)]
+    #[ORM\JoinColumn(nullable: true, onDelete: 'CASCADE')]
     private ?User $targetUser = null;
 
     /**
      * Team targeted by the action (Target_team).
      */
     #[ORM\ManyToOne(targetEntity: Team::class)]
-    #[ORM\JoinColumn(nullable: true)]
+    #[ORM\JoinColumn(nullable: true, onDelete: 'CASCADE')]
     private ?Team $targetTeam = null;
 
     public function __construct()
