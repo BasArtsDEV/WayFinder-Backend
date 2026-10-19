@@ -2,7 +2,7 @@
     <ul class="treasure_hunt_list">
         {% for treasureHunt in treasureHunts %}
             <li class="treasure_hunt">
-                <a class="treasure_hunt_title" href="{{ path('app_treasure_hunt_show', {id: treasureHunt.id}) }}">{{ treasureHunt.title }}</a>
+                <a class="treasure_hunt_title" href="{{ path('app_treasure_hunt_show', { id: treasureHunt.id }) }}">{{ treasureHunt.title }}</a>
                 <span class="treasure_hunt_date">{{ treasureHunt.creationDate|date('d/m/Y') }}</span>
             </li>
         {% endfor %}
