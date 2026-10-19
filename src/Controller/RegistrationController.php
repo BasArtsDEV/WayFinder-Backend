@@ -53,7 +53,7 @@ class RegistrationController extends AbstractController
             );
 
             // Sending the email
-            $email = (new TemplatedEmail())
+            $email = new TemplatedEmail()
                 ->from(new Address('noreply@wayfinder.com', 'Support'))
                 ->to($user->getEmail())
                 ->subject('Veuillez confirmer votre email')

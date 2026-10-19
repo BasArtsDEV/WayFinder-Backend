@@ -3,7 +3,7 @@
 {% endblock %}
 
 <div class="user-profile-page">
-    {% embed '_banner.html.twig' with {banner: user.banner} %}
+    {% embed '_banner.html.twig' with { banner: user.banner } %}
         {% block overlay %}
             <div class="profile-banner-title-overlay">
                 <div class="profile-avatar-wrapper mb-3">
@@ -98,7 +98,7 @@
                             {% for team in user.teams %}
                                 {% set memberCount = team.users|length %}
 
-                                <a href="{{ path('app_team_show', {id: team.id}) }}" class="team-card-item p-3 rounded-3 bg-light border border-light">
+                                <a href="{{ path('app_team_show', { id: team.id }) }}" class="team-card-item p-3 rounded-3 bg-light border border-light">
                                     <div class="d-flex align-items-center justify-content-between">
                                         <div class="d-flex align-items-center gap-2 min-w-0">
                                             <span class="fw-bold text-dark text-decoration-none hover-success text-truncate">
