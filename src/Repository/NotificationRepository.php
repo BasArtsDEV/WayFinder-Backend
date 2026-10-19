@@ -20,7 +20,6 @@ class NotificationRepository extends ServiceEntityRepository
     /**
      * Retrieves all notifications intended for a given user.
      *
-     * @param User $user
      * @return Notification[]
      */
     public function findByAny(User $user): array
