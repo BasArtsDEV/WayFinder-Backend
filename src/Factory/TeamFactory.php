@@ -49,8 +49,10 @@ final class TeamFactory extends PersistentObjectFactory
     {
         return $this
             ->afterInstantiate(function (Team $team): void {
-                if ($team->getLeader() && !$team->getUsers()->contains($team->getLeader())) {
-                    $team->addUser($team->getLeader());
+                if ($team->getLeader()) {
+                    if (!$team->getUsers()->contains($team->getLeader())) {
+                        $team->addUser($team->getLeader());
+                    }
                 }
             })
         ;
