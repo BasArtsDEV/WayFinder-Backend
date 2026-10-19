@@ -5,11 +5,11 @@ grumphp:
         composer: null
         git_blacklist:
             keywords:
-                - "dump\\\\("
-                - "var_dump\\\\("
-                - "print_r\\\\("
-                - "die\\\\("
-                - "exit\\\\("
+                - "dump("
+                - "var_dump("
+                - "print_r("
+                - "die("
+                - "exit("
                 - "exit;"
         git_commit_message:
             allow_empty_message: false
