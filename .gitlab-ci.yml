@@ -1,0 +1,35 @@
+cache:
+    key: "${CI_COMMIT_REF_SLUG}-vendor"
+    paths:
+        - vendor/
+        - assets/vendor/
+
+stages:
+    - test
+
+test:
+    stage: test
+    script:
+        # Installation des dépendances
+        - composer install --prefer-dist --no-ansi --no-interaction --no-progress
+        - php bin/console importmap:install
+
+        # Qualité du code
+        - composer test:phpcs
+        - composer test:twigcs
+        - composer test:yaml
+        - composer test:phpstan
+
+        # Tests fonctionnels / unitaires
+        - composer test:codeception
+    artifacts:
+        when: on_failure
+        name: "codeception-failures-$CI_COMMIT_REF_SLUG"
+        paths:
+            - tests/_output/
+        exclude:
+            - tests/_output/.gitignore
+        expire_in: 1 weeks
+    tags:
+        - php8.4
+        - composer
