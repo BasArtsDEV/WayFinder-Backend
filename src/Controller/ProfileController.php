@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\User;
+use App\Service\AvatarService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
@@ -23,19 +24,9 @@ final class ProfileController extends AbstractController
     }
 
     #[Route('/user/{id}/avatar', name: 'app_user_avatar')]
-    public function avatar(User $user): Response
+    public function avatar(User $user, AvatarService $avatarService): Response
     {
-        if (!$user->getAvatar()) {
-            throw $this->createNotFoundException('Pas d\'avatar');
-        }
-
-        $avatarData = is_resource($user->getAvatar())
-            ? stream_get_contents($user->getAvatar())
-            : $user->getAvatar();
-
-        return new Response($avatarData, 200, [
-            'Content-Type' => 'image/jpeg',
-        ]);
+        return $avatarService->getAvatarResponse($user);
     }
 
     #[Route('/profil/edit', name: 'app_profil_edit', methods: ['POST'])]

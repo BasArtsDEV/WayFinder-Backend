@@ -3,17 +3,19 @@
 namespace App\Controller;
 
 use App\Entity\User;
+use App\Service\AvatarService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 
 final class GetAvatarController extends AbstractController
 {
+    public function __construct(
+        private readonly AvatarService $avatarService,
+    ) {
+    }
+
     public function __invoke(User $data): Response
     {
-        return new Response(
-            stream_get_contents($data->getAvatar(), -1, 0),
-            Response::HTTP_OK,
-            ['content-type' => 'image/png']
-        );
+        return $this->avatarService->getAvatarResponse($data);
     }
 }
