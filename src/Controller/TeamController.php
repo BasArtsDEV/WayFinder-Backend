@@ -6,14 +6,17 @@ use App\Entity\Notification;
 use App\Entity\Team;
 use App\Entity\User;
 use App\Enum\TeamFilter;
+use App\Form\InviteMemberType;
 use App\Form\TeamType;
 use App\Repository\NotificationRepository;
 use App\Repository\TeamRepository;
 use App\Repository\TreasureHuntRepository;
+use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\MapQueryParameter;
@@ -228,5 +231,102 @@ final class TeamController extends AbstractController
         return $this->render('team/edit.html.twig', [
             'form' => $form->createView(),
         ]);
+    }
+
+    #[Route('/team/{id}/invite', name: 'app_team_invite', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
+    public function invite(
+        Team $team,
+        Request $request,
+        UserRepository $userRepository,
+        NotificationRepository $notificationRepository,
+        EntityManagerInterface $em,
+    ): Response {
+        /** @var User $leader */
+        $leader = $this->getUser();
+
+        if ($team->getLeader()?->getId() !== $leader->getId()) {
+            throw $this->createAccessDeniedException('Seul le chef d\'équipe peut inviter des membres.');
+        }
+
+        $form = $this->createForm(InviteMemberType::class);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            // "@username" is permitted: this is how usernames are displayed on the site.
+            $username = ltrim(trim((string) $form->get('username')->getData()), '@');
+            $guest = $userRepository->findOneBy(['username' => $username]);
+
+            $error = $this->getInviteError($team, $guest, $notificationRepository);
+
+            if (null !== $error) {
+                $form->get('username')->addError(new FormError($error));
+            } else {
+                $notification = new Notification();
+                $notification->setType(Notification::TYPE_TEAM_INVITATION);
+                $notification->setTitle('Invitation à rejoindre une équipe');
+                $notification->setDescription(sprintf(
+                    '%s vous invite à rejoindre l\'équipe "%s".',
+                    $leader->getUsername(),
+                    $team->getName(),
+                ));
+                $notification->setTargetUser($guest);
+                $notification->setTargetTeam($team);
+                $notification->addReceiveNotif($guest);
+
+                $em->persist($notification);
+                $em->flush();
+
+                $this->addFlash('success', sprintf('Invitation envoyée à @%s.', $guest->getUsername()));
+
+                return $this->redirectToRoute('app_team_show', ['id' => $team->getId()]);
+            }
+        }
+
+        return $this->render('team/invite.html.twig', [
+            'team' => $team,
+            'form' => $form,
+        ]);
+    }
+
+    /**
+     * Returns the reason for the invitation being declined, or null if it is possible.
+     */
+    private function getInviteError(Team $team, ?User $guest, NotificationRepository $notificationRepository): ?string
+    {
+        if (null === $guest) {
+            return 'Aucun utilisateur ne porte ce nom.';
+        }
+
+        if ($team->getLeader()?->getId() === $guest->getId() || $team->getUsers()->contains($guest)) {
+            return sprintf('@%s fait déjà partie de l\'équipe.', $guest->getUsername());
+        }
+
+        if ($team->getUsers()->count() >= Team::MAX_USERS) {
+            return sprintf('Votre équipe est complète (%d membres maximum).', Team::MAX_USERS);
+        }
+
+        if ($guest->getTeams()->count() >= User::MAX_TEAMS) {
+            return sprintf('@%s a atteint le nombre maximum d\'équipes.', $guest->getUsername());
+        }
+
+        // Invitation already pending = notification still present for the guest
+        if (null !== $notificationRepository->findOneBy([
+            'type' => Notification::TYPE_TEAM_INVITATION,
+            'targetUser' => $guest,
+            'targetTeam' => $team,
+        ])) {
+            return sprintf('Une invitation est déjà en attente pour @%s.', $guest->getUsername());
+        }
+
+        // The guest has already requested to join, there is no need to invite them.
+        if (null !== $notificationRepository->findOneBy([
+            'type' => Notification::TYPE_TEAM_JOIN_REQUEST,
+            'targetUser' => $guest,
+            'targetTeam' => $team,
+        ])) {
+            return sprintf('@%s a déjà demandé à rejoindre l\'équipe : répondez à sa demande dans vos notifications.', $guest->getUsername());
+        }
+
+        return null;
     }
 }
