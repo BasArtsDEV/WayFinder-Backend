@@ -47,34 +47,12 @@
             flex-direction: column;
             gap: 1rem;
         }
-
-        #treasureContainer-{{ tabId }}.is-list-view .treasure-card {
-            display: flex;
-            flex-direction: column;
-        }
-
-        @media (min-width: 768px) {
-            #treasureContainer-{{ tabId }}.is-list-view .treasure-card {
-                flex-direction: row;
-                justify-content: space-between;
-                align-items: center;
-            }
-            #treasureContainer-{{ tabId }}.is-list-view .treasure-card .treasure-feedback-section {
-                flex-direction: column;
-                align-items: flex-end;
-                justify-content: space-between;
-                max-width: 200px;
-                border-top: none !important;
-                padding-top: 0 !important;
-                margin-top: 0 !important;
-            }
-        }
     </style>
 
     <div id="treasureContainer-{{ tabId }}" class="treasure-grid">
         {% for treasureHunt in treasureHunts %}
-            <a href="{{ path('app_treasure_hunt_show', { id: treasureHunt.id }) }}" class="treasure-card text-decoration-none card border shadow-sm rounded-4 p-3">
-                <div class="flex-grow-1 w-100">
+            <a href="{{ path('app_treasure_hunt_show', { id: treasureHunt.id }) }}" class="treasure-card text-decoration-none card border shadow-sm rounded-4 p-3 d-flex flex-column justify-content-between h-100">
+                <div class="flex-grow-1 w-100 mb-2">
                     <div class="d-flex justify-content-between align-items-start mb-2">
                         <h4 class="fw-bold fs-5 text-dark mb-0">{{ treasureHunt.title }}</h4>
                         <span class="status-badge {% if treasureHunt.published %}published{% else %}draft{% endif %} m-0">
@@ -91,7 +69,7 @@
                     {% endif %}
                 </div>
 
-                <div class="treasure-feedback-section d-flex align-items-center justify-content-between pt-2 border-top border-light mt-2 w-100">
+                <div class="treasure-feedback-section d-flex align-items-center justify-content-between pt-2 border-top border-light mt-auto w-100">
                     {% set avgstars = treasureHunt.getAverageStars() ?? 0 %}
                     {% set feedbacks = treasureHunt.getFeedbacks() %}
 
@@ -108,11 +86,11 @@
                                 <svg class="star-single" viewBox="0 0 24 24">
                                     <defs>
                                         <linearGradient id="{{ gradId }}" x1="0%" y1="0%" x2="100%" y2="0%">
-                                            <stop offset="{{ fillPercentage }}%" stop-color="#ffc107" />
-                                            <stop offset="{{ fillPercentage }}%" stop-color="#e4e5e9" />
+                                            <stop offset="{{ fillPercentage }}%" stop-color="#ffc107"></stop>
+                                            <stop offset="{{ fillPercentage }}%" stop-color="#e4e5e9"></stop>
                                         </linearGradient>
                                     </defs>
-                                    <path fill="url(#{{ gradId }})" d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
+                                    <path fill="url(#{{ gradId }})" d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"></path>
                                 </svg>
                             {% endfor %}
                         </div>
