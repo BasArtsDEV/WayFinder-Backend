@@ -101,9 +101,10 @@
                             {% if team.leader %}
                                 <div class="member-item leader-card d-flex align-items-center justify-content-between p-3 rounded-3 bg-light border border-success border-opacity-25">
                                     <div class="d-flex align-items-center gap-2">
-                                        <div class="bg-success text-white rounded-circle d-flex align-items-center justify-content-center fw-bold" style="width: 34px; height: 34px; font-size: 0.9rem;">
-                                            {{ team.leader.username|first|upper }}
-                                        </div>
+                                        {{ include('profile/partials/_avatar.html.twig', {
+                                            user: team.leader,
+                                            size: 38,
+                                        }) }}
                                         <span class="fw-bold text-dark">@{{ team.leader.username }}</span>
                                     </div>
                                     <span class="badge bg-warning text-dark fw-semibold px-2.5 py-1 rounded-pill" title="Chef d'équipe">
@@ -115,13 +116,17 @@
 
                             {% for user in team.users %}
                                 {% if team.leader is null or user.id != team.leader.id %}
-                                    <div class="member-item d-flex align-items-center justify-content-between gap-2 p-2 px-3 rounded-3">
-                                        <div class="d-flex align-items-center gap-2 flex-grow-1" style="min-width: 0;">
-                                            <div class="bg-secondary text-white rounded-circle d-flex align-items-center justify-content-center fw-bold opacity-75 flex-shrink-0" style="width: 34px; height: 34px; font-size: 0.9rem;">
-                                                {{ user.username|first|upper }}
-                                            </div>
-                                            <span class="text-secondary fw-medium text-truncate" title="@{{ user.username }}">@{{ user.username }}</span>
+                                    <div class="member-item d-flex align-items-center justify-content-between p-2 px-3 rounded-3 {% if app.user and user.id == app.user.id %}bg-opacity-10 border border-dark border-opacity-50{% endif %}">
+                                        <div class="d-flex align-items-center gap-2">
+                                            {{ include('profile/partials/_avatar.html.twig', {
+                                                user: user,
+                                                size: 38,
+                                            }) }}
+                                            <span class="text-secondary fw-medium">@{{ user.username }}</span>
                                         </div>
+                                        {% if app.user and user.id == app.user.id %}
+                                            <span class="badge bg-dark text-white fw-semibold px-2.5 py-1 rounded-pill">Moi</span>
+                                        {% endif %}
 
                                         {% if isLeader %}
                                             <div class="btn-dropdown flex-shrink-0">
