@@ -1,12 +1,50 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Reset your password{% endblock %}
+{% set resetTitle = 'Réinitialiser votre mot de passe' %}
 
-{% block body %}
-    <h1>Reset your password</h1>
+{% block title %}{{ resetTitle }}{% endblock %}
 
-    {{ form_start(resetForm) }}
-        {{ form_row(resetForm.plainPassword) }}
-        <button class="btn btn-primary">Reset password</button>
-    {{ form_end(resetForm) }}
+{% block stylesheets %}
+    <link href="{{ asset('styles/security/login.css') }}" type="text/css" rel="stylesheet" />
+{% endblock %}
+
+{% block main %}
+    <div class="login-page-wrapper">
+        <div class="login-card">
+            <div class="user-avatar-badge">
+                <i class="bi bi-key-fill"></i>
+            </div>
+
+            <h1 class="login-title">Nouveau mot de passe</h1>
+
+            {{ form_start(resetForm, { attr: { class: 'login-form' } }) }}
+
+            {# Affichage des erreurs globales (comme les mots de passe non identiques) #}
+            {{ form_errors(resetForm.plainPassword) }}
+
+            <div class="mb-3">
+                {{ form_label(resetForm.plainPassword.first) }}
+                {{ form_widget(resetForm.plainPassword.first) }}
+                {{ form_errors(resetForm.plainPassword.first) }}
+            </div>
+
+            <div class="mb-3">
+                {{ form_label(resetForm.plainPassword.second) }}
+                {{ form_widget(resetForm.plainPassword.second) }}
+                {{ form_errors(resetForm.plainPassword.second) }}
+            </div>
+
+            <button type="submit" class="btn-app-primary btn-login-submit mt-3">
+                Réinitialiser le mot de passe
+            </button>
+
+            {{ form_end(resetForm) }}
+
+            <div class="text-center mt-4">
+                <a href="{{ path('app_login') }}" class="text-decoration-none text-muted small hover-green">
+                    <i class="bi bi-arrow-left"></i> Retour à la connexion
+                </a>
+            </div>
+        </div>
+    </div>
 {% endblock %}
