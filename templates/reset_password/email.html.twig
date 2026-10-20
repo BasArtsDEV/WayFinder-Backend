@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Réinitialisation de votre mot de passe</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #ffffff;
+            margin: 0;
+            padding: 20px;
+            color: #484848;
+        }
+        .email-container {
+            max-width: 600px;
+            margin: 0 auto;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 40px;
+        }
+        .header {
+            margin-bottom: 30px;
+        }
+        .logo {
+            height: 40px;
+            vertical-align: middle;
+        }
+        .brand-name {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #d97706;
+            margin-left: 10px;
+            vertical-align: middle;
+        }
+        h1 {
+            font-size: 1.6rem;
+            font-weight: 600;
+            color: #222222;
+            margin-top: 0;
+            margin-bottom: 20px;
+        }
+        p {
+            font-size: 1rem;
+            line-height: 1.5;
+            margin-bottom: 20px;
+        }
+        .reset-button-container {
+            text-align: center;
+            margin: 40px 0;
+        }
+        .reset-button {
+            background-color: #f59e0b;
+            color: #ffffff;
+            padding: 15px 30px;
+            text-decoration: none;
+            border-radius: 6px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            display: inline-block;
+        }
+        .reset-button:hover {
+            background-color: #d97706;
+        }
+        .footer {
+            margin-top: 40px;
+            border-top: 1px solid #e0e0e0;
+            padding-top: 20px;
+            color: #767676;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+<div class="email-container">
+    <div class="header">
+        <span class="brand-name">WayFinder</span>
+    </div>
+
+    <h1>Bonjour !</h1>
+
+    <p>Nous avons reçu une demande de réinitialisation de votre mot de passe pour votre compte WayFinder.</p>
+
+    <p>Si vous n'êtes pas à l'origine de cette demande, vous pouvez ignorer cet e-mail. Dans le cas contraire, cliquez sur le bouton ci-dessous pour réinitialiser votre mot de passe :</p>
+
+    <div class="reset-button-container">
+        <a href="{{ url('app_reset_password', { token: resetToken.token }) }}" class="reset-button">
+            Réinitialiser votre mot de passe
+        </a>
+    </div>
+
+    <p>Ce lien expirera dans 1 heure.</p>
+
+    <p>À bientôt,<br>
+        L'équipe WayFinder</p>
+
+    <div class="footer">
+        <p>Envoyé avec ♥ par WayFinder</p>
+    </div>
+</div>
+</body>
+</html>

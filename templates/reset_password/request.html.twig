@@ -1,0 +1,46 @@
+{% extends 'base.html.twig' %}
+
+{% set resetTitle = 'Réinitialiser votre mot de passe' %}
+
+{% block title %} {{ resetTitle }}{% endblock %}
+
+{% block stylesheets %}
+    <link href="{{ asset('styles/security/login.css') }}" type="text/css" rel="stylesheet" />
+{% endblock %}
+
+{% block main %}
+    <div class="login-page-wrapper">
+        <div class="login-card">
+            <div class="user-avatar-badge">
+                <i class="bi bi-key-fill"></i>
+            </div>
+
+            <h1 class="login-title">Mot de passe oublié</h1>
+
+            {{ form_start(requestForm, { attr: { class: 'login-form' } }) }}
+
+            <div class="mb-3">
+                {{ form_label(requestForm.email, 'Adresse e-mail', { label_attr: { class: 'form-label-custom' } }) }}
+                {{ form_widget(requestForm.email, {
+                    attr: {
+                        class: 'form-control form-control-lg rounded-3',
+                        placeholder: 'exemple@gmail.com',
+                    },
+                }) }}
+                {{ form_errors(requestForm.email) }}
+            </div>
+
+            <button type="submit" class="btn-app-primary btn-login-submit mt-3">
+                Envoyer le lien
+            </button>
+
+            {{ form_end(requestForm) }}
+
+            <div class="text-center mt-4">
+                <a href="{{ path('app_login') }}" class="text-decoration-none text-muted small hover-green">
+                    <i class="bi bi-arrow-left"></i> Retour à la connexion
+                </a>
+            </div>
+        </div>
+    </div>
+{% endblock %}
