@@ -3,58 +3,66 @@
 {% endblock %}
 
 <div class="form-wrapper-center">
-    {{ form_start(form, { attr: { id: 'teamForm', class: 'needs-validation w-100 my-auto' } }) }}
+    <div class="team-form-card">
+        <header class="team-form-card-header">
+            <h1 class="team-form-card-title">{{ form_title|default('Créer une équipe') }}</h1>
+            {% if form_subtitle|default(null) %}
+                <p class="team-form-card-subtitle">{{ form_subtitle }}</p>
+            {% endif %}
+        </header>
 
-    <div class="form-container">
-        <div class="mb-4">
-            {{ form_label(form.name, null, { label_attr: { class: 'form-label fw-semibold text-dark fs-6' } }) }}
-            {{ form_widget(form.name) }}
-            {{ form_errors(form.name) }}
-        </div>
+        <div class="team-form-card-body">
+            {{ form_start(form, { attr: { id: 'teamForm', class: 'needs-validation w-100' } }) }}
 
-        <div class="mb-4">
-            <label class="form-label fw-semibold text-dark fs-6">Bannière de l'équipe</label>
+            <div class="mb-4">
+                {{ form_label(form.name, null, { label_attr: { class: 'form-label fw-semibold text-dark fs-6' } }) }}
+                {{ form_widget(form.name) }}
+                {{ form_errors(form.name) }}
+            </div>
 
-            <div class="dropzone-card">
-                <div class="dropzone-area" id="dropzoneArea">
-                    {{ form_widget(form.bannerFile, {
-                        attr: {
-                            class: 'dropzone-input',
-                            id: 'bannerFileInput',
-                            accept: 'image/png, image/jpeg, image/webp',
-                            required: 'required',
-                        },
-                    }) }}
+            <div class="mb-4">
+                <label class="form-label fw-semibold text-dark fs-6">Bannière de l'équipe</label>
 
-                    <div class="dropzone-content default-content">
-                        <div class="dropzone-icon">
-                            <i class="bi bi-cloud-arrow-up"></i>
+                <div class="dropzone-card">
+                    <div class="dropzone-area" id="dropzoneArea">
+                        {{ form_widget(form.bannerFile, {
+                            attr: {
+                                class: 'dropzone-input',
+                                id: 'bannerFileInput',
+                                accept: 'image/png, image/jpeg, image/webp',
+                            },
+                        }) }}
+
+                        <div class="dropzone-content default-content">
+                            <div class="dropzone-icon">
+                                <i class="bi bi-cloud-arrow-up"></i>
+                            </div>
+                            <div class="dropzone-text">
+                                <span class="fw-bold fs-6 d-block text-white mb-1">Cliquer ou glisser une image ici</span>
+                                <small class="text-muted">Formats supportés : JPG, PNG, WEBP (5 MB max)</small>
+                            </div>
                         </div>
-                        <div class="dropzone-text">
-                            <span class="fw-bold fs-6 d-block text-white mb-1">Cliquer ou glisser une image ici</span>
-                            <small class="text-muted">Formats supportés : JPG, PNG, WEBP (5 MB max)</small>
-                        </div>
-                    </div>
 
-                    <div class="dropzone-content selected-content">
-                        <div class="dropzone-icon success-icon">
-                            <i class="bi bi-check-lg"></i>
-                        </div>
-                        <div class="dropzone-text">
-                            <span class="fw-bold fs-6 d-block text-success mb-1">Fichier prêt à être envoyé !</span>
-                            <small class="text-muted">Cliquez pour remplacer le fichier</small>
+                        <div class="dropzone-content selected-content">
+                            <div class="dropzone-icon success-icon">
+                                <i class="bi bi-check-lg"></i>
+                            </div>
+                            <div class="dropzone-text">
+                                <span class="fw-bold fs-6 d-block text-success mb-1">Fichier prêt à être envoyé !</span>
+                                <small class="text-muted">Cliquez pour remplacer le fichier</small>
+                            </div>
                         </div>
                     </div>
                 </div>
+                {{ form_errors(form.bannerFile) }}
             </div>
-            {{ form_errors(form.bannerFile) }}
+
+            <button type="submit" class="btn-app-primary" style="margin-right: auto; margin-left: auto">
+                <i class="bi bi-plus-circle"></i>
+                <span>{{ submit_label|default('Enregistrer l\'équipe') }}</span>
+            </button>
+
+            {{ form_end(form) }}
         </div>
-
-        <button type="submit" class="btn btn-success-custom w-100 py-3 fw-bold rounded-3 shadow-sm d-flex align-items-center justify-content-center gap-2 mt-4">
-            <i class="bi bi-check-circle-fill"></i>
-            <span>{{ submit_label|default('Enregistrer l\'équipe') }}</span>
-        </button>
     </div>
-
-    {{ form_end(form) }}
 </div>
