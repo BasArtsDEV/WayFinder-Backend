@@ -23,10 +23,22 @@ final class TeamController extends AbstractController
     #[Route('/team', name: 'app_team')]
     public function index(TeamRepository $teamRepository): Response
     {
-        $teams = $teamRepository->findAll();
+        /** @var User $user */
+        $user = $this->getUser();
+
+        $myTeams = [];
+        $otherTeams = [];
+        foreach ($teamRepository->findAllWithLeaderAndMembers() as $team) {
+            if ($team->getUsers()->contains($user)) {
+                $myTeams[] = $team;
+            } else {
+                $otherTeams[] = $team;
+            }
+        }
 
         return $this->render('team/index.html.twig', [
-            'teams' => $teams,
+            'myTeams' => $myTeams,
+            'otherTeams' => $otherTeams,
         ]);
     }
 
@@ -72,25 +84,35 @@ final class TeamController extends AbstractController
         ]);
     }
 
-    #[Route('/team/new', name: 'app_team_new')]
+    #[Route('/team/new', name: 'app_team_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $em): Response
     {
+        /** @var User $user */
+        $user = $this->getUser();
+
+        if ($user->getTeams()->count() >= User::MAX_TEAMS) {
+            $this->addFlash('danger', sprintf('Vous ne pouvez pas appartenir à plus de %d équipes.', User::MAX_TEAMS));
+
+            return $this->redirectToRoute('app_team');
+        }
+
         $team = new Team();
+        $team->setLeader($user);
 
         $form = $this->createForm(TeamType::class, $team);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $team->addUser($user); // le chef est aussi membre (comme dans TeamFactory)
             $em->persist($team);
-
             $em->flush();
 
-            return $this->redirectToRoute('app_team');
+            $this->addFlash('success', 'Votre équipe a bien été créée.');
+
+            return $this->redirectToRoute('app_team_show', ['id' => $team->getId()]);
         }
 
-        return $this->render('team/create.html.twig', [
-            'form' => $form->createView(),
-        ]);
+        return $this->render('team/create.html.twig', ['form' => $form]);
     }
 
     #[Route('/team/{id}', name: 'app_team_delete', requirements: ['id' => '\d+'], methods: ['POST'])]
