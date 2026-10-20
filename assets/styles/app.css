@@ -330,6 +330,10 @@ p, span, label {
     border: none;
 }
 
+.app_profil {
+    text-decoration: none;
+}
+
 .welcome-btn {
     width: 100%;
     max-width: 320px;
