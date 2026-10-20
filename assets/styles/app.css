@@ -269,18 +269,6 @@ p, span, label {
     margin-bottom: 0;
 }
 
-
-.welcome-page {
-    width: 100%;
-    background: #f4dca8;
-    flex-grow: 1;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 1rem;
-    box-sizing: border-box;
-}
-
 .welcome-card {
     width: 100%;
     max-width: 750px;
