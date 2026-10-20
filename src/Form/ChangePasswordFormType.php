@@ -7,10 +7,8 @@ use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\NotCompromisedPassword;
-use Symfony\Component\Validator\Constraints\PasswordStrength;
 use Symfony\Component\Validator\Constraints\Regex;
 
 class ChangePasswordFormType extends AbstractType
@@ -22,35 +20,38 @@ class ChangePasswordFormType extends AbstractType
                 'type' => PasswordType::class,
                 'options' => [
                     'attr' => [
-                        'autocomplete' => 'new-password',
+                        'class' => 'form-control form-control-lg rounded-3',
                     ],
                 ],
                 'first_options' => [
+                    'label' => 'Nouveau mot de passe',
+                    'label_attr' => ['class' => 'form-label-custom'],
+                    'attr' => [
+                        'placeholder' => 'Entrez votre nouveau mot de passe',
+                        'autocomplete' => 'new-password',
+                    ],
                     'constraints' => [
                         new NotBlank(
-                            message: 'Veuillez rentrer un mot de passe',
-                        ),
-                        new Length(
-                            min: 8,
-                            minMessage: 'Votre mot de passe doit contenir au minimum {{ limit }} charactères',
-                            // max length allowed by Symfony for security reasons
-                            max: 4096,
+                            message: 'Veuillez renseigner un mot de passe.'
                         ),
                         new Regex(
                             pattern: '/^(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/',
-                            message: 'Le mot de passe doit contenir au moins 8 caractères, un chiffre, un symbole'
+                            message: 'Le mot de passe doit contenir au moins 8 caractères, une majuscule, un chiffre et un symbole.'
                         ),
-                        new PasswordStrength(),
-                        new NotCompromisedPassword(),
+                        new NotCompromisedPassword(
+                            message: 'Ce mot de passe a été divulgué dans une fuite de données, veuillez en choisir un autre.'
+                        ),
                     ],
-                    'label' => 'New password',
                 ],
                 'second_options' => [
                     'label' => 'Répéter le mot de passe',
+                    'label_attr' => ['class' => 'form-label-custom'],
+                    'attr' => [
+                        'placeholder' => 'Répétez votre nouveau mot de passe',
+                        'autocomplete' => 'new-password',
+                    ],
                 ],
                 'invalid_message' => 'Les mots de passe doivent correspondre.',
-                // Instead of being set onto the object directly,
-                // this is read and encoded in the controller
                 'mapped' => false,
             ])
         ;
