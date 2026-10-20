@@ -9,6 +9,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\File;
 
@@ -31,7 +32,7 @@ class TeamType extends AbstractType
                 'mapped' => false,
                 'required' => false,
                 'constraints' => [
-                    new File(maxSize: '5M', mimeTypes: [
+                    new File(maxSize: '2M', mimeTypes: [
                         'image/jpeg',
                         'image/png',
                         'image/webp',
@@ -45,7 +46,7 @@ class TeamType extends AbstractType
             $team = $event->getData();
             $file = $form->get('bannerFile')->getData();
 
-            if ($file) {
+            if ($file instanceof UploadedFile && $file->isValid()) {
                 $binaryData = file_get_contents($file->getPathname());
                 $mimeType = $file->getMimeType();
                 $team->setBanner('data:'.$mimeType.';base64,'.base64_encode($binaryData));
