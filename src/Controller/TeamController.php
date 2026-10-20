@@ -129,24 +129,13 @@ final class TeamController extends AbstractController
     #[Route('/team/new', name: 'app_team_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $em): Response
     {
-        /** @var User $user */
-        $user = $this->getUser();
-
-        if ($user->getTeams()->count() >= User::MAX_TEAMS) {
-            $this->addFlash('danger', sprintf('Vous ne pouvez pas appartenir à plus de %d équipes.', User::MAX_TEAMS));
-
-            return $this->redirectToRoute('app_team');
-        }
-
-        $team = new Team();
-        $team->setLeader($user);
         $user = $this->getUser();
         if (!$user instanceof User) {
             throw $this->createAccessDeniedException();
         }
 
         if ($user->getTeams()->count() >= User::MAX_TEAMS) {
-            $this->addFlash('error', 'Vous avez atteint la limite de '.User::MAX_TEAMS.' équipes.');
+            $this->addFlash('danger', sprintf('Vous ne pouvez pas appartenir à plus de %d équipes.', User::MAX_TEAMS));
 
             return $this->redirectToRoute('app_team');
         }
@@ -159,7 +148,6 @@ final class TeamController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $team->addUser($user); // le chef est aussi membre (comme dans TeamFactory)
             $em->persist($team);
             $em->flush();
 

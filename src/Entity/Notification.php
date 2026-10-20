@@ -73,7 +73,7 @@ class Notification
 
     public function getType(): ?string
     {
-        return $this->type;
+        return $this->type ?? null;
     }
 
     public function setType(string $type): static
@@ -85,7 +85,7 @@ class Notification
 
     public function getTitle(): ?string
     {
-        return $this->title;
+        return $this->title ?? null;
     }
 
     public function setTitle(string $title): static

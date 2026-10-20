@@ -25,7 +25,9 @@ final class Version20261020134122 extends AbstractMigration
         $this->addSql('CREATE UNIQUE INDEX UNIQ_ENROLLMENT_USER_TREASURE_HUNT ON enrollment (user_id, treasure_hunt_id)');
         $this->addSql('CREATE INDEX IDX_DBDCD7E1B36117A6 ON enrollment (participant_team_id)');
         $this->addSql('ALTER TABLE riddle ADD score INT DEFAULT 0 NOT NULL');
-        $this->addSql('ALTER TABLE team ADD type VARCHAR(255) NOT NULL');
+        $this->addSql('ALTER TABLE team ADD type VARCHAR(255) DEFAULT NULL');
+        $this->addSql("UPDATE team SET type = 'creator'");
+        $this->addSql('ALTER TABLE team ALTER type SET NOT NULL');
         $this->addSql('ALTER TABLE team ALTER leader_id SET NOT NULL');
     }
 
