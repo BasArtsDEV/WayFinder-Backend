@@ -11,26 +11,53 @@
             </a>
         </div>
 
-        {% if myTeams is not empty %}
-            <h2 class="h5 fw-semibold mb-3">Mes équipes</h2>
-            <div class="row g-4 mb-5">
-                {% for team in myTeams %}
-                    <div class="col-12 col-md-6 col-lg-4">
-                        {{ include('team/partials/_team_card.html.twig', { team: team }) }}
-                    </div>
-                {% endfor %}
-            </div>
-        {% endif %}
+        <form method="get" action="{{ path('app_team') }}" role="search" class="row g-3 align-items-center mb-4">
+            <input type="hidden" name="filter" value="{{ currentFilter.value }}">
 
-        <h2 class="h5 fw-semibold mb-3">{{ myTeams is empty ? 'Toutes les équipes' : 'Autres équipes' }}</h2>
+            <div class="col-12 col-lg">
+                <div class="col-12 col-lg">
+                    <div class="input-group">
+                        <input type="search" name="q" value="{{ q }}" maxlength="50"
+                               class="form-control" placeholder="Rechercher une équipe ou un chef…"
+                               aria-label="Rechercher une équipe">
+                        <span class="input-group-text"><button type="submit" class="btn btn-success-custom">Rechercher</button></span>
+                    </div>
+                </div>
+
+                <div class="row mt-3">
+                    <div class="btn-group gap-2" role="group" aria-label="Filtrer les équipes">
+                        {% for f in enum_cases('App\\Enum\\TeamFilter') %}
+                            <a href="{{ path('app_team', { filter: f.value == 'all' ? null : f.value, q: q ?: null }) }}"
+                               class="btn {{ f == currentFilter ? 'btn-app-primary' : 'btn-app-secondary' }}"
+                               {% if f == currentFilter %}aria-current="true"{% endif %}>
+                                {{ f.label }}
+                            </a>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </form>
+
+        <p class="text-muted small mb-3">
+            {{ teams.totalItemCount }} équipe{{ teams.totalItemCount > 1 ? 's' : '' }}
+            {% if q %}pour « {{ q }} » <a href="{{ path('app_team', { filter: currentFilter.value == 'all' ? null : currentFilter.value }) }}">Effacer</a>{% endif %}
+        </p>
+
         <div class="row g-4">
-            {% for team in otherTeams %}
+            {% for team in teams %}
                 <div class="col-12 col-md-6 col-lg-4">
                     {{ include('team/partials/_team_card.html.twig', { team: team }) }}
                 </div>
             {% else %}
-                <p class="text-muted">Aucune équipe pour le moment.</p>
+                <div class="col-12 text-center text-muted py-5">
+                    <i class="bi bi-people fs-1 d-block mb-2"></i>
+                    Aucune équipe ne correspond à votre recherche.
+                </div>
             {% endfor %}
+        </div>
+
+        <div class="d-flex justify-content-center mt-4">
+            {{ knp_pagination_render(teams) }}
         </div>
     </div>
 {% endblock %}
