@@ -33,23 +33,11 @@
                             },
                         }) }}
 
-                        <div class="dropzone-content default-content">
-                            <div class="dropzone-icon">
-                                <i class="bi bi-cloud-arrow-up"></i>
-                            </div>
-                            <div class="dropzone-text">
-                                <span class="fw-bold fs-6 d-block text-white mb-1">Cliquer ou glisser une image ici</span>
-                                <small class="text-muted">Formats supportés : JPG, PNG, WEBP (5 MB max)</small>
-                            </div>
-                        </div>
-
-                        <div class="dropzone-content selected-content">
-                            <div class="dropzone-icon success-icon">
-                                <i class="bi bi-check-lg"></i>
-                            </div>
-                            <div class="dropzone-text">
-                                <span class="fw-bold fs-6 d-block text-success mb-1">Fichier prêt à être envoyé !</span>
-                                <small class="text-muted">Cliquez pour remplacer le fichier</small>
+                        <div class="dropzone-prompt" id="dropzonePrompt">
+                            <i class="bi bi-cloud-arrow-up fs-2 mb-2"></i>
+                            <div class="dropzone-text" id="dropzoneText">
+                                <span>Veuillez uploader une image valide (JPG, PNG, WEBP)</span>
+                                <small>Taille maximale : 5 MO</small>
                             </div>
                         </div>
                     </div>
@@ -66,3 +54,24 @@
         </div>
     </div>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const fileInput = document.querySelector('.dropzone-input');
+        const textElement = document.getElementById('dropzoneText');
+        const promptElement = document.getElementById('dropzonePrompt');
+
+        if (fileInput) {
+            fileInput.addEventListener('change', function(e) {
+                if (e.target.files && e.target.files.length > 0) {
+                    const fileName = e.target.files[0].name;
+                    textElement.textContent = "Fichier sélectionné : " + fileName;
+                    promptElement.classList.add('file-selected');
+                } else {
+                    textElement.textContent = "Veuillez uploader une image valide (JPG, PNG, WEBP), max 5 Mo";
+                    promptElement.classList.remove('file-selected');
+                }
+            });
+        }
+    });
+</script>
