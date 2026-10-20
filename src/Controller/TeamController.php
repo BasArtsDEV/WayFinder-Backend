@@ -5,15 +5,18 @@ namespace App\Controller;
 use App\Entity\Notification;
 use App\Entity\Team;
 use App\Entity\User;
+use App\Enum\TeamFilter;
 use App\Form\TeamType;
 use App\Repository\NotificationRepository;
 use App\Repository\TeamRepository;
 use App\Repository\TreasureHuntRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Attribute\MapQueryParameter;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
@@ -21,12 +24,29 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 final class TeamController extends AbstractController
 {
     #[Route('/team', name: 'app_team')]
-    public function index(TeamRepository $teamRepository): Response
-    {
-        $teams = $teamRepository->findAll();
+    public function index(
+        TeamRepository $teamRepository,
+        PaginatorInterface $paginator,
+        #[MapQueryParameter(options: ['min_range' => 1])] int $page = 1,
+        #[MapQueryParameter] string $q = '',
+        #[MapQueryParameter] string $filter = '',
+    ): Response {
+        /** @var User $user */
+        $user = $this->getUser();
+
+        $currentFilter = TeamFilter::tryFrom($filter) ?? TeamFilter::All;
+        $search = mb_substr(trim($q), 0, 50);
+
+        $teams = $paginator->paginate(
+            $teamRepository->queryForList($user, $search, $currentFilter),
+            $page,
+            12,
+        );
 
         return $this->render('team/index.html.twig', [
             'teams' => $teams,
+            'q' => $search,
+            'currentFilter' => $currentFilter,
         ]);
     }
 
@@ -72,25 +92,65 @@ final class TeamController extends AbstractController
         ]);
     }
 
-    #[Route('/team/new', name: 'app_team_new')]
+    #[Route('/team/{id}/banner', name: 'app_team_banner', requirements: ['id' => '\d+'], methods: ['GET'])]
+    public function banner(int $id, Request $request, TeamRepository $teamRepository): Response
+    {
+        $banner = $teamRepository->findBannerById($id);
+
+        if (null === $banner || !preg_match('#^data:(image/(?:jpeg|png|webp));base64,(.+)$#s', $banner, $matches)) {
+            throw $this->createNotFoundException();
+        }
+
+        $response = new Response();
+        $response->setPrivate();
+        $response->setMaxAge(300);
+        $response->setEtag(md5($banner));
+
+        if ($response->isNotModified($request)) {
+            return $response;
+        }
+
+        $binary = base64_decode($matches[2], true);
+        if (false === $binary) {
+            throw $this->createNotFoundException();
+        }
+
+        $response->setContent($binary);
+        $response->headers->set('Content-Type', $matches[1]);
+        $response->headers->set('X-Content-Type-Options', 'nosniff');
+
+        return $response;
+    }
+
+    #[Route('/team/new', name: 'app_team_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $em): Response
     {
+        /** @var User $user */
+        $user = $this->getUser();
+
+        if ($user->getTeams()->count() >= User::MAX_TEAMS) {
+            $this->addFlash('danger', sprintf('Vous ne pouvez pas appartenir à plus de %d équipes.', User::MAX_TEAMS));
+
+            return $this->redirectToRoute('app_team');
+        }
+
         $team = new Team();
+        $team->setLeader($user);
 
         $form = $this->createForm(TeamType::class, $team);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $team->addUser($user); // le chef est aussi membre (comme dans TeamFactory)
             $em->persist($team);
-
             $em->flush();
 
-            return $this->redirectToRoute('app_team');
+            $this->addFlash('success', 'Votre équipe a bien été créée.');
+
+            return $this->redirectToRoute('app_team_show', ['id' => $team->getId()]);
         }
 
-        return $this->render('team/create.html.twig', [
-            'form' => $form->createView(),
-        ]);
+        return $this->render('team/create.html.twig', ['form' => $form]);
     }
 
     #[Route('/team/{id}', name: 'app_team_delete', requirements: ['id' => '\d+'], methods: ['POST'])]

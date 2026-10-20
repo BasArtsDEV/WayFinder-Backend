@@ -1,0 +1,30 @@
+{% block stylesheets %}
+
+{% endblock %}
+
+<a href="{{ path('app_team_show', { id: team.id }) }}" class="card h-100 text-decoration-none overflow-hidden shadow-sm">
+    <div class="position-relative bg-dark" style="height: 110px;">
+        {% if team.banner %}
+            <img src="{{ path('app_team_banner', { id: team.id }) }}" alt=""
+                 loading="lazy"
+                 class="position-absolute top-0 start-0 w-100 h-100 object-fit-cover">
+        {% else %}
+            <div class="d-flex align-items-center justify-content-center h-100 text-white fs-1 fw-bold">
+                {{ team.name|first|upper }}
+            </div>
+        {% endif %}
+    </div>
+    <div class="card-body">
+        <h3 class="h6 fw-bold text-dark mb-1">{{ team.name }}</h3>
+        <p class="small text-muted mb-2">
+            Propriétaire:
+            {{ team.leader ? '@' ~ team.leader.username : 'Sans chef' }}
+        </p>
+        <span class="badge text-bg-light border">
+            <i class="bi bi-people"></i> {{ team.users|length }}/{{ constant('App\\Entity\\Team::MAX_USERS') }}
+        </span>
+        {% if team.leader and team.leader.id == app.user.id %}
+            <span class="badge text-bg-success">Votre équipe</span>
+        {% endif %}
+    </div>
+</a>

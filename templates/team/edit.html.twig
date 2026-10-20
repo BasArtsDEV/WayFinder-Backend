@@ -5,6 +5,7 @@
 {% block main %}
     {{ include('team/partials/_form.html.twig', {
         form: form,
+        form_title: 'Modifier mon équipe',
         submit_label: 'Mettre à jour',
         with_context: false,
     }) }}

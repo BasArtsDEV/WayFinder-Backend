@@ -49,6 +49,7 @@ class Team
     #[ORM\Column(length: 30)]
     #[Groups(['team:read', 'team:write', 'team:details'])]
     #[Assert\NotBlank]
+    #[Assert\Length(min: 3, max: 30)]
     private string $name;
 
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'ledTeams')]
