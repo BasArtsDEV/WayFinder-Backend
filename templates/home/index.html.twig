@@ -10,7 +10,9 @@
     <div class="welcome-page h-100">
         <div class="welcome-card text-center">
             <div class="chest-container">
-                <video src="{{ asset('icons/coffre-ouverture.mp4') }}" class="chest-img" autoplay muted playsinline></video>
+                <video class="chest-img" autoplay muted playsinline>
+                    <source src="{{ asset('icons/coffre-ouverture.webm') }}" type="video/webm">
+                </video>
             </div>
 
             <h1 class="fw-bold mt-2">Bienvenue !</h1>
