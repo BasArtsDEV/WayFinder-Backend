@@ -3,8 +3,16 @@
 {% endblock %}
 
 <a href="{{ path('app_team_show', { id: team.id }) }}" class="card h-100 text-decoration-none overflow-hidden shadow-sm">
-    <div class="d-flex align-items-center justify-content-center bg-dark text-white fs-1 fw-bold" style="height: 90px;">
-        {{ team.name|first|upper }}
+    <div class="position-relative bg-dark" style="height: 110px;">
+        {% if team.banner %}
+            <img src="{{ path('app_team_banner', { id: team.id }) }}" alt=""
+                 loading="lazy"
+                 class="position-absolute top-0 start-0 w-100 h-100 object-fit-cover">
+        {% else %}
+            <div class="d-flex align-items-center justify-content-center h-100 text-white fs-1 fw-bold">
+                {{ team.name|first|upper }}
+            </div>
+        {% endif %}
     </div>
     <div class="card-body">
         <h3 class="h6 fw-bold text-dark mb-1">{{ team.name }}</h3>
