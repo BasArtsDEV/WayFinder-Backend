@@ -1,0 +1,51 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Inviter un membre{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('styles/notification/notification.css') }}">
+{% endblock %}
+
+{% block main %}
+    <div class="notification-container">
+        <header class="eventpage-header">
+            <div class="event-title-block">
+                <h1 class="notifpage-title-text">Inviter un membre</h1>
+                <p class="eventpage-subtitle">{{ team.name }}</p>
+            </div>
+
+            <a href="{{ path('app_team_show', { id: team.id }) }}" class="btn-app-secondary">
+                <i class="bi bi-arrow-left"></i><span>Retour</span>
+            </a>
+        </header>
+
+        <div class="eventpage-content">
+            {{ form_start(form) }}
+            <div class="mb-4">
+                {{ form_label(form.username, null, { label_attr: { class: 'form-label fw-semibold text-dark' } }) }}
+                <div class="input-group input-group-lg">
+                    <span class="input-group-text">@</span>
+                    {{ form_widget(form.username, {
+                        attr: { class: 'form-control' ~ (form.username.vars.errors|length ? ' is-invalid' : '') },
+                    }) }}
+                </div>
+
+                {% for error in form.username.vars.errors %}
+                    <div class="text-danger small mt-2">
+                        <i class="bi bi-exclamation-circle"></i> {{ error.message }}
+                    </div>
+                {% endfor %}
+
+                <div class="form-text mt-2">
+                    La personne recevra une notification et pourra accepter ou refuser.
+                    Places restantes : {{ constant('App\\Entity\\Team::MAX_USERS') - team.users|length }}.
+                </div>
+            </div>
+
+            <button type="submit" class="btn-app-primary">
+                <i class="bi bi-send-fill"></i><span>Inviter</span>
+            </button>
+            {{ form_end(form) }}
+        </div>
+    </div>
+{% endblock %}

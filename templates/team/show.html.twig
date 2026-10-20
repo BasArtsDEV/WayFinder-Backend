@@ -18,6 +18,10 @@
             <div class="d-flex justify-content-end gap-2 mb-4">
                 {% if app.user %}
                     {% if isLeader %}
+                        <a href="{{ path('app_team_invite', { id: team.id }) }}" class="btn-app-primary">
+                            <i class="bi bi-person-plus-fill me-1"></i>Inviter un membre
+                        </a>
+
                         <a href="{{ path('app_team_edit', { id: team.id }) }}" class="btn-app-secondary">
                             <i class="bi bi-pencil-square me-1"></i>Modifier
                         </a>
