@@ -57,7 +57,6 @@ final class UserFactory extends PersistentObjectFactory
             'password' => 'mdp',
             'roles' => ['ROLE_USER'],
             'username' => $this->randomUsername(),
-            'avatar' => self::faker()->imageUrl(100, 100, 'people'),
             'isVerified' => true,
         ];
     }
