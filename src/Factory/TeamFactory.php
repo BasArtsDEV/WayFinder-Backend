@@ -2,11 +2,11 @@
 
 namespace App\Factory;
 
-use App\Entity\Team;
+use App\Entity\CreatorTeam;
 use Zenstruck\Foundry\Persistence\PersistentObjectFactory;
 
 /**
- * @extends PersistentObjectFactory<Team>
+ * @extends PersistentObjectFactory<CreatorTeam>
  */
 final class TeamFactory extends PersistentObjectFactory
 {
@@ -22,7 +22,7 @@ final class TeamFactory extends PersistentObjectFactory
     #[\Override]
     public static function class(): string
     {
-        return Team::class;
+        return CreatorTeam::class;
     }
 
     /**
@@ -48,7 +48,7 @@ final class TeamFactory extends PersistentObjectFactory
     protected function initialize(): static
     {
         return $this
-            ->afterInstantiate(function (Team $team): void {
+            ->afterInstantiate(function (CreatorTeam $team): void {
                 if ($team->getLeader()) {
                     if (!$team->getUsers()->contains($team->getLeader())) {
                         $team->addUser($team->getLeader());

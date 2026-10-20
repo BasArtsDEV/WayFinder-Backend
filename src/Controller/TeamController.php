@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\CreatorTeam;
 use App\Entity\Notification;
 use App\Entity\Team;
 use App\Entity\User;
@@ -128,8 +129,10 @@ final class TeamController extends AbstractController
     #[Route('/team/new', name: 'app_team_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $em): Response
     {
-        /** @var User $user */
         $user = $this->getUser();
+        if (!$user instanceof User) {
+            throw $this->createAccessDeniedException();
+        }
 
         if ($user->getTeams()->count() >= User::MAX_TEAMS) {
             $this->addFlash('danger', sprintf('Vous ne pouvez pas appartenir à plus de %d équipes.', User::MAX_TEAMS));
@@ -137,14 +140,14 @@ final class TeamController extends AbstractController
             return $this->redirectToRoute('app_team');
         }
 
-        $team = new Team();
+        $team = new CreatorTeam();
         $team->setLeader($user);
+        $team->addUser($user);
 
         $form = $this->createForm(TeamType::class, $team);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $team->addUser($user); // le chef est aussi membre (comme dans TeamFactory)
             $em->persist($team);
             $em->flush();
 

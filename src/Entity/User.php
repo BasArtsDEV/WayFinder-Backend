@@ -464,11 +464,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function removeLedTeam(Team $ledTeam): static
     {
-        if ($this->ledTeams->removeElement($ledTeam)) {
-            if ($ledTeam->getLeader() === $this) {
-                $ledTeam->setLeader(null);
-            }
+        if ($ledTeam->getLeader() === $this) {
+            throw new \LogicException('Une équipe doit conserver un chef. Affectez-lui un autre chef avant de la retirer.');
         }
+
+        $this->ledTeams->removeElement($ledTeam);
 
         return $this;
     }

@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\CreatorTeam;
 use App\Entity\RiddleGPS;
 use App\Entity\TreasureHunt;
 use App\Entity\User;
@@ -47,7 +48,11 @@ final class TreasureHuntController extends AbstractController
         /** @var User $user */
         $treasureHunts = [];
         foreach ($user->getTeams() as $team) {
-            foreach ($team->gettreasurehunts() as $th) {
+            if (!$team instanceof CreatorTeam) {
+                continue;
+            }
+
+            foreach ($team->getTreasureHunts() as $th) {
                 $treasureHunts[] = $th;
             }
         }

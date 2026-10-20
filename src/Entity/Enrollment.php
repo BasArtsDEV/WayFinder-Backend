@@ -15,9 +15,12 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: EnrollmentRepository::class)]
+#[ORM\UniqueConstraint(name: 'UNIQ_ENROLLMENT_USER_TREASURE_HUNT', fields: ['user', 'treasureHunt'])]
+#[UniqueEntity(fields: ['user', 'treasureHunt'])]
 #[ApiResource(
     operations: [
         new Get(
@@ -140,6 +143,10 @@ class Enrollment
     #[ORM\ManyToOne(inversedBy: 'enrollments')]
     #[ORM\JoinColumn(nullable: false)]
     private User $user;
+
+    #[ORM\ManyToOne(targetEntity: ParticipantTeam::class, inversedBy: 'enrollments')]
+    #[ORM\JoinColumn(nullable: true)]
+    private ?ParticipantTeam $participantTeam = null;
 
     #[Groups(['enrollment:read', 'enrollment:write', 'enrollment:details'])]
     #[ORM\Column(nullable: true)]
@@ -272,6 +279,18 @@ class Enrollment
     public function setUser(User $user): static
     {
         $this->user = $user;
+
+        return $this;
+    }
+
+    public function getParticipantTeam(): ?ParticipantTeam
+    {
+        return $this->participantTeam;
+    }
+
+    public function setParticipantTeam(?ParticipantTeam $participantTeam): static
+    {
+        $this->participantTeam = $participantTeam;
 
         return $this;
     }

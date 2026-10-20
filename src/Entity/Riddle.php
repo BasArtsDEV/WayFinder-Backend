@@ -11,6 +11,7 @@ use Doctrine\ORM\Mapping\DiscriminatorColumn;
 use Doctrine\ORM\Mapping\DiscriminatorMap;
 use Doctrine\ORM\Mapping\InheritanceType;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: RiddleRepository::class)]
 #[InheritanceType('SINGLE_TABLE')]
@@ -51,6 +52,10 @@ abstract class Riddle
     #[ORM\Column]
     #[Groups(['riddle:read', 'qcm:read', 'riddle_gps:read', 'riddle_qrcode:read', 'riddle_text:read'])]
     private int $secondsPenalty = 0;
+
+    #[ORM\Column(options: ['default' => 0])]
+    #[Assert\PositiveOrZero]
+    private int $score = 0;
 
     #[ORM\ManyToOne(inversedBy: 'riddles')]
     #[ORM\JoinColumn(nullable: false)]
@@ -170,6 +175,18 @@ abstract class Riddle
     public function setSecondsPenalty(int $secondsPenalty): static
     {
         $this->secondsPenalty = $secondsPenalty;
+
+        return $this;
+    }
+
+    public function getScore(): int
+    {
+        return $this->score;
+    }
+
+    public function setScore(int $score): static
+    {
+        $this->score = $score;
 
         return $this;
     }

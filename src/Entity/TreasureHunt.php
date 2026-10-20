@@ -39,7 +39,7 @@ use Symfony\Component\Validator\Constraints as Assert;
         new GetCollection(
             uriTemplate: '/teams/{id}/treasure-hunts',
             uriVariables: [
-                'id' => new Link(toProperty: 'team', fromClass: Team::class),
+                'id' => new Link(toProperty: 'team', fromClass: CreatorTeam::class),
             ],
             normalizationContext: ['groups' => ['hunt:read', 'hunt:details']],
         ),
@@ -71,10 +71,10 @@ class TreasureHunt
     #[Groups(['hunt:read', 'hunt:details'])]
     private \DateTimeImmutable $creationDate;
 
-    #[ORM\ManyToOne(inversedBy: 'treasurehunts')]
+    #[ORM\ManyToOne(targetEntity: CreatorTeam::class, inversedBy: 'treasureHunts')]
     #[ORM\JoinColumn(nullable: false)]
     #[Groups(['hunt:read', 'hunt:details'])]
-    private Team $team;
+    private CreatorTeam $team;
 
     /**
      * @var Collection<int, Enrollment>
@@ -161,12 +161,12 @@ class TreasureHunt
         return $this;
     }
 
-    public function getTeam(): ?Team
+    public function getTeam(): ?CreatorTeam
     {
         return $this->team;
     }
 
-    public function setTeam(?Team $team): static
+    public function setTeam(?CreatorTeam $team): static
     {
         $this->team = $team;
 
