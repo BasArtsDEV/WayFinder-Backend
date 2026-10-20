@@ -99,17 +99,24 @@ final class NotificationController extends AbstractController
         $team = $notification->getTargetTeam();
 
         if ('accept' === $action && $team) {
-            if (Notification::TYPE_TEAM_JOIN_REQUEST === $notification->getType()) {
-                // The leader accepts the applicant into the team
-                $applicant = $notification->getTargetUser();
-                if ($applicant) {
-                    $team->addUser($applicant);
-                    $this->addFlash('success', sprintf('%s a rejoint votre équipe !', $applicant->getUsername()));
+            $isInvitation = Notification::TYPE_TEAM_INVITATION === $notification->getType();
+
+            // Invitation: the person invited joins. Request: the requester joins.
+            $newMember = $isInvitation ? $currentUser : $notification->getTargetUser();
+
+            if ($newMember) {
+                if ($team->getUsers()->contains($newMember)) {
+                    $this->addFlash('info', 'Cette personne fait déjà partie de l\'équipe.');
+                } elseif ($team->getUsers()->count() >= Team::MAX_USERS) {
+                    $this->addFlash('danger', 'Impossible : l\'équipe est complète.');
+                } elseif ($newMember->getTeams()->count() >= User::MAX_TEAMS) {
+                    $this->addFlash('danger', sprintf('Impossible : %s a atteint le nombre maximum d\'équipes.', $isInvitation ? 'vous avez' : $newMember->getUsername().' a'));
+                } else {
+                    $team->addUser($newMember);
+                    $this->addFlash('success', $isInvitation
+                        ? sprintf('Vous avez rejoint l\'équipe "%s" !', $team->getName())
+                        : sprintf('%s a rejoint votre équipe !', $newMember->getUsername()));
                 }
-            } elseif (Notification::TYPE_TEAM_INVITATION === $notification->getType()) {
-                // The player accepts the leader's invitation
-                $team->addUser($currentUser);
-                $this->addFlash('success', sprintf('Vous avez rejoint l\'équipe "%s" !', $team->getName()));
             }
         } else {
             $this->addFlash('info', 'Demande refusée.');
