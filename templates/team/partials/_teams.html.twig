@@ -1,9 +1,0 @@
-<div class="advertisement-container">
-    <ul class="advertisement-list">
-        {% for team in teams %}
-            <li class="team">
-                <a class="team-name" href="{{ path('app_team_show', { id: team.id }) }}">{{ team.name }}</a>
-            </li>
-        {% endfor %}
-    </ul>
-</div>
