@@ -69,6 +69,8 @@
 
                 <div class="col-lg-8">
                     <div class="card border-0 shadow-sm rounded-4 p-4 h-100 theme-card-bg">
+                        {% set treasurehunts = team.treasureHunts|default([]) %}
+
                         {{ include('treasure_hunt/partials/_treasure_hunts_display.html.twig', {
                             listTitle: 'Chasses au trésor',
                             treasureHunts: treasurehunts,

@@ -2,10 +2,6 @@
 
 namespace App\Entity;
 
-use ApiPlatform\Metadata\ApiResource;
-use ApiPlatform\Metadata\Get;
-use ApiPlatform\Metadata\GetCollection;
-use ApiPlatform\Metadata\Link;
 use App\Repository\TeamRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -15,28 +11,10 @@ use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: TeamRepository::class)]
-#[ApiResource(
-    operations: [
-        new Get(normalizationContext: ['groups' => ['team:read', 'team:details']]),
-        new GetCollection(normalizationContext: ['groups' => ['team:read', 'team:details']]),
-
-        new Get(
-            uriTemplate: '/users/{id}/teams',
-            uriVariables: [
-                'id' => new Link(fromProperty: 'teams', fromClass: User::class),
-            ],
-            normalizationContext: ['groups' => ['team:read', 'team:details']],
-        ),
-        new Get(
-            uriTemplate: '/treasure_hunts/{id}/team',
-            uriVariables: [
-                'id' => new Link(fromProperty: 'team', fromClass: TreasureHunt::class),
-            ],
-            normalizationContext: ['groups' => ['team:read', 'team:details']],
-        ),
-    ]
-)]
-class Team
+#[ORM\InheritanceType('SINGLE_TABLE')]
+#[ORM\DiscriminatorColumn(name: 'type', type: 'string')]
+#[ORM\DiscriminatorMap(['creator' => CreatorTeam::class, 'participant' => ParticipantTeam::class])]
+abstract class Team
 {
     public const int MAX_USERS = 10;
 
@@ -53,32 +31,21 @@ class Team
     private string $name;
 
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'ledTeams')]
-    #[ORM\JoinColumn(nullable: true)]
+    #[ORM\JoinColumn(nullable: false)]
     #[Groups(['team:read', 'team:write', 'team:details'])]
-    private ?User $leader = null;
+    private User $leader;
 
     /**
      * @var Collection<int, User>
      */
     #[ORM\ManyToMany(targetEntity: User::class, mappedBy: 'teams')]
     #[Groups(['team:read', 'team:details'])]
+    #[Assert\Count(min: 1)]
     #[Assert\Count(
         max: self::MAX_USERS,
         maxMessage: 'Une équipe ne peut pas contenir plus de '.self::MAX_USERS.' membres.'
     )]
     private Collection $users;
-
-    /**
-     * @var Collection<int, TreasureHunt>
-     */
-    #[ORM\OneToMany(
-        targetEntity: TreasureHunt::class,
-        mappedBy: 'team',
-        cascade: ['remove'],
-        orphanRemoval: true
-    )]
-    #[Groups(['team:read', 'team:details'])]
-    private Collection $treasurehunts;
 
     /**
      * @var string|null
@@ -89,7 +56,6 @@ class Team
     public function __construct()
     {
         $this->users = new ArrayCollection();
-        $this->treasurehunts = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -111,10 +77,10 @@ class Team
 
     public function getLeader(): ?User
     {
-        return $this->leader;
+        return $this->leader ?? null;
     }
 
-    public function setLeader(?User $leader): static
+    public function setLeader(User $leader): static
     {
         $this->leader = $leader;
 
@@ -149,35 +115,6 @@ class Team
             // set the owning side to null (unless already changed)
             if ($user->getTeams()->contains($this)) {
                 $user->removeTeam($this);
-            }
-        }
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, TreasureHunt>
-     */
-    public function gettreasurehunts(): Collection
-    {
-        return $this->treasurehunts;
-    }
-
-    public function addTreasureHunt(TreasureHunt $treasureHunt): static
-    {
-        if (!$this->treasurehunts->contains($treasureHunt)) {
-            $this->treasurehunts->add($treasureHunt);
-            $treasureHunt->setTeam($this);
-        }
-
-        return $this;
-    }
-
-    public function removeTreasureHunt(TreasureHunt $treasureHunt): static
-    {
-        if ($this->treasurehunts->removeElement($treasureHunt)) {
-            if ($treasureHunt->getTeam() === $this) {
-                $treasureHunt->setTeam(null);
             }
         }
 

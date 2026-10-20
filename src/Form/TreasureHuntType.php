@@ -2,7 +2,7 @@
 
 namespace App\Form;
 
-use App\Entity\Team;
+use App\Entity\CreatorTeam;
 use App\Entity\TreasureHunt;
 use App\Entity\User;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
@@ -41,9 +41,9 @@ class TreasureHuntType extends AbstractType
                 ],
             ])
             ->add('team', EntityType::class, [
-                'class' => Team::class,
+                'class' => CreatorTeam::class,
                 'choice_label' => 'name',
-                'choices' => $user ? $user->getTeams() : [],
+                'choices' => $user ? $user->getTeams()->filter(static fn ($team) => $team instanceof CreatorTeam) : [],
                 'label' => 'Équipe',
             ])
         ;

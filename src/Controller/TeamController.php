@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\CreatorTeam;
 use App\Entity\Notification;
 use App\Entity\Team;
 use App\Entity\User;
@@ -139,6 +140,20 @@ final class TeamController extends AbstractController
 
         $team = new Team();
         $team->setLeader($user);
+        $user = $this->getUser();
+        if (!$user instanceof User) {
+            throw $this->createAccessDeniedException();
+        }
+
+        if ($user->getTeams()->count() >= User::MAX_TEAMS) {
+            $this->addFlash('error', 'Vous avez atteint la limite de '.User::MAX_TEAMS.' équipes.');
+
+            return $this->redirectToRoute('app_team');
+        }
+
+        $team = new CreatorTeam();
+        $team->setLeader($user);
+        $team->addUser($user);
 
         $form = $this->createForm(TeamType::class, $team);
         $form->handleRequest($request);
