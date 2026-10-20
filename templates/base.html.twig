@@ -146,17 +146,17 @@
 
 <main class="flex-grow-1 d-flex flex-column">
 
-    {% for label, messages in app.flashes %}
-        {% set alertClass = label == 'error' ? 'danger' : label %}
-        {% for message in messages %}
-            <div class="container mt-3">
-                <div class="alert alert-{{ alertClass }} alert-dismissible fade show" role="alert">
+    <div class="position-fixed top-0 end-0 p-3" style="z-index: 1080; max-width: 400px; margin-top: 70px;">
+        {% for label, messages in app.flashes %}
+            {% set alertClass = label == 'error' ? 'danger' : label %}
+            {% for message in messages %}
+                <div class="alert alert-{{ alertClass }} alert-dismissible fade show shadow-lg" role="alert">
                     {{ message }}
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
-            </div>
+            {% endfor %}
         {% endfor %}
-    {% endfor %}
+    </div>
 
     {% block main %}{% endblock %}
 </main>
