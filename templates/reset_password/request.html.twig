@@ -17,10 +17,10 @@
 
             <h1 class="login-title">Mot de passe oublié</h1>
 
-            {{ form_start(requestForm, {attr: {class: 'login-form'}}) }}
+            {{ form_start(requestForm, { attr: { class: 'login-form' } }) }}
 
             <div class="mb-3">
-                {{ form_label(requestForm.email, 'Adresse e-mail', {label_attr: {class: 'form-label-custom'}}) }}
+                {{ form_label(requestForm.email, 'Adresse e-mail', { label_attr: { class: 'form-label-custom' } }) }}
                 {{ form_widget(requestForm.email, {
                     attr: {
                         class: 'form-control form-control-lg rounded-3',
