@@ -39,4 +39,17 @@ class TeamRepository extends ServiceEntityRepository
             ->getQuery()
             ->getOneOrNullResult();
     }
+
+    /**
+     * @return Team[]
+     */
+    public function findAllWithLeaderAndMembers(): array
+    {
+        return $this->createQueryBuilder('t')
+            ->leftJoin('t.leader', 'l')->addSelect('l')
+            ->leftJoin('t.users', 'u')->addSelect('u')
+            ->orderBy('t.name', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
 }
