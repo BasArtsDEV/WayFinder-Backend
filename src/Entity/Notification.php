@@ -13,6 +13,8 @@ class Notification
 {
     public const string TYPE_TEAM_JOIN_REQUEST = 'team_join_request';
     public const string TYPE_TEAM_INVITATION = 'team_invitation';
+    public const string TYPE_TEAM_EXCLUDED = 'team_excluded';
+    public const string TYPE_TEAM_PROMOTED = 'team_promoted';
 
     #[ORM\Id]
     #[ORM\GeneratedValue]
