@@ -440,7 +440,7 @@ final class TeamController extends AbstractController
     }
 
     /**
-     * Create a notification for a user
+     * Create a notification for a user.
      */
     private function createMemberNotification(User $recipient, Team $team, string $type, string $title, string $description): Notification
     {
