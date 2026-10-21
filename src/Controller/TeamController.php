@@ -165,6 +165,11 @@ final class TeamController extends AbstractController
         Team $team,
         EntityManagerInterface $em,
     ): Response {
+
+        if (!$this->isGranted('ROLE_ADMIN')) {
+            $this->denyUnlessLeader($team);
+        }
+
         if ($this->isCsrfTokenValid(
             'delete'.$team->getId(),
             $request->getPayload()->getString('_token')
@@ -224,7 +229,9 @@ final class TeamController extends AbstractController
     {
         $form = $this->createForm(TeamType::class, $team);
         $form->handleRequest($request);
-
+        if (!$this->isGranted('ROLE_ADMIN')) {
+            $this->denyUnlessLeader($team);
+        }
         if ($form->isSubmitted() && $form->isValid()) {
             $em->flush();
 
