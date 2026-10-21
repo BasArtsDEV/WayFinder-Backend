@@ -141,8 +141,8 @@ class Enrollment
 
     #[Groups(['enrollment:read'])]
     #[ORM\ManyToOne(inversedBy: 'enrollments')]
-    #[ORM\JoinColumn(nullable: false)]
-    private User $user;
+    #[ORM\JoinColumn(nullable: true)]
+    private ?User $user = null;
 
     #[ORM\ManyToOne(targetEntity: ParticipantTeam::class, inversedBy: 'enrollments')]
     #[ORM\JoinColumn(nullable: true)]
@@ -271,12 +271,12 @@ class Enrollment
         return $this;
     }
 
-    public function getUser(): User
+    public function getUser(): ?User
     {
         return $this->user;
     }
 
-    public function setUser(User $user): static
+    public function setUser(?User $user): static
     {
         $this->user = $user;
 
