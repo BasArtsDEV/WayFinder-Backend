@@ -245,6 +245,7 @@ class TreasureHunt
         return $this;
     }
 
+    #[Groups(['hunt:read', 'hunt:details'])]
     public function getAverageStars(): ?float
     {
         $total = 0;
