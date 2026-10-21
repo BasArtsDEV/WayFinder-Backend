@@ -203,7 +203,7 @@ final class TeamController extends AbstractController
 
         // The leader cannot leave the team (they must delete it or pass on the role)
         if ($team->getLeader() === $user) {
-            $this->addFlash('danger', 'En tant que chef d\'équipe, vous ne pouvez pas quitter l\'équipe. Vous devez la supprimer.');
+            $this->addFlash('danger', 'En tant que chef d\'équipe, vous ne pouvez pas quitter l\'équipe. Promouvez un autre membre ou supprimez l\'équipe.');
 
             return $this->redirectToRoute('app_team_show', ['id' => $team->getId()]);
         }
