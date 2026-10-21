@@ -1,15 +1,35 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Paramètres du compte{% endblock %}
+{% block title %}Paramètres{% endblock %}
 
 {% block main %}
+    <style>
+        #v-pills-tab {
+            --bs-nav-pills-link-active-bg: #198754;
+            --bs-nav-pills-link-active-color: #fff;
+        }
+
+        #v-pills-tab .nav-link {
+            color: #212529;
+        }
+
+        #v-pills-tab .nav-link:hover:not(.active) {
+            background-color: #e9f5ee;
+        }
+
+        #v-pills-tab .nav-link.active {
+            background-color: #198754;
+            color: #fff;
+        }
+    </style>
+
     <div class="container-fluid py-4 px-lg-5">
 
         <div class="row g-4">
             <div class="col-lg-3">
                 <div class="card border-0 shadow-sm rounded-4 p-3 bg-white">
                     <div class="nav flex-column nav-pills gap-1" id="v-pills-tab" role="tablist" aria-orientation="vertical">
-                        <button class="nav-link active text-start py-3 px-3 rounded-3 fw-medium d-flex align-items-center" id="v-pills-profile-tab" data-bs-toggle="pill" data-bs-target="#v-pills-profile" type="button" role="tab" aria-controls="v-pills-profile" aria-selected="true">
+                        <button class="nav-link active text-start py-3 px-3 rounded-3 fw-medium d-flex align-items-center" id="v-pills-security-tab" data-bs-toggle="pill" data-bs-target="#v-pills-profile" type="button" role="tab" aria-controls="v-pills-profile" aria-selected="true">
                             <i class="bi bi-person fs-5 me-3"></i> Paramètres du profil
                         </button>
                         <button class="nav-link text-start py-3 px-3 rounded-3 fw-medium d-flex align-items-center text-dark" id="v-pills-security-tab" data-bs-toggle="pill" data-bs-target="#v-pills-security" type="button" role="tab" aria-controls="v-pills-security" aria-selected="false">
@@ -34,15 +54,21 @@
 
                                 <div class="d-flex align-items-center gap-4 mb-5 pb-4 border-bottom">
                                     <div class="position-relative">
-                                        {% if user.avatar %}
-                                            <div class="rounded-circle overflow-hidden shadow-sm" style="width: 105px; height: 105px;">
+                                        <div id="avatar-preview-wrapper"
+                                             class="rounded-circle overflow-hidden shadow-sm {{ user.avatar ? '' : 'd-none' }}"
+                                             style="width: 105px; height: 105px;">
+                                            {% if user.avatar %}
                                                 {{ include('profile/partials/_avatar.html.twig', { user: user, size: 105 }) }}
-                                            </div>
-                                        {% else %}
-                                            <div class="bg-secondary rounded-circle text-white d-flex align-items-center justify-content-center shadow-sm" style="width: 105px; height: 105px; font-size: 2.5rem;">
-                                                {{ user.username|slice(0, 1)|upper }}
-                                            </div>
-                                        {% endif %}
+                                            {% endif %}
+                                            <img id="avatar-preview-img" src="" alt="Aperçu de l'avatar"
+                                                 class="d-none w-100 h-100" style="object-fit: cover;">
+                                        </div>
+
+                                        <div id="avatar-initial"
+                                             class="bg-secondary rounded-circle text-white d-flex align-items-center justify-content-center shadow-sm {{ user.avatar ? 'd-none' : '' }}"
+                                             style="width: 105px; height: 105px; font-size: 2.5rem;">
+                                            {{ user.username|slice(0, 1)|upper }}
+                                        </div>
 
                                         <label for="avatar-input" class="position-absolute bottom-0 end-0 bg-primary text-white rounded-circle d-flex align-items-center justify-content-center shadow-sm border border-white" style="width: 32px; height: 32px; cursor: pointer; background-color: #1a237e !important;">
                                             <i class="bi bi-camera-fill" style="font-size: 0.85rem;"></i>
@@ -55,12 +81,9 @@
                                         <input type="file" class="d-none" id="avatar-input" name="avatar" accept="image/*">
 
                                         {% if user.avatar %}
-                                            <form action="{{ path('app_profil_avatar_delete') }}" method="post" class="d-inline">
-                                                <input type="hidden" name="_token" value="{{ csrf_token('delete-avatar-' ~ user.id) }}">
-                                                <button type="submit" class="btn btn-light rounded-3 px-4 py-2 fw-medium text-secondary shadow-sm border">
-                                                    Supprimer l'avatar
-                                                </button>
-                                            </form>
+                                            <a href="{{ path('app_profil_avatar_delete') }}" class="btn btn-light rounded-3 px-4 py-2 fw-medium text-secondary shadow-sm border">
+                                                Supprimer l'avatar
+                                            </a>
                                         {% endif %}
                                     </div>
                                 </div>
@@ -194,7 +217,7 @@
                 </div>
                 <div class="modal-footer border-top-0 pt-0">
                     <button type="button" class="btn btn-light rounded-pill px-4 py-2" data-bs-dismiss="modal">Annuler</button>
-                    <form action="" method="post">
+                    <form action="{{ path('app_user_delete') }}" method="post">
                         <input type="hidden" name="_token" value="{{ csrf_token('delete-account-' ~ app.user.id) }}">
                         <button type="submit" class="btn btn-app-danger rounded-pill px-4 py-2 fw-medium">Confirmer la suppression</button>
                     </form>
@@ -202,4 +225,31 @@
             </div>
         </div>
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const input = document.getElementById('avatar-input');
+            const wrapper = document.getElementById('avatar-preview-wrapper');
+            const previewImg = document.getElementById('avatar-preview-img');
+            const initial = document.getElementById('avatar-initial');
+            let currentUrl = null;
+
+            input.addEventListener('change', () => {
+                const file = input.files[0];
+                if (!file || !file.type.startsWith('image/')) return;
+
+                if (currentUrl) URL.revokeObjectURL(currentUrl);
+                currentUrl = URL.createObjectURL(file);
+
+                Array.from(wrapper.children).forEach(el => {
+                    if (el !== previewImg) el.classList.add('d-none');
+                });
+
+                previewImg.src = currentUrl;
+                previewImg.classList.remove('d-none');
+                wrapper.classList.remove('d-none');
+                initial.classList.add('d-none');
+            });
+        });
+    </script>
 {% endblock %}
