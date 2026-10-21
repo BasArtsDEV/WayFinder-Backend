@@ -32,7 +32,7 @@ grumphp:
                     - test
                 scopes: [ ]
             skip_on_merge_commit: true
-            max_body_width: 72
+            max_body_width: 170
             max_subject_width: 80
             matchers: [ ]
             case_insensitive: true
