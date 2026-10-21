@@ -20,17 +20,6 @@ class TreasureHuntRepository extends ServiceEntityRepository
     /**
      * @return TreasureHunt[]
      */
-    public function findAllOrderedByDate(): array
-    {
-        return $this->createQueryBuilder('t')
-            ->orderBy('t.creationDate', 'DESC')
-            ->getQuery()
-            ->getResult();
-    }
-
-    /**
-     * @return TreasureHunt[]
-     */
     public function findByTeamOrdered(Team $team): array
     {
         return $this->createQueryBuilder('t')
