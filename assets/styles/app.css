@@ -77,6 +77,12 @@
     --brand-dark: var(--app-header-background);
     --footer-text: var(--app-header-button-text);
     --border-theme: rgba(255, 255, 255, 0.1);
+
+    /* bootstrap override */
+    --bs-pagination-active-bg: var(--app-button-background) !important;
+    --bs-pagination-color: var(--app-button-background) !important;
+    --bs-pagination-active-border-color: var(--app-button-background) !important;
+    --bs-link-color: var(--app-button-background) !important;
 }
 
 body {
@@ -469,6 +475,10 @@ p, span, label {
 .crunchy-dropdown .dropdown-item:hover i,
 .crunchy-dropdown .dropdown-item:focus i {
     color: #ffffff !important;
+}
+
+.text-bg-success {
+    background-color: var(--app-button-background) !important;
 }
 
 @media (min-width: 992px) {

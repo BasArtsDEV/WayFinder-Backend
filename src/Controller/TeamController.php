@@ -165,6 +165,10 @@ final class TeamController extends AbstractController
         Team $team,
         EntityManagerInterface $em,
     ): Response {
+        if (!$this->isGranted('ROLE_ADMIN')) {
+            $this->denyUnlessLeader($team);
+        }
+
         if ($this->isCsrfTokenValid(
             'delete'.$team->getId(),
             $request->getPayload()->getString('_token')
@@ -198,7 +202,7 @@ final class TeamController extends AbstractController
 
         // The leader cannot leave the team (they must delete it or pass on the role)
         if ($team->getLeader() === $user) {
-            $this->addFlash('danger', 'En tant que chef d\'équipe, vous ne pouvez pas quitter l\'équipe. Vous devez la supprimer.');
+            $this->addFlash('danger', 'En tant que chef d\'équipe, vous ne pouvez pas quitter l\'équipe. Promouvez un autre membre ou supprimez l\'équipe.');
 
             return $this->redirectToRoute('app_team_show', ['id' => $team->getId()]);
         }
@@ -224,7 +228,9 @@ final class TeamController extends AbstractController
     {
         $form = $this->createForm(TeamType::class, $team);
         $form->handleRequest($request);
-
+        if (!$this->isGranted('ROLE_ADMIN')) {
+            $this->denyUnlessLeader($team);
+        }
         if ($form->isSubmitted() && $form->isValid()) {
             $em->flush();
 
@@ -291,6 +297,85 @@ final class TeamController extends AbstractController
         ]);
     }
 
+    #[Route('/team/{id}/members/{userId}/promote', name: 'app_team_promote', requirements: ['id' => '\d+', 'userId' => '\d+'], methods: ['POST'])]
+    public function promote(
+        Request $request,
+        Team $team,
+        #[MapEntity(id: 'userId')] User $member,
+        EntityManagerInterface $em,
+    ): Response {
+        $this->denyUnlessLeader($team);
+
+        $back = $this->redirectToRoute('app_team_show', ['id' => $team->getId()]);
+
+        if (!$this->isCsrfTokenValid('promote'.$team->getId().'-'.$member->getId(), $request->getPayload()->getString('_token'))) {
+            $this->addFlash('danger', 'Jeton CSRF invalide.');
+
+            return $back;
+        }
+
+        if (!$this->isPromotableMember($team, $member)) {
+            $this->addFlash('danger', 'Cet utilisateur n\'est pas un membre de l\'équipe.');
+
+            return $back;
+        }
+
+        /** @var User $formerLeader */
+        $formerLeader = $this->getUser();
+
+        $team->setLeader($member);
+        $em->persist($this->createMemberNotification(
+            $member,
+            $team,
+            Notification::TYPE_TEAM_PROMOTED,
+            'Vous êtes le nouveau chef d\'équipe',
+            sprintf('%s vous a confié la direction de l\'équipe "%s".', $formerLeader->getUsername(), $team->getName()),
+        ));
+        $em->flush();
+
+        $this->addFlash('success', sprintf('@%s est désormais chef de l\'équipe. Vous en êtes maintenant simple membre.', $member->getUsername()));
+
+        return $back;
+    }
+
+    #[Route('/team/{id}/members/{userId}/exclude', name: 'app_team_exclude', requirements: ['id' => '\d+', 'userId' => '\d+'], methods: ['POST'])]
+    public function exclude(
+        Request $request,
+        Team $team,
+        #[MapEntity(id: 'userId')] User $member,
+        EntityManagerInterface $em,
+    ): Response {
+        $this->denyUnlessLeader($team);
+
+        $back = $this->redirectToRoute('app_team_show', ['id' => $team->getId()]);
+
+        if (!$this->isCsrfTokenValid('exclude'.$team->getId().'-'.$member->getId(), $request->getPayload()->getString('_token'))) {
+            $this->addFlash('danger', 'Jeton CSRF invalide.');
+
+            return $back;
+        }
+
+        if (!$this->isPromotableMember($team, $member)) {
+            $this->addFlash('danger', 'Cet utilisateur n\'est pas un membre de l\'équipe.');
+
+            return $back;
+        }
+
+        $team->removeUser($member);
+        $em->persist($this->createMemberNotification(
+            $member,
+            $team,
+            Notification::TYPE_TEAM_EXCLUDED,
+            'Vous avez été exclu d\'une équipe',
+            sprintf('Vous avez été exclu de l\'équipe "%s".', $team->getName()),
+        ));
+        $em->flush();
+
+        $this->addFlash('success', sprintf('@%s a été exclu de l\'équipe.', $member->getUsername()));
+
+        return $back;
+    }
+
     /**
      * Returns the reason for the invitation being declined, or null if it is possible.
      */
@@ -331,5 +416,40 @@ final class TeamController extends AbstractController
         }
 
         return null;
+    }
+
+    /**
+     * Only the team leader can manage its members.
+     */
+    private function denyUnlessLeader(Team $team): void
+    {
+        $user = $this->getUser();
+
+        if (!$user instanceof User || $team->getLeader()?->getId() !== $user->getId()) {
+            throw $this->createAccessDeniedException('Seul le chef d\'équipe peut gérer les membres.');
+        }
+    }
+
+    /**
+     * A target member belongs to the team and is not its leader.
+     */
+    private function isPromotableMember(Team $team, User $member): bool
+    {
+        return $team->getUsers()->contains($member)
+            && $team->getLeader()?->getId() !== $member->getId();
+    }
+
+    /**
+     * Create a notification for a user.
+     */
+    private function createMemberNotification(User $recipient, Team $team, string $type, string $title, string $description): Notification
+    {
+        return new Notification()
+            ->setType($type)
+            ->setTitle($title)
+            ->setDescription($description)
+            ->setTargetUser($recipient)
+            ->setTargetTeam($team)
+            ->addReceiveNotif($recipient);
     }
 }
