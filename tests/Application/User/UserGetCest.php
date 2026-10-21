@@ -20,6 +20,7 @@ class UserGetCest
             'firstName' => 'string',
             'lastName' => 'string',
             'createdAt' => 'string',
+            'timezone' => 'string',
         ];
     }
 
