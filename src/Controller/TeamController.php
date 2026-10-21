@@ -350,4 +350,13 @@ final class TeamController extends AbstractController
             throw $this->createAccessDeniedException('Seul le chef d\'équipe peut gérer les membres.');
         }
     }
+
+    /**
+     * A target member belongs to the team and is not its leader.
+     */
+    private function isPromotableMember(Team $team, User $member): bool
+    {
+        return $team->getUsers()->contains($member)
+            && $team->getLeader()?->getId() !== $member->getId();
+    }
 }
