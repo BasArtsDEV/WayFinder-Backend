@@ -359,4 +359,18 @@ final class TeamController extends AbstractController
         return $team->getUsers()->contains($member)
             && $team->getLeader()?->getId() !== $member->getId();
     }
+
+    /**
+     * Create a notification for a user
+     */
+    private function createMemberNotification(User $recipient, Team $team, string $type, string $title, string $description): Notification
+    {
+        return new Notification()
+            ->setType($type)
+            ->setTitle($title)
+            ->setDescription($description)
+            ->setTargetUser($recipient)
+            ->setTargetTeam($team)
+            ->addReceiveNotif($recipient);
+    }
 }
