@@ -165,7 +165,6 @@ final class TeamController extends AbstractController
         Team $team,
         EntityManagerInterface $em,
     ): Response {
-
         if (!$this->isGranted('ROLE_ADMIN')) {
             $this->denyUnlessLeader($team);
         }
@@ -338,5 +337,17 @@ final class TeamController extends AbstractController
         }
 
         return null;
+    }
+
+    /**
+     * Only the team leader can manage its members.
+     */
+    private function denyUnlessLeader(Team $team): void
+    {
+        $user = $this->getUser();
+
+        if (!$user instanceof User || $team->getLeader()?->getId() !== $user->getId()) {
+            throw $this->createAccessDeniedException('Seul le chef d\'équipe peut gérer les membres.');
+        }
     }
 }
