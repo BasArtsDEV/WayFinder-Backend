@@ -62,4 +62,21 @@ final class ProfileController extends AbstractController
 
         return $this->redirectToRoute('app_profil');
     }
+
+    #[Route('/profil/delete-avatar', name: 'app_profil_avatar_delete', methods: ['POST'])]
+    #[IsGranted('ROLE_USER')]
+    public function deleteAvatar(Request $request, EntityManagerInterface $em): Response
+    {
+        /** @var User $user */
+        $user = $this->getUser();
+
+        if ($this->isCsrfTokenValid('delete-avatar-'.$user->getId(), $request->request->get('_token'))) {
+            $user->setAvatar(null);
+            $em->flush();
+
+            $this->addFlash('success', "L'avatar a bien été supprimé.");
+        }
+
+        return $this->redirectToRoute('app_settings');
+    }
 }
