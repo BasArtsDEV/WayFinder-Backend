@@ -23,9 +23,9 @@
         {% if user is same as(app.user) or is_granted('ROLE_ADMIN') %}
             <div class="d-flex justify-content-end gap-2 mb-4">
                 {% if user is same as(app.user) %}
-                    <button type="button" class="btn btn-light border shadow-sm rounded-pill px-3 py-2 fw-medium text-dark" data-bs-toggle="modal" data-bs-target="#editProfileModal">
+                    <a href="{{ path('app_settings') }}" class="btn btn-light border shadow-sm rounded-pill px-3 py-2 fw-medium text-dark">
                         <i class="bi bi-pencil-square me-1 text-success"></i> Modifier le profil
-                    </button>
+                    </a>
                 {% endif %}
             </div>
         {% endif %}
