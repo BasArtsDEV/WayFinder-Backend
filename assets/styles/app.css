@@ -86,7 +86,15 @@
 }
 
 body {
-    background-color: var(--app-main-background);
+    background-color: var(--app-main-background, #f4ecd8);
+
+    background-image:
+        url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="120" height="120"><path d="M25 25 L45 45 M45 25 L25 45" stroke="%23a02c2c" stroke-width="4" stroke-linecap="round" opacity="0.35"/><circle cx="35" cy="35" r="18" fill="none" stroke="%23a02c2c" stroke-width="1.5" stroke-dasharray="3,3" opacity="0.3"/></svg>'),
+        url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="120" height="120"><path d="M0 100 Q 30 40, 60 70 T 120 20" fill="none" stroke="%235c3a21" stroke-width="2" stroke-dasharray="5,5" opacity="0.25"/></svg>');
+
+    background-position: 0 0, 0 0;
+    background-repeat: repeat;
+    background-size: 120px 120px;
 }
 
 .navbar.bg-success {
@@ -267,18 +275,6 @@ p, span, label {
     margin-bottom: 0;
 }
 
-
-.welcome-page {
-    width: 100%;
-    background: #f4dca8;
-    flex-grow: 1;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 1rem;
-    box-sizing: border-box;
-}
-
 .welcome-card {
     width: 100%;
     max-width: 750px;
@@ -328,6 +324,10 @@ p, span, label {
     background: rgba(0, 0, 0, 0.15);
     margin: 12px auto;
     border: none;
+}
+
+.app_profil {
+    text-decoration: none;
 }
 
 .welcome-btn {

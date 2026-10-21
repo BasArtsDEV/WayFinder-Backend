@@ -217,6 +217,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     )]
     private \DateTimeImmutable $createdAt;
 
+    #[ORM\Column]
+    #[Groups(['user:read', 'user:me'])]
+    private bool $isVerified = false;
+
+    #[ORM\Column(length: 64)]
+    #[Groups(['user:read', 'user:me', 'user:write'])]
+    private string $timezone = 'Europe/Paris';
+
     /**
      * @var Collection<int, Team>
      */
@@ -238,9 +246,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     #[ORM\OneToMany(targetEntity: Enrollment::class, mappedBy: 'user')]
     private Collection $enrollments;
-
-    #[ORM\Column]
-    private bool $isVerified = false;
 
     public function __construct()
     {
@@ -506,6 +511,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setIsVerified(bool $isVerified): static
     {
         $this->isVerified = $isVerified;
+
+        return $this;
+    }
+
+    public function getTimezone(): string
+    {
+        return $this->timezone;
+    }
+
+    public function setTimezone(string $timezone): static
+    {
+        $this->timezone = $timezone;
 
         return $this;
     }

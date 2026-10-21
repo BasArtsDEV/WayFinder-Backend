@@ -80,7 +80,7 @@
 
                         <div class="dropdown-menu dropdown-menu-end dropdown-menu crunchy-dropdown shadow-lg mt-2 p-0 rounded-3 border-0" aria-labelledby="userDropdown">
 
-                            <div class="p-3 d-flex align-items-center justify-content-between">
+                            <a href="{{ path('app_profil') }}" class="app_profil p-3 d-flex align-items-center justify-content-between">
                                 <div class="d-flex align-items-center gap-3">
                                     <div class="profile-avatar-container">
                                         {{ include('profile/partials/_avatar.html.twig', {
@@ -90,11 +90,10 @@
                                     </div>
                                     <span class="fw-bold fs-5 text-light">@{{ app.user.username }}</span>
                                 </div>
-                                <a href="{{ path('app_profil') }}"><i class="app-dropdown-icon bi bi-pencil fs-6 text-light"></i></a>
-                            </div>
+                            </a>
 
                             <div class="dropdown-section p-2 border-top border-theme">
-                                <a class="dropdown-item d-flex align-items-center gap-3 py-2 px-3 rounded-2 text-light" href="{{ path('app_profil') }}">
+                                <a class="dropdown-item d-flex align-items-center gap-3 py-2 px-3 rounded-2 text-light" href="{{ path('app_settings') }}">
                                     <i class="bi bi-gear fs-5"></i>
                                     <span>Paramètres</span>
                                 </a>
@@ -109,7 +108,7 @@
                                     <i class="bi bi-map"></i>
                                     <span>Mes chasses</span>
                                 </a>
-                                <a class="dropdown-item d-flex align-items-center gap-3 py-2 px-3 rounded-2  text-light" href="#">
+                                <a class="dropdown-item d-flex align-items-center gap-3 py-2 px-3 rounded-2  text-light" href="{{ path('app_team') }}">
                                     <i class="bi bi-people"></i>
                                     <span>Mes équipes</span>
                                 </a>
@@ -147,17 +146,17 @@
 
 <main class="flex-grow-1 d-flex flex-column">
 
-    {% for label, messages in app.flashes %}
-        {% set alertClass = label == 'error' ? 'danger' : label %}
-        {% for message in messages %}
-            <div class="container mt-3">
-                <div class="alert alert-{{ alertClass }} alert-dismissible fade show" role="alert">
+    <div class="position-fixed top-0 end-0 p-3" style="z-index: 1080; max-width: 400px; margin-top: 70px;">
+        {% for label, messages in app.flashes %}
+            {% set alertClass = label == 'error' ? 'danger' : label %}
+            {% for message in messages %}
+                <div class="alert alert-{{ alertClass }} alert-dismissible fade show shadow-lg" role="alert">
                     {{ message }}
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
-            </div>
+            {% endfor %}
         {% endfor %}
-    {% endfor %}
+    </div>
 
     {% block main %}{% endblock %}
 </main>
