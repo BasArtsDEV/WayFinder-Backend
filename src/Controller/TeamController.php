@@ -338,6 +338,44 @@ final class TeamController extends AbstractController
         return $back;
     }
 
+    #[Route('/team/{id}/members/{userId}/exclude', name: 'app_team_exclude', requirements: ['id' => '\d+', 'userId' => '\d+'], methods: ['POST'])]
+    public function exclude(
+        Request $request,
+        Team $team,
+        #[MapEntity(id: 'userId')] User $member,
+        EntityManagerInterface $em,
+    ): Response {
+        $this->denyUnlessLeader($team);
+
+        $back = $this->redirectToRoute('app_team_show', ['id' => $team->getId()]);
+
+        if (!$this->isCsrfTokenValid('exclude'.$team->getId().'-'.$member->getId(), $request->getPayload()->getString('_token'))) {
+            $this->addFlash('danger', 'Jeton CSRF invalide.');
+
+            return $back;
+        }
+
+        if (!$this->isPromotableMember($team, $member)) {
+            $this->addFlash('danger', 'Cet utilisateur n\'est pas un membre de l\'équipe.');
+
+            return $back;
+        }
+
+        $team->removeUser($member);
+        $em->persist($this->createMemberNotification(
+            $member,
+            $team,
+            Notification::TYPE_TEAM_EXCLUDED,
+            'Vous avez été exclu d\'une équipe',
+            sprintf('Vous avez été exclu de l\'équipe "%s".', $team->getName()),
+        ));
+        $em->flush();
+
+        $this->addFlash('success', sprintf('@%s a été exclu de l\'équipe.', $member->getUsername()));
+
+        return $back;
+    }
+
     /**
      * Returns the reason for the invitation being declined, or null if it is possible.
      */
