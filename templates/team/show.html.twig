@@ -115,13 +115,43 @@
 
                             {% for user in team.users %}
                                 {% if team.leader is null or user.id != team.leader.id %}
-                                    <div class="member-item d-flex align-items-center justify-content-between p-2 px-3 rounded-3">
-                                        <div class="d-flex align-items-center gap-2">
-                                            <div class="bg-secondary text-white rounded-circle d-flex align-items-center justify-content-center fw-bold opacity-75" style="width: 34px; height: 34px; font-size: 0.9rem;">
+                                    <div class="member-item d-flex align-items-center justify-content-between gap-2 p-2 px-3 rounded-3">
+                                        <div class="d-flex align-items-center gap-2 flex-grow-1" style="min-width: 0;">
+                                            <div class="bg-secondary text-white rounded-circle d-flex align-items-center justify-content-center fw-bold opacity-75 flex-shrink-0" style="width: 34px; height: 34px; font-size: 0.9rem;">
                                                 {{ user.username|first|upper }}
                                             </div>
-                                            <span class="text-secondary fw-medium">@{{ user.username }}</span>
+                                            <span class="text-secondary fw-medium text-truncate" title="@{{ user.username }}">@{{ user.username }}</span>
                                         </div>
+
+                                        {% if isLeader %}
+                                            <div class="btn-dropdown flex-shrink-0">
+                                                <button class="btn btn-sm btn-light rounded-circle" type="button"
+                                                        data-bs-toggle="dropdown" aria-expanded="false"
+                                                        aria-label="Actions pour @{{ user.username }}">
+                                                    <i class="bi bi-three-dots-vertical"></i>
+                                                </button>
+                                                <ul class="dropdown-menu dropdown-menu-end shadow border-0">
+                                                    <li>
+                                                        <form action="{{ path('app_team_promote', { id: team.id, userId: user.id }) }}" method="POST"
+                                                              onsubmit="return confirm('Promouvoir @{{ user.username|e('js') }} chef de l\'équipe ? Vous deviendrez simple membre.');">
+                                                            <input type="hidden" name="_token" value="{{ csrf_token('promote' ~ team.id ~ '-' ~ user.id) }}">
+                                                            <button type="submit" class="dropdown-item">
+                                                                <i class="bi bi-award me-2"></i>Promouvoir chef
+                                                            </button>
+                                                        </form>
+                                                    </li>
+                                                    <li>
+                                                        <form action="{{ path('app_team_exclude', { id: team.id, userId: user.id }) }}" method="POST"
+                                                              onsubmit="return confirm('Exclure @{{ user.username|e('js') }} de l\'équipe ?');">
+                                                            <input type="hidden" name="_token" value="{{ csrf_token('exclude' ~ team.id ~ '-' ~ user.id) }}">
+                                                            <button type="submit" class="dropdown-item text-danger">
+                                                                <i class="bi bi-person-x me-2"></i>Exclure de l'équipe
+                                                            </button>
+                                                        </form>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        {% endif %}
                                     </div>
                                 {% endif %}
                             {% endfor %}
