@@ -1,8 +1,8 @@
-<div class="{{ container_class|default('banner-container') }} position-relative w-100 overflow-hidden" style="max-height: 340px;">
+<div class="{{ container_class|default('banner-container') }} position-relative w-100 overflow-hidden" style="height: 340px;">
     {% if banner %}
-        <img src="{{ banner|raw }}" alt="{{ alt|default('') }}" class="{{ img_class|default('banner-img') }} w-100 h-auto object-fit-contain d-block mx-auto">
+        <img src="{{ banner|raw }}" alt="{{ alt|default('') }}" class="{{ img_class|default('banner-img') }} position-absolute top-0 start-0 w-100 h-100 object-fit-cover">
     {% else %}
-        <div class="{{ default_class|default('banner-default') }} w-100 bg-dark" style="height: 200px;"></div>
+        <div class="{{ default_class|default('banner-default') }} position-absolute top-0 start-0 w-100 h-100 bg-dark"></div>
     {% endif %}
 
     <div class="position-absolute top-0 start-0 w-100 h-100 d-flex flex-column align-items-center justify-content-center text-center p-3">
