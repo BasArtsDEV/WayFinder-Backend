@@ -22,6 +22,11 @@ class RiddleType extends AbstractType
             ->add('title', TextType::class, [
                 'label' => 'Titre de l\'énigme',
             ])
+            ->add('score', IntegerType::class, [
+                'label' => 'Points attribués',
+                'empty_data' => '0',
+                'attr' => ['min' => 0],
+            ])
             ->add('description', TextareaType::class, [
                 'label' => 'Description',
                 'required' => false,
@@ -51,7 +56,7 @@ class RiddleType extends AbstractType
                 'empty_data' => '1',
             ])
             ->add('secondsPenalty', IntegerType::class, [
-                'label' => 'Pénalité en secondes en cas de mauvaise de réponse',
+                'label' => 'Pénalité si mauvaise réponse',
                 'empty_data' => '0',
             ])
             ->add('location', EntityType::class, [
