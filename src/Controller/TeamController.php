@@ -2,7 +2,6 @@
 
 namespace App\Controller;
 
-use App\Entity\CreatorTeam;
 use App\Entity\Notification;
 use App\Entity\Team;
 use App\Entity\User;
@@ -140,7 +139,8 @@ final class TeamController extends AbstractController
             return $this->redirectToRoute('app_team');
         }
 
-        $team = new CreatorTeam();
+        $team = new Team();
+        $team->setRole(Team::ROLE_CREATOR);
         $team->setLeader($user);
         $team->addUser($user);
 
