@@ -51,12 +51,14 @@
                                 <div>
                                     <div class="d-flex align-items-center justify-content-between mb-3">
                                         <div class="d-flex align-items-center gap-2">
-                                            {{ include('profile/partials/_avatar.html.twig', {
-                                                user: feedback.user,
-                                                size: 38,
-                                            }) }}
+                                            {% if feedback.user %}
+                                                {{ include('profile/partials/_avatar.html.twig', {
+                                                    user: feedback.user,
+                                                    size: 38,
+                                                }) }}
+                                            {% endif %}
                                             <div>
-                                                <h4 class="h6 fw-bold text-dark mb-0">{{ feedback.user.username }}</h4>
+                                                <h4 class="h6 fw-bold text-dark mb-0">{{ feedback.user.username ?? 'Joueur anonyme' }}</h4>
                                             </div>
                                         </div>
 
