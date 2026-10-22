@@ -2,11 +2,11 @@
 
 namespace App\Factory;
 
-use App\Entity\CreatorTeam;
+use App\Entity\Team;
 use Zenstruck\Foundry\Persistence\PersistentObjectFactory;
 
 /**
- * @extends PersistentObjectFactory<CreatorTeam>
+ * @extends PersistentObjectFactory<Team>
  */
 final class TeamFactory extends PersistentObjectFactory
 {
@@ -22,7 +22,7 @@ final class TeamFactory extends PersistentObjectFactory
     #[\Override]
     public static function class(): string
     {
-        return CreatorTeam::class;
+        return Team::class;
     }
 
     /**
@@ -37,6 +37,7 @@ final class TeamFactory extends PersistentObjectFactory
 
         return [
             'name' => self::faker()->randomElement($names),
+            'role' => Team::ROLE_CREATOR,
             'leader' => UserFactory::new(),
         ];
     }
@@ -48,7 +49,7 @@ final class TeamFactory extends PersistentObjectFactory
     protected function initialize(): static
     {
         return $this
-            ->afterInstantiate(function (CreatorTeam $team): void {
+            ->afterInstantiate(function (Team $team): void {
                 if ($team->getLeader()) {
                     if (!$team->getUsers()->contains($team->getLeader())) {
                         $team->addUser($team->getLeader());

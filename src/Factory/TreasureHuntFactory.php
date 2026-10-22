@@ -2,6 +2,7 @@
 
 namespace App\Factory;
 
+use App\Entity\Team;
 use App\Entity\TreasureHunt;
 use Zenstruck\Foundry\Persistence\PersistentObjectFactory;
 
@@ -40,7 +41,7 @@ final class TreasureHuntFactory extends PersistentObjectFactory
             'description' => self::faker()->text(),
             'invitationCode' => strtoupper(self::faker()->bothify('??????')),
             'published' => self::faker()->boolean(),
-            'team' => TeamFactory::random(),
+            'team' => TeamFactory::random(['role' => Team::ROLE_CREATOR]),
             'title' => self::faker()->randomElement($titles),
         ];
     }
