@@ -37,12 +37,12 @@ final class RiddleQRCodeFactory extends PersistentObjectFactory
 
         return [
             'description' => self::faker()->randomElement($descriptions),
-            'index' => self::faker()->randomNumber(),
+            'index' => self::faker()->numberBetween(1, 10),
             'location' => LocationFactory::random(),
             'secondsPenalty' => self::faker()->randomElement([15, 30, 60]),
             'title' => self::faker()->text(120),
             'treasureHunt' => TreasureHuntFactory::random(),
-            'url' => self::faker()->url(),
+            'url' => 'https://lefevregael.fr',
         ];
     }
 
