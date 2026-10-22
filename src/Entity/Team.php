@@ -2,6 +2,10 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Link;
 use App\Repository\TeamRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -11,12 +15,31 @@ use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: TeamRepository::class)]
-#[ORM\InheritanceType('SINGLE_TABLE')]
-#[ORM\DiscriminatorColumn(name: 'type', type: 'string')]
-#[ORM\DiscriminatorMap(['creator' => CreatorTeam::class, 'participant' => ParticipantTeam::class])]
-abstract class Team
+#[ApiResource(
+    operations: [
+        new Get(normalizationContext: ['groups' => ['team:read', 'team:details']]),
+        new GetCollection(normalizationContext: ['groups' => ['team:read', 'team:details']]),
+        new Get(
+            uriTemplate: '/users/{id}/teams',
+            uriVariables: [
+                'id' => new Link(fromProperty: 'teams', fromClass: User::class),
+            ],
+            normalizationContext: ['groups' => ['team:read', 'team:details']],
+        ),
+        new Get(
+            uriTemplate: '/treasure_hunts/{id}/team',
+            uriVariables: [
+                'id' => new Link(fromProperty: 'team', fromClass: TreasureHunt::class),
+            ],
+            normalizationContext: ['groups' => ['team:read', 'team:details']],
+        ),
+    ]
+)]
+class Team
 {
     public const int MAX_USERS = 10;
+    public const string ROLE_PARTICIPANT = 'participant';
+    public const string ROLE_CREATOR = 'creator';
 
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -29,6 +52,11 @@ abstract class Team
     #[Assert\NotBlank]
     #[Assert\Length(min: 3, max: 30)]
     private string $name;
+
+    #[ORM\Column(length: 11)]
+    #[Groups(['team:read', 'team:write', 'team:details'])]
+    #[Assert\Choice(choices: [self::ROLE_PARTICIPANT, self::ROLE_CREATOR])]
+    private string $role = self::ROLE_PARTICIPANT;
 
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'ledTeams')]
     #[ORM\JoinColumn(nullable: false)]
@@ -53,9 +81,29 @@ abstract class Team
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private $banner;
 
+    /**
+     * @var Collection<int, Enrollment>
+     */
+    #[ORM\OneToMany(targetEntity: Enrollment::class, mappedBy: 'team')]
+    private Collection $enrollments;
+
+    /**
+     * @var Collection<int, TreasureHunt>
+     */
+    #[ORM\OneToMany(
+        targetEntity: TreasureHunt::class,
+        mappedBy: 'team',
+        cascade: ['remove'],
+        orphanRemoval: true
+    )]
+    #[Groups(['team:read', 'team:details'])]
+    private Collection $treasureHunts;
+
     public function __construct()
     {
         $this->users = new ArrayCollection();
+        $this->enrollments = new ArrayCollection();
+        $this->treasureHunts = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -71,6 +119,18 @@ abstract class Team
     public function setName(string $name): static
     {
         $this->name = $name;
+
+        return $this;
+    }
+
+    public function getRole(): string
+    {
+        return $this->role;
+    }
+
+    public function setRole(string $role): static
+    {
+        $this->role = $role;
 
         return $this;
     }
@@ -129,6 +189,60 @@ abstract class Team
     public function setBanner(?string $banner): static
     {
         $this->banner = $banner;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Enrollment>
+     */
+    public function getEnrollments(): Collection
+    {
+        return $this->enrollments;
+    }
+
+    public function addEnrollment(Enrollment $enrollment): static
+    {
+        if (!$this->enrollments->contains($enrollment)) {
+            $this->enrollments->add($enrollment);
+            $enrollment->setTeam($this);
+        }
+
+        return $this;
+    }
+
+    public function removeEnrollment(Enrollment $enrollment): static
+    {
+        if ($this->enrollments->removeElement($enrollment)) {
+            if ($enrollment->getTeam() === $this) {
+                $enrollment->setTeam(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, TreasureHunt>
+     */
+    public function getTreasureHunts(): Collection
+    {
+        return $this->treasureHunts;
+    }
+
+    public function addTreasureHunt(TreasureHunt $treasureHunt): static
+    {
+        if (!$this->treasureHunts->contains($treasureHunt)) {
+            $this->treasureHunts->add($treasureHunt);
+            $treasureHunt->setTeam($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTreasureHunt(TreasureHunt $treasureHunt): static
+    {
+        $this->treasureHunts->removeElement($treasureHunt);
 
         return $this;
     }
