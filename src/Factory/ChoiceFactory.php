@@ -33,8 +33,10 @@ final class ChoiceFactory extends PersistentObjectFactory
     #[\Override]
     protected function defaults(): array|callable
     {
+        $choices = json_decode(file_get_contents(__DIR__.'/../../data/choices.json'), true);
+
         return [
-            'choice' => self::faker()->text(255),
+            'choice' => self::faker()->randomElement($choices),
             'isRight' => self::faker()->boolean(),
             'riddleQCM' => RiddleQCMFactory::random(),
         ];
