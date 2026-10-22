@@ -107,11 +107,7 @@ class RiddleQCM extends Riddle
 
     public function removeChoice(Choice $choice): static
     {
-        if ($this->choices->removeElement($choice)) {
-            if ($choice->getRiddleQCM() === $this) {
-                $choice->setRiddleQCM(null);
-            }
-        }
+        $this->choices->removeElement($choice);
 
         return $this;
     }
