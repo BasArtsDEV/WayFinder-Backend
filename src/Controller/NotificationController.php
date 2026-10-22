@@ -184,7 +184,7 @@ final class NotificationController extends AbstractController
             };
 
             $entityManager->persist(
-                (new Notification())
+                new Notification()
                     ->setType('accepted' === $outcome ? Notification::TYPE_TEAM_RESPONSE_ACCEPTED : Notification::TYPE_TEAM_RESPONSE_DECLINED)
                     ->setTitle($title)
                     ->setDescription($description)
