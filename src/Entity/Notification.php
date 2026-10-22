@@ -15,6 +15,8 @@ class Notification
     public const string TYPE_TEAM_INVITATION = 'team_invitation';
     public const string TYPE_TEAM_EXCLUDED = 'team_excluded';
     public const string TYPE_TEAM_PROMOTED = 'team_promoted';
+    public const string TYPE_TEAM_RESPONSE_ACCEPTED = 'team_response_accepted';
+    public const string TYPE_TEAM_RESPONSE_DECLINED = 'team_response_declined';
 
     #[ORM\Id]
     #[ORM\GeneratedValue]
