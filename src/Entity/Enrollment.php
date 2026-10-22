@@ -140,13 +140,13 @@ class Enrollment
     private ?Riddle $riddle = null;
 
     #[Groups(['enrollment:read'])]
-    #[ORM\ManyToOne(inversedBy: 'enrollments')]
+    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'enrollments')]
     #[ORM\JoinColumn(nullable: true)]
     private ?User $user = null;
 
-    #[ORM\ManyToOne(targetEntity: ParticipantTeam::class, inversedBy: 'enrollments')]
+    #[ORM\ManyToOne(targetEntity: Team::class, inversedBy: 'enrollments')]
     #[ORM\JoinColumn(nullable: true)]
-    private ?ParticipantTeam $participantTeam = null;
+    private ?Team $team = null;
 
     #[Groups(['enrollment:read', 'enrollment:write', 'enrollment:details'])]
     #[ORM\Column(nullable: true)]
@@ -283,14 +283,14 @@ class Enrollment
         return $this;
     }
 
-    public function getParticipantTeam(): ?ParticipantTeam
+    public function getTeam(): ?Team
     {
-        return $this->participantTeam;
+        return $this->team;
     }
 
-    public function setParticipantTeam(?ParticipantTeam $participantTeam): static
+    public function setTeam(?Team $team): static
     {
-        $this->participantTeam = $participantTeam;
+        $this->team = $team;
 
         return $this;
     }
