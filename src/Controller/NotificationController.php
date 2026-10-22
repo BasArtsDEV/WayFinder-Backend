@@ -79,7 +79,8 @@ final class NotificationController extends AbstractController
     }
 
     /**
-     * Process accepting or declining a join request or invitation.
+     * Process accepting or declining a join request or invitation,
+     * then inform the other party with a simple notification.
      */
     #[Route('/notification/{id}/action/{action}', name: 'app_notification_action', requirements: ['id' => Requirement::DIGITS, 'action' => 'accept|decline'], methods: ['POST'])]
     public function handleAction(
@@ -97,36 +98,103 @@ final class NotificationController extends AbstractController
         }
 
         $team = $notification->getTargetTeam();
+        $isInvitation = Notification::TYPE_TEAM_INVITATION === $notification->getType();
+        $isJoinRequest = Notification::TYPE_TEAM_JOIN_REQUEST === $notification->getType();
 
-        if ('accept' === $action && $team) {
-            $isInvitation = Notification::TYPE_TEAM_INVITATION === $notification->getType();
+        // Invitation: I respond as a guest. Request: I respond as a superior, the candidate is the one making the request.
+        $candidate = $isInvitation ? $currentUser : $notification->getTargetUser();
 
-            // Invitation: the person invited joins. Request: the requester joins.
-            $newMember = $isInvitation ? $currentUser : $notification->getTargetUser();
+        // Only invitations and requests call for a response.
+        if (null === $team || null === $candidate || (!$isInvitation && !$isJoinRequest)) {
+            $this->addFlash('danger', 'Cette notification n\'appelle aucune réponse.');
 
-            if ($newMember) {
-                if ($team->getUsers()->contains($newMember)) {
-                    $this->addFlash('info', 'Cette personne fait déjà partie de l\'équipe.');
-                } elseif ($team->getUsers()->count() >= Team::MAX_USERS) {
-                    $this->addFlash('danger', 'Impossible : l\'équipe est complète.');
-                } elseif ($newMember->getTeams()->count() >= User::MAX_TEAMS) {
-                    $this->addFlash('danger', sprintf('Impossible : %s a atteint le nombre maximum d\'équipes.', $isInvitation ? 'vous avez' : $newMember->getUsername().' a'));
-                } else {
-                    $team->addUser($newMember);
-                    $this->addFlash('success', $isInvitation
-                        ? sprintf('Vous avez rejoint l\'équipe "%s" !', $team->getName())
-                        : sprintf('%s a rejoint votre équipe !', $newMember->getUsername()));
-                }
-            }
+            return $this->redirectToRoute('app_notification');
+        }
+
+        // The manager may have changed since the request was submitted
+        if ($isJoinRequest && $team->getLeader()?->getId() !== $currentUser->getId()) {
+            $this->addFlash('danger', 'Vous n\'êtes plus le chef de cette équipe : cette demande ne vous concerne plus.');
+            $this->dismiss($notification, $currentUser, $entityManager);
+            $entityManager->flush();
+
+            return $this->redirectToRoute('app_notification');
+        }
+
+        // accepted | declined | failed | null (already a member: nothing to report to the other party)
+        $outcome = null;
+        $failure = null;
+
+        if ('decline' === $action) {
+            $outcome = 'declined';
+        } elseif ($team->getUsers()->contains($candidate)) {
+            $this->addFlash('info', 'Cette personne fait déjà partie de l\'équipe.');
+        } elseif ($team->getUsers()->count() >= Team::MAX_USERS) {
+            $outcome = 'failed';
+            $failure = 'l\'équipe est complète';
+        } elseif ($candidate->getTeams()->count() >= User::MAX_TEAMS) {
+            $outcome = 'failed';
+            $failure = 'le nombre maximum d\'équipes par joueur est atteint';
         } else {
-            $this->addFlash('info', 'Demande refusée.');
+            $team->addUser($candidate);
+            $outcome = 'accepted';
         }
 
-        $notification->removeReceiveNotif($currentUser);
-        if ($notification->getReceiveNotif()->isEmpty()) {
-            $entityManager->remove($notification);
+        $responder = $currentUser->getUsername();
+        $teamName = $team->getName();
+
+        // Message displayed to the person who has just responded
+        match ($outcome) {
+            'accepted' => $this->addFlash('success', $isInvitation
+                ? sprintf('Vous avez rejoint l\'équipe "%s" !', $teamName)
+                : sprintf('%s a rejoint votre équipe !', $candidate->getUsername())),
+            'declined' => $this->addFlash('info', $isInvitation ? 'Invitation refusée.' : 'Demande refusée.'),
+            'failed' => $this->addFlash('danger', sprintf('Impossible : %s.', $failure)),
+            default => null,
+        };
+
+        // Informative notification for the other party: the manager (invitation) or the requester (request)
+        $otherParty = $isInvitation ? $team->getLeader() : $candidate;
+
+        if (null !== $outcome && null !== $otherParty && $otherParty->getId() !== $currentUser->getId()) {
+            [$title, $description] = match (true) {
+                $isInvitation && 'accepted' === $outcome => [
+                    'Invitation acceptée',
+                    sprintf('%s a accepté votre invitation et a rejoint l\'équipe "%s".', $responder, $teamName),
+                ],
+                $isInvitation && 'declined' === $outcome => [
+                    'Invitation refusée',
+                    sprintf('%s a refusé votre invitation à rejoindre l\'équipe "%s".', $responder, $teamName),
+                ],
+                $isInvitation => [
+                    'Invitation sans suite',
+                    sprintf('%s n\'a pas pu rejoindre l\'équipe "%s" : %s.', $responder, $teamName, $failure),
+                ],
+                'accepted' === $outcome => [
+                    'Demande acceptée',
+                    sprintf('%s a accepté votre demande : vous avez rejoint l\'équipe "%s" !', $responder, $teamName),
+                ],
+                'declined' === $outcome => [
+                    'Demande refusée',
+                    sprintf('%s a refusé votre demande pour rejoindre l\'équipe "%s".', $responder, $teamName),
+                ],
+                default => [
+                    'Demande sans suite',
+                    sprintf('%s a accepté votre demande pour rejoindre l\'équipe "%s", mais vous n\'avez pas pu la rejoindre : %s.', $responder, $teamName, $failure),
+                ],
+            };
+
+            $entityManager->persist(
+                (new Notification())
+                    ->setType('accepted' === $outcome ? Notification::TYPE_TEAM_RESPONSE_ACCEPTED : Notification::TYPE_TEAM_RESPONSE_DECLINED)
+                    ->setTitle($title)
+                    ->setDescription($description)
+                    ->setTargetUser($candidate)
+                    ->setTargetTeam($team)
+                    ->addReceiveNotif($otherParty)
+            );
         }
 
+        $this->dismiss($notification, $currentUser, $entityManager);
         $entityManager->flush();
 
         return $this->redirectToRoute('app_notification');
