@@ -25,7 +25,7 @@ class EnrollmentRepository extends ServiceEntityRepository
     {
         return $this->createQueryBuilder('e')
             ->addSelect('u')
-            ->join('e.user', 'u')
+            ->leftJoin('e.user', 'u')
             ->where('e.treasureHunt = :treasureHunt')
             ->andWhere('e.feedback IS NOT NULL')
             ->setParameter('treasureHunt', $treasureHunt)

@@ -498,7 +498,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function removeEnrollment(Enrollment $enrollment): static
     {
-        $this->enrollments->removeElement($enrollment);
+        if ($this->enrollments->removeElement($enrollment)) {
+            if ($enrollment->getUser() === $this) {
+                $enrollment->setUser(null);
+            }
+        }
 
         return $this;
     }
