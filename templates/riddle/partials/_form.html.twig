@@ -1,0 +1,165 @@
+{% block stylesheets %}
+    <link href="{{ asset('styles/riddle/form.css') }}" type="text/css" rel="stylesheet" />
+{% endblock %}
+
+<div class="riddle-editor-container">
+    <div class="riddle-header">
+        <h2>{{ is_edit ? riddle.title : ('Créer une énigme - ' ~ type_label) }}</h2>
+        <span class="badge bg-primary">
+            {{ is_edit ? riddle.typeLabel : type_label }}
+        </span>
+    </div>
+
+    {{ form_start(form) }}
+    <div class="riddle-grid">
+        <div class="riddle-card">
+            <h3 class="card-title">Informations générales</h3>
+
+            {{ form_row(form.title) }}
+            {{ form_row(form.description) }}
+
+            {% if form.score is defined and form.secondsPenalty is defined %}
+                <div class="form-row-2col">
+                    {{ form_row(form.score) }}
+                    {{ form_row(form.secondsPenalty) }}
+                </div>
+            {% elseif form.secondsPenalty is defined %}
+                {{ form_row(form.secondsPenalty) }}
+            {% endif %}
+
+            {{ form_row(form.index) }}
+
+            <div class="form-row-2col">
+                {{ form_row(form.imgFile) }}
+                {{ form_row(form.imgDescription) }}
+            </div>
+
+            {{ form_row(form.location) }}
+        </div>
+
+        <div class="riddle-card">
+            <h3 class="card-title">Configuration spécifique</h3>
+
+            {% if form.question is defined %}
+                {{ form_row(form.question) }}
+            {% endif %}
+
+            {% if form.choices is defined %}
+                <div class="qcm-choices-container">
+                    <div class="qcm-choices-title">
+                        <span>Choix de réponse</span>
+                        <button type="button" class="btn btn-secondary btn-sm" id="add-choice-btn">+ Ajouter</button>
+                    </div>
+                    <div id="qcm-choices-list"
+                         data-prototype="{{ form_widget(form.choices.vars.prototype)|e('html_attr') }}"
+                         data-index="{{ form.choices|length }}">
+                        {% for choiceForm in form.choices %}
+                            <div class="qcm-choice-item">
+                                <div class="choice-text">
+                                    {% if choiceForm.choice is defined %}
+                                        {{ form_widget(choiceForm.choice) }}
+                                    {% else %}
+                                        {{ form_widget(choiceForm) }}
+                                    {% endif %}
+                                </div>
+                                {% if choiceForm.isRight is defined %}
+                                    <label class="choice-correct">
+                                        {{ form_widget(choiceForm.isRight) }}
+                                    </label>
+                                {% endif %}
+                                <button type="button" class="btn btn-danger btn-sm remove-choice-btn">&times;</button>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endif %}
+
+            {% if form.latitude is defined and form.longitude is defined %}
+                <div class="form-row-2col">
+                    {{ form_row(form.latitude) }}
+                    {{ form_row(form.longitude) }}
+                </div>
+            {% endif %}
+
+            {% for child in form %}
+                {% if not child.rendered and child.vars.name not in ['_token'] %}
+                    {{ form_row(child) }}
+                {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="riddle-card form-actions-card">
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">
+                {{ is_edit ? 'Mettre à jour' : 'Enregistrer l\'énigme' }}
+            </button>
+            <a href="{{ path('app_treasure_hunt_show', { id: hunt_id }) }}" class="btn btn-secondary">Annuler</a>
+
+            {% if is_edit %}
+                <button type="button" class="btn btn-danger" onclick="document.getElementById('delete-riddle-form').submit();">Supprimer</button>
+            {% endif %}
+        </div>
+    </div>
+    {{ form_end(form) }}
+
+    {% if is_edit %}
+        <form id="delete-riddle-form" action="{{ path('app_riddle_delete', { id: riddle.id }) }}" method="POST" onsubmit="return confirm('Confirmer la suppression ?');" style="display:none;">
+            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ riddle.id) }}">
+        </form>
+    {% endif %}
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const choicesList = document.getElementById('qcm-choices-list');
+        const addBtn = document.getElementById('add-choice-btn');
+
+        if (!choicesList || !addBtn) return;
+
+        const MAX_CHOICES = 4;
+
+        const updateAddButtonState = () => {
+            const count = choicesList.querySelectorAll('.qcm-choice-item').length;
+            if (count >= MAX_CHOICES) {
+                addBtn.disabled = true;
+                addBtn.style.opacity = '0.5';
+                addBtn.style.cursor = 'not-allowed';
+            } else {
+                addBtn.disabled = false;
+                addBtn.style.opacity = '1';
+                addBtn.style.cursor = 'pointer';
+            }
+        };
+
+        addBtn.addEventListener('click', () => {
+            const count = choicesList.querySelectorAll('.qcm-choice-item').length;
+            if (count >= MAX_CHOICES) return;
+
+            let index = parseInt(choicesList.dataset.index) || 0;
+            let prototype = choicesList.dataset.prototype;
+
+            let newForm = prototype.replace(/__name__/g, index);
+            choicesList.dataset.index = index + 1;
+
+            const wrapper = document.createElement('div');
+            wrapper.classList.add('qcm-choice-item');
+            wrapper.innerHTML = `
+                <div class="choice-text">${newForm}</div>
+                <button type="button" class="btn btn-danger btn-sm remove-choice-btn">&times;</button>
+            `;
+
+            choicesList.appendChild(wrapper);
+            updateAddButtonState();
+        });
+
+        choicesList.addEventListener('click', (e) => {
+            if (e.target.classList.contains('remove-choice-btn')) {
+                e.target.closest('.qcm-choice-item').remove();
+                updateAddButtonState();
+            }
+        });
+
+        updateAddButtonState();
+    });
+</script>
