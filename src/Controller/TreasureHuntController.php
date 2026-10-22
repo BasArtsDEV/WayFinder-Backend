@@ -8,7 +8,6 @@ use App\Entity\TreasureHunt;
 use App\Entity\User;
 use App\Form\TreasureHuntType;
 use App\Repository\EnrollmentRepository;
-use App\Repository\TreasureHuntRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
 use Random\RandomException;
@@ -28,17 +27,7 @@ use Symfony\UX\Map\Point;
 final class TreasureHuntController extends AbstractController
 {
     #[Route('/treasure_hunt', name: 'app_treasure_hunt')]
-    public function index(TreasureHuntRepository $treasureHuntRepository): Response
-    {
-        $treasureHunts = $treasureHuntRepository->findAllOrderedByDate();
-
-        return $this->render('treasure_hunt/index.html.twig', [
-            'treasureHunts' => $treasureHunts,
-        ]);
-    }
-
-    #[Route('/treasure_hunt/mine', name: 'app_treasure_hunt_mine')]
-    public function myTreasureHunts(): Response
+    public function index(): Response
     {
         $user = $this->getUser();
         if (!$user) {
@@ -61,7 +50,7 @@ final class TreasureHuntController extends AbstractController
             return $b->getCreationDate() <=> $a->getCreationDate();
         });
 
-        return $this->render('treasure_hunt/my_treasure_hunts.html.twig', [
+        return $this->render('treasure_hunt/index.html.twig', [
             'treasureHunts' => $treasureHunts,
         ]);
     }

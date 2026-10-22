@@ -4,12 +4,14 @@ namespace App\Controller;
 
 use App\Entity\User;
 use App\Service\AvatarService;
+use App\Service\UserDeletionService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[IsGranted('IS_AUTHENTICATED_REMEMBERED')]
@@ -63,20 +65,42 @@ final class ProfileController extends AbstractController
         return $this->redirectToRoute('app_profil');
     }
 
-    #[Route('/profil/delete-avatar', name: 'app_profil_avatar_delete', methods: ['POST'])]
+    #[Route('/profil/avatar/delete', name: 'app_profil_avatar_delete')]
     #[IsGranted('ROLE_USER')]
-    public function deleteAvatar(Request $request, EntityManagerInterface $em): Response
+    public function deleteAvatar(EntityManagerInterface $em): Response
     {
         /** @var User $user */
         $user = $this->getUser();
 
-        if ($this->isCsrfTokenValid('delete-avatar-'.$user->getId(), $request->request->get('_token'))) {
-            $user->setAvatar(null);
-            $em->flush();
-
-            $this->addFlash('success', "L'avatar a bien été supprimé.");
-        }
+        $user->setAvatar(null);
+        $em->flush();
 
         return $this->redirectToRoute('app_settings');
+    }
+
+    #[Route('/profil/user/delete', name: 'app_user_delete')]
+    #[IsGranted('ROLE_USER')]
+    public function delete(
+        Request $request,
+        UserDeletionService $userDeletion,
+        TokenStorageInterface $tokenStorage,
+    ): Response {
+        /** @var User $user */
+        $user = $this->getUser();
+
+        if (!$this->isCsrfTokenValid('delete-account-'.$user->getId(), (string) $request->request->get('_token'))) {
+            $this->addFlash('danger', 'Jeton de sécurité invalide, la suppression a été annulée.');
+
+            return $this->redirectToRoute('app_profil_edit');
+        }
+
+        $userDeletion->delete($user);
+
+        $tokenStorage->setToken(null);
+        $session = $request->getSession();
+        $session->invalidate();
+        $this->addFlash('success', 'Votre compte a bien été supprimé.');
+
+        return $this->redirectToRoute('app_login');
     }
 }

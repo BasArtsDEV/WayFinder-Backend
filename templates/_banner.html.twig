@@ -1,6 +1,9 @@
 <div class="{{ container_class|default('banner-container') }} position-relative w-100 overflow-hidden" style="height: 340px;">
     {% if banner %}
-        <img src="{{ banner|raw }}" alt="{{ alt|default('') }}" class="{{ img_class|default('banner-img') }} position-absolute top-0 start-0 w-100 h-100 object-fit-cover">
+        <img src="{{ banner|raw }}"
+             alt="{{ alt|default('') }}"
+             class="{{ img_class|default('banner-img') }} position-absolute top-0 start-0 w-100 h-100"
+             style="object-fit: cover; object-position: center;">
     {% else %}
         <div class="{{ default_class|default('banner-default') }} position-absolute top-0 start-0 w-100 h-100 bg-dark"></div>
     {% endif %}
