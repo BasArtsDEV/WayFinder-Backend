@@ -12,8 +12,10 @@ use App\Form\Riddle\RiddleGPSType;
 use App\Form\Riddle\RiddleQCMType;
 use App\Form\Riddle\RiddleQRCodeType;
 use App\Form\Riddle\RiddleTextType;
+use App\Repository\RiddleRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -76,7 +78,7 @@ final class RiddleController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}/edit', name: 'app_riddle_edit', methods: ['GET', 'POST'])]
+    #[Route('riddle/{id}/edit', name: 'app_riddle_edit', methods: ['GET', 'POST'])]
     public function edit(
         Riddle $riddle,
         Request $request,
@@ -106,7 +108,7 @@ final class RiddleController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}/delete', name: 'app_riddle_delete', methods: ['POST'])]
+    #[Route('riddle/{id}/delete', name: 'app_riddle_delete', methods: ['POST'])]
     public function delete(
         Request $request,
         Riddle $riddle,
@@ -122,22 +124,27 @@ final class RiddleController extends AbstractController
         return $this->redirectToRoute('app_treasure_hunt_show', ['id' => $huntId]);
     }
 
-    #[Route('/{id}/reorder/{direction}', name: 'app_riddle_reorder', methods: ['POST'])]
-    public function reorder(
-        Riddle $riddle,
-        string $direction,
+    #[Route('/riddle/reorder-all', name: 'app_riddle_reorder_all', methods: ['POST'])]
+    public function reorderAll(
+        Request $request,
+        RiddleRepository $riddleRepository,
         EntityManagerInterface $em,
-    ): Response {
-        $currentIndex = $riddle->getIndex();
-        $newIndex = 'up' === $direction ? $currentIndex - 1 : $currentIndex + 1;
+    ): JsonResponse {
+        $data = json_decode($request->getContent(), true);
 
-        if ($newIndex > 0) {
-            $riddle->setIndex($newIndex);
-            $em->flush();
+        if (!isset($data['orders']) || !is_array($data['orders'])) {
+            return new JsonResponse(['error' => 'Données invalides'], 400);
         }
 
-        return $this->redirectToRoute('app_treasure_hunt_edit', [
-            'id' => $riddle->getTreasureHunt()->getId(),
-        ]);
+        foreach ($data['orders'] as $item) {
+            $riddle = $riddleRepository->find($item['id']);
+            if ($riddle) {
+                $riddle->setIndex((int) $item['index']);
+            }
+        }
+
+        $em->flush();
+
+        return new JsonResponse(['status' => 'success']);
     }
 }

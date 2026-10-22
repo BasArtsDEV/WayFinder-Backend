@@ -39,6 +39,7 @@ class TreasureHuntRepository extends ServiceEntityRepository
             ->addSelect('r')
             ->where('tre.id = :id')
             ->setParameter('id', $id)
+            ->orderBy('r.index', 'ASC')
             ->getQuery()
             ->getOneOrNullResult();
     }
