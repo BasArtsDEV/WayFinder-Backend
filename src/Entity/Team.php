@@ -48,7 +48,7 @@ class Team
     private ?int $id = null;
 
     #[ORM\Column(length: 30)]
-    #[Groups(['team:read', 'team:write', 'team:details'])]
+    #[Groups(['team:read', 'team:write', 'team:details', 'hunt:details'])]
     #[Assert\NotBlank]
     #[Assert\Length(min: 3, max: 30)]
     private string $name;
