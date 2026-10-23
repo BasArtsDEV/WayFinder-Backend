@@ -11,12 +11,14 @@ use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use App\Enum\EnrollmentStatus;
 use App\Repository\EnrollmentRepository;
+use App\State\EnrollmentProcessor;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: EnrollmentRepository::class)]
 #[ORM\UniqueConstraint(name: 'UNIQ_ENROLLMENT_USER_TREASURE_HUNT', fields: ['user', 'treasureHunt'])]
@@ -42,9 +44,10 @@ use Symfony\Component\Serializer\Annotation\Groups;
                 'groups' => ['enrollment:read'],
             ],
             denormalizationContext: [
-                'groups' => ['enrollment:write'],
+                'groups' => ['enrollment:create'],
             ],
-            security: "is_granted('ROLE_USER')"
+            security: "is_granted('ROLE_USER')",
+            processor: EnrollmentProcessor::class,
         ),
         new Patch(
             normalizationContext: [
@@ -53,10 +56,11 @@ use Symfony\Component\Serializer\Annotation\Groups;
             denormalizationContext: [
                 'groups' => ['enrollment:write'],
             ],
-            security: "is_granted('ROLE_USER')"
+            security: "is_granted('ROLE_USER') and object.getUser() == user",
+            processor: EnrollmentProcessor::class,
         ),
         new Delete(
-            security: "is_granted('ROLE_USER')"
+            security: "is_granted('ROLE_USER') and object.getUser() == user and object.getTeam() == null"
         ),
         new GetCollection(
             uriTemplate: '/treasure_hunts/{id}/enrollments',
@@ -64,7 +68,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
                 'id' => new Link(toProperty: 'treasureHunt', fromClass: TreasureHunt::class),
             ],
             normalizationContext: [
-                'groups' => ['user:read'],
+                'groups' => ['enrollment:read'],
             ],
             security: "is_granted('ROLE_USER')"
         ),
@@ -72,6 +76,14 @@ use Symfony\Component\Serializer\Annotation\Groups;
             uriTemplate: '/users/{id}/enrollments',
             uriVariables: [
                 'id' => new Link(toProperty: 'user', fromClass: User::class),
+            ],
+            normalizationContext: ['groups' => ['enrollment:read']],
+            security: "is_granted('ROLE_USER')"
+        ),
+        new GetCollection(
+            uriTemplate: '/teams/{id}/enrollments',
+            uriVariables: [
+                'id' => new Link(toProperty: 'team', fromClass: Team::class),
             ],
             normalizationContext: ['groups' => ['enrollment:read']],
             security: "is_granted('ROLE_USER')"
@@ -102,12 +114,13 @@ class Enrollment
     #[Groups(['enrollment:read'])]
     private ?int $id = null;
 
-    #[Groups(['enrollment:read'])]
+    #[Groups(['enrollment:read', 'enrollment:write'])]
     #[ORM\Column(enumType: EnrollmentStatus::class)]
-    private EnrollmentStatus $status;
+    private EnrollmentStatus $status = EnrollmentStatus::NOT_STARTED;
 
     #[ORM\Column]
-    #[Groups(['enrollment:read'])]
+    #[Groups(['enrollment:read', 'enrollment:write'])]
+    #[Assert\PositiveOrZero]
     private int $scoreTotal = 0;
 
     #[ORM\Column(type: Types::DATE_IMMUTABLE)]
@@ -115,12 +128,14 @@ class Enrollment
     private \DateTimeImmutable $registrationDate;
 
     #[ORM\Column]
-    #[Groups(['enrollment:read'])]
-    private int $countdown;
+    #[Groups(['enrollment:read', 'enrollment:write'])]
+    #[Assert\PositiveOrZero]
+    private int $countdown = 0;
 
     #[ORM\ManyToOne(inversedBy: 'enrollments')]
     #[ORM\JoinColumn(nullable: false)]
-    #[Groups(['enrollment:read', 'enrollment:write'])]
+    #[Groups(['enrollment:read', 'enrollment:create'])]
+    #[Assert\NotNull]
     private TreasureHunt $treasureHunt;
 
     /**
@@ -146,6 +161,7 @@ class Enrollment
 
     #[ORM\ManyToOne(targetEntity: Team::class, inversedBy: 'enrollments')]
     #[ORM\JoinColumn(nullable: true)]
+    #[Groups(['enrollment:read', 'enrollment:create'])]
     private ?Team $team = null;
 
     #[Groups(['enrollment:read', 'enrollment:write', 'enrollment:details'])]
@@ -159,6 +175,7 @@ class Enrollment
     public function __construct()
     {
         $this->submissions = new ArrayCollection();
+        $this->registrationDate = new \DateTimeImmutable();
     }
 
     public function getId(): ?int
@@ -217,7 +234,7 @@ class Enrollment
 
     public function getTreasureHunt(): ?TreasureHunt
     {
-        return $this->treasureHunt;
+        return $this->treasureHunt ?? null;
     }
 
     public function setTreasureHunt(

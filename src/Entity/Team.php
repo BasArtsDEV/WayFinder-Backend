@@ -19,7 +19,7 @@ use Symfony\Component\Validator\Constraints as Assert;
     operations: [
         new Get(normalizationContext: ['groups' => ['team:read', 'team:details']]),
         new GetCollection(normalizationContext: ['groups' => ['team:read', 'team:details']]),
-        new Get(
+        new GetCollection(
             uriTemplate: '/users/{id}/teams',
             uriVariables: [
                 'id' => new Link(fromProperty: 'teams', fromClass: User::class),
