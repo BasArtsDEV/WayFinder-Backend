@@ -68,9 +68,9 @@ use Symfony\Component\Validator\Constraints as Assert;
                 'id' => new Link(toProperty: 'treasureHunt', fromClass: TreasureHunt::class),
             ],
             normalizationContext: [
-                'groups' => ['enrollment:read'],
+                'groups' => ['enrollment:read', 'feedback:read'],
             ],
-            security: "is_granted('ROLE_USER')"
+            security: "is_granted('ROLE_USER')",
         ),
         new GetCollection(
             uriTemplate: '/users/{id}/enrollments',
@@ -111,7 +111,7 @@ class Enrollment
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['enrollment:read'])]
+    #[Groups(['enrollment:read', 'feedback:read'])]
     private ?int $id = null;
 
     #[Groups(['enrollment:read', 'enrollment:write'])]
@@ -154,7 +154,7 @@ class Enrollment
     #[Groups(['enrollment:read', 'enrollment:write'])]
     private ?Riddle $riddle = null;
 
-    #[Groups(['enrollment:read'])]
+    #[Groups(['enrollment:read', 'feedback:read'])]
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'enrollments')]
     #[ORM\JoinColumn(nullable: true)]
     private ?User $user = null;
@@ -164,11 +164,11 @@ class Enrollment
     #[Groups(['enrollment:read', 'enrollment:create'])]
     private ?Team $team = null;
 
-    #[Groups(['enrollment:read', 'enrollment:write', 'enrollment:details'])]
+    #[Groups(['enrollment:read', 'enrollment:write', 'enrollment:details', 'feedback:read'])]
     #[ORM\Column(nullable: true)]
     private ?int $nbStars = null;
 
-    #[Groups(['enrollment:read', 'enrollment:write', 'enrollment:details'])]
+    #[Groups(['enrollment:read', 'enrollment:write', 'enrollment:details', 'feedback:read'])]
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $feedback = null;
 
