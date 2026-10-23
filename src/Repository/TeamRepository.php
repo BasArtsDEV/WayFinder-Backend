@@ -51,6 +51,8 @@ class TeamRepository extends ServiceEntityRepository
         $qb = $this->createQueryBuilder('t')
             ->leftJoin('t.leader', 'l')->addSelect('l')
             ->leftJoin('t.users', 'u')->addSelect('u')
+            ->andWhere('t.role = :role')
+            ->setParameter('role', Team::ROLE_CREATOR)
             ->orderBy('t.name', 'ASC')
             ->addOrderBy('t.id', 'ASC');
 
