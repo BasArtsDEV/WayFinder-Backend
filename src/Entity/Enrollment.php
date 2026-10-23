@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Doctrine\Orm\Filter\ExistsFilter;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Get;
@@ -9,6 +10,7 @@ use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Link;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\QueryParameter;
 use App\Enum\EnrollmentStatus;
 use App\Repository\EnrollmentRepository;
 use App\State\EnrollmentProcessor;
@@ -68,9 +70,15 @@ use Symfony\Component\Validator\Constraints as Assert;
                 'id' => new Link(toProperty: 'treasureHunt', fromClass: TreasureHunt::class),
             ],
             normalizationContext: [
-                'groups' => ['enrollment:read', 'feedback:read'],
+                'groups' => ['feedback:read'],
             ],
             security: "is_granted('ROLE_USER')",
+            parameters: [
+                'hasFeedback' => new QueryParameter(
+                    filter: new ExistsFilter(),
+                    property: 'feedback',
+                ),
+            ]
         ),
         new GetCollection(
             uriTemplate: '/users/{id}/enrollments',
