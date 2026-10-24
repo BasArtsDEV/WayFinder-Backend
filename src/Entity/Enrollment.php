@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Doctrine\Orm\Filter\ExistsFilter;
+use ApiPlatform\Doctrine\Orm\Filter\SortFilter;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Get;
@@ -9,6 +11,7 @@ use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Link;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\QueryParameter;
 use App\Enum\EnrollmentStatus;
 use App\Repository\EnrollmentRepository;
 use App\State\EnrollmentProcessor;
@@ -68,9 +71,19 @@ use Symfony\Component\Validator\Constraints as Assert;
                 'id' => new Link(toProperty: 'treasureHunt', fromClass: TreasureHunt::class),
             ],
             normalizationContext: [
-                'groups' => ['enrollment:read'],
+                'groups' => ['feedback:read'],
             ],
-            security: "is_granted('ROLE_USER')"
+            security: "is_granted('ROLE_USER')",
+            parameters: [
+                'hasFeedback' => new QueryParameter(
+                    filter: new ExistsFilter(),
+                    property: 'feedback',
+                ),
+                'sortByStars' => new QueryParameter(
+                    filter: new SortFilter(),
+                    property: 'nbStars',
+                ),
+            ]
         ),
         new GetCollection(
             uriTemplate: '/users/{id}/enrollments',
@@ -111,7 +124,7 @@ class Enrollment
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['enrollment:read'])]
+    #[Groups(['enrollment:read', 'feedback:read'])]
     private ?int $id = null;
 
     #[Groups(['enrollment:read', 'enrollment:write'])]
@@ -154,7 +167,7 @@ class Enrollment
     #[Groups(['enrollment:read', 'enrollment:write'])]
     private ?Riddle $riddle = null;
 
-    #[Groups(['enrollment:read'])]
+    #[Groups(['enrollment:read', 'feedback:read'])]
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'enrollments')]
     #[ORM\JoinColumn(nullable: true)]
     private ?User $user = null;
@@ -164,11 +177,11 @@ class Enrollment
     #[Groups(['enrollment:read', 'enrollment:create'])]
     private ?Team $team = null;
 
-    #[Groups(['enrollment:read', 'enrollment:write', 'enrollment:details'])]
+    #[Groups(['enrollment:read', 'enrollment:write', 'enrollment:details', 'feedback:read'])]
     #[ORM\Column(nullable: true)]
     private ?int $nbStars = null;
 
-    #[Groups(['enrollment:read', 'enrollment:write', 'enrollment:details'])]
+    #[Groups(['enrollment:read', 'enrollment:write', 'enrollment:details', 'feedback:read'])]
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $feedback = null;
 

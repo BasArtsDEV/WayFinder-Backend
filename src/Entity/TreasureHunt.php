@@ -2,10 +2,12 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Doctrine\Orm\Filter\ExactFilter;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Link;
+use ApiPlatform\Metadata\QueryParameter;
 use App\Repository\TreasureHuntRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -20,7 +22,15 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ApiResource(
     operations: [
         new Get(normalizationContext: ['groups' => ['hunt:read', 'hunt:details']]),
-        new GetCollection(normalizationContext: ['groups' => ['hunt:read', 'hunt:details']]),
+        new GetCollection(
+            normalizationContext: ['groups' => ['hunt:read', 'hunt:details']],
+            parameters: [
+                'isPublished' => new QueryParameter(
+                    filter: new ExactFilter(),
+                    property: 'published',
+                ),
+            ]
+        ),
 
         new Get(
             uriTemplate: '/riddles/{id}/treasure-hunt',

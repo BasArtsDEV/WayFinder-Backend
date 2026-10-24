@@ -168,7 +168,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private string $password;
 
     #[ORM\Column(length: 30)]
-    #[Groups(['user:read', 'user:write', 'user:me', 'user:create'])]
+    #[Groups(['user:read', 'user:write', 'user:me', 'user:create', 'feedback:read'])]
     #[Assert\NotBlank]
     #[Assert\Regex(
         pattern: '/^[\w\d_-]+$/',
