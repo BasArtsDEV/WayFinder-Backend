@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use ApiPlatform\Doctrine\Orm\Filter\ExistsFilter;
+use ApiPlatform\Doctrine\Orm\Filter\SortFilter;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Get;
@@ -77,6 +78,10 @@ use Symfony\Component\Validator\Constraints as Assert;
                 'hasFeedback' => new QueryParameter(
                     filter: new ExistsFilter(),
                     property: 'feedback',
+                ),
+                'sortByStars' => new QueryParameter(
+                    filter: new SortFilter(),
+                    property: 'nbStars',
                 ),
             ]
         ),
