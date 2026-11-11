@@ -145,6 +145,21 @@ class Enrollment
     #[Assert\PositiveOrZero]
     private int $countdown = 0;
 
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
+    #[Groups(['enrollment:read'])]
+    private ?\DateTimeImmutable $startedAt = null;
+
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
+    #[Groups(['enrollment:read'])]
+    private ?\DateTimeImmutable $lastResumedAt = null;
+
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
+    #[Groups(['enrollment:read'])]
+    private ?\DateTimeImmutable $finishedAt = null;
+
+    #[ORM\Column(options: ['default' => 0])]
+    private int $riddleElapsedTime = 0;
+
     #[ORM\ManyToOne(inversedBy: 'enrollments')]
     #[ORM\JoinColumn(nullable: false)]
     #[Groups(['enrollment:read', 'enrollment:create'])]
@@ -233,14 +248,70 @@ class Enrollment
         return $this;
     }
 
-    public function getCountdown(): ?int
+    public function getCountdown(?\DateTimeImmutable $now = null): int
     {
-        return $this->countdown;
+        if (EnrollmentStatus::IN_PROGRESS !== $this->status || null === $this->lastResumedAt) {
+            return $this->countdown;
+        }
+
+        if (null === $now) {
+            $now = new \DateTimeImmutable();
+        }
+
+        return $this->countdown + max(0, $now->getTimestamp() - $this->lastResumedAt->getTimestamp());
     }
 
     public function setCountdown(int $countdown): static
     {
         $this->countdown = $countdown;
+
+        return $this;
+    }
+
+    public function getStartedAt(): ?\DateTimeImmutable
+    {
+        return $this->startedAt;
+    }
+
+    public function setStartedAt(?\DateTimeImmutable $startedAt): static
+    {
+        $this->startedAt = $startedAt;
+
+        return $this;
+    }
+
+    public function getLastResumedAt(): ?\DateTimeImmutable
+    {
+        return $this->lastResumedAt;
+    }
+
+    public function setLastResumedAt(?\DateTimeImmutable $lastResumedAt): static
+    {
+        $this->lastResumedAt = $lastResumedAt;
+
+        return $this;
+    }
+
+    public function getFinishedAt(): ?\DateTimeImmutable
+    {
+        return $this->finishedAt;
+    }
+
+    public function setFinishedAt(?\DateTimeImmutable $finishedAt): static
+    {
+        $this->finishedAt = $finishedAt;
+
+        return $this;
+    }
+
+    public function getRiddleElapsedTime(): int
+    {
+        return $this->riddleElapsedTime;
+    }
+
+    public function setRiddleElapsedTime(int $riddleElapsedTime): static
+    {
+        $this->riddleElapsedTime = $riddleElapsedTime;
 
         return $this;
     }
