@@ -53,10 +53,11 @@ class Submission
     #[Groups(['submission:read', 'submission:details'])]
     private ?int $id = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 2048)]
     #[Assert\NotBlank]
+    #[Assert\Length(max: 2048)]
     #[Groups(['submission:read', 'submission:details'])]
-    private string $submittedValue;
+    private string $submittedValue = '';
 
     #[ORM\Column]
     #[Groups(['submission:read', 'submission:details'])]
@@ -70,7 +71,7 @@ class Submission
     #[Groups(['submission:read', 'submission:details'])]
     private int $appliedPenalty = 0;
 
-    #[ORM\Column(type: Types::DATE_IMMUTABLE)]
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     #[Groups(['submission:read', 'submission:details'])]
     private \DateTimeImmutable $submissionDate;
 
@@ -83,6 +84,11 @@ class Submission
     #[ORM\JoinColumn(nullable: false)]
     #[Groups(['submission:read', 'submission:details'])]
     private Riddle $riddle;
+
+    public function __construct()
+    {
+        $this->submissionDate = new \DateTimeImmutable();
+    }
 
     public function getId(): ?int
     {
@@ -151,7 +157,7 @@ class Submission
 
     public function getEnrollment(): ?Enrollment
     {
-        return $this->enrollment;
+        return $this->enrollment ?? null;
     }
 
     public function setEnrollment(?Enrollment $enrollment): static
@@ -163,7 +169,7 @@ class Submission
 
     public function getRiddle(): ?Riddle
     {
-        return $this->riddle;
+        return $this->riddle ?? null;
     }
 
     public function setRiddle(?Riddle $riddle): static
