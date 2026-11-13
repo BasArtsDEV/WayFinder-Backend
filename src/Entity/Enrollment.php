@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use ApiPlatform\Doctrine\Orm\Filter\ExistsFilter;
 use ApiPlatform\Doctrine\Orm\Filter\SortFilter;
+use ApiPlatform\Metadata\ApiProperty;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Get;
@@ -132,7 +133,7 @@ class Enrollment
     private EnrollmentStatus $status = EnrollmentStatus::NOT_STARTED;
 
     #[ORM\Column]
-    #[Groups(['enrollment:read', 'enrollment:write'])]
+    #[Groups(['enrollment:read'])]
     #[Assert\PositiveOrZero]
     private int $scoreTotal = 0;
 
@@ -141,7 +142,7 @@ class Enrollment
     private \DateTimeImmutable $registrationDate;
 
     #[ORM\Column]
-    #[Groups(['enrollment:read', 'enrollment:write'])]
+    #[Groups(['enrollment:read'])]
     #[Assert\PositiveOrZero]
     private int $countdown = 0;
 
@@ -179,7 +180,8 @@ class Enrollment
     private Collection $submissions;
 
     #[ORM\ManyToOne(inversedBy: 'enrollments')]
-    #[Groups(['enrollment:read', 'enrollment:write'])]
+    #[Groups(['enrollment:read'])]
+    #[ApiProperty(readableLink: false)]
     private ?Riddle $riddle = null;
 
     #[Groups(['enrollment:read', 'feedback:read'])]
