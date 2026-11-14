@@ -20,8 +20,14 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Entity(repositoryClass: SubmissionRepository::class)]
 #[ApiResource(
     operations: [
-        new Get(normalizationContext: ['groups' => ['submission:read', 'submission:details']]),
-        new GetCollection(normalizationContext: ['groups' => ['submission:read', 'submission:details']]),
+        new Get(
+            normalizationContext: ['groups' => ['submission:read', 'submission:details']],
+            security: "is_granted('ROLE_ADMIN') or is_granted('ROLE_CREATOR') or (is_granted('ROLE_USER') and object.getEnrollment().getUser() == user)",
+        ),
+        new GetCollection(
+            normalizationContext: ['groups' => ['submission:read', 'submission:details']],
+            security: "is_granted('ROLE_ADMIN') or is_granted('ROLE_CREATOR')",
+        ),
 
         new GetCollection(
             uriTemplate: '/enrollments/{id}/submissions',
@@ -29,6 +35,7 @@ use Symfony\Component\Validator\Constraints as Assert;
                 'id' => new Link(toProperty: 'enrollment', fromClass: Enrollment::class),
             ],
             normalizationContext: ['groups' => ['submission:read', 'submission:details']],
+            security: "is_granted('ROLE_USER')",
         ),
         new GetCollection(
             uriTemplate: '/riddles/{id}/submissions',
@@ -36,6 +43,7 @@ use Symfony\Component\Validator\Constraints as Assert;
                 'id' => new Link(toProperty: 'riddle', fromClass: Riddle::class),
             ],
             normalizationContext: ['groups' => ['submission:read', 'submission:details']],
+            security: "is_granted('ROLE_ADMIN') or is_granted('ROLE_CREATOR')",
         ),
 
         new Post(
