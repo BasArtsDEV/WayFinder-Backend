@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\ApiProperty;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Get;
@@ -9,9 +10,11 @@ use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Link;
 use ApiPlatform\Metadata\Post;
 use App\Repository\SubmissionRepository;
+use App\State\SubmissionProcessor;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Annotation\SerializedName;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: SubmissionRepository::class)]
@@ -37,8 +40,9 @@ use Symfony\Component\Validator\Constraints as Assert;
 
         new Post(
             normalizationContext: ['groups' => ['submission:read', 'submission:details']],
-            denormalizationContext: ['groups' => 'submission:write'],
-            security: "is_granted('ROLE_ADMIN') or is_granted('ROLE_CREATOR')",
+            denormalizationContext: ['groups' => ['submission:write']],
+            security: "is_granted('ROLE_USER')",
+            processor: SubmissionProcessor::class,
         ),
         new Delete(
             security: "is_granted('ROLE_ADMIN') or is_granted('ROLE_CREATOR')",
@@ -56,11 +60,10 @@ class Submission
     #[ORM\Column(length: 2048)]
     #[Assert\NotBlank]
     #[Assert\Length(max: 2048)]
-    #[Groups(['submission:read', 'submission:details'])]
+    #[Groups(['submission:read', 'submission:details', 'submission:write'])]
     private string $submittedValue = '';
 
     #[ORM\Column]
-    #[Groups(['submission:read', 'submission:details'])]
     private bool $isRight = false;
 
     #[ORM\Column]
@@ -77,12 +80,16 @@ class Submission
 
     #[ORM\ManyToOne(inversedBy: 'submissions')]
     #[ORM\JoinColumn(nullable: false)]
-    #[Groups(['submission:read', 'submission:details'])]
+    #[Groups(['submission:read', 'submission:details', 'submission:write'])]
+    #[ApiProperty(readableLink: false, writableLink: false)]
+    #[Assert\NotNull]
     private Enrollment $enrollment;
 
     #[ORM\ManyToOne(inversedBy: 'submissions')]
     #[ORM\JoinColumn(nullable: false)]
-    #[Groups(['submission:read', 'submission:details'])]
+    #[Groups(['submission:read', 'submission:details', 'submission:write'])]
+    #[ApiProperty(readableLink: false, writableLink: false)]
+    #[Assert\NotNull]
     private Riddle $riddle;
 
     public function __construct()
@@ -107,7 +114,9 @@ class Submission
         return $this;
     }
 
-    public function isRight(): ?bool
+    #[Groups(['submission:read', 'submission:details'])]
+    #[SerializedName('isRight')]
+    public function isRight(): bool
     {
         return $this->isRight;
     }
