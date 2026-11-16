@@ -8,7 +8,9 @@ use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Link;
 use ApiPlatform\Metadata\QueryParameter;
+use ApiPlatform\OpenApi\Model\Operation;
 use App\Repository\TreasureHuntRepository;
+use App\State\TreasureHuntByCodeProvider;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
@@ -45,6 +47,17 @@ use Symfony\Component\Validator\Constraints as Assert;
                 'id' => new Link(fromProperty: 'treasureHunt', fromClass: Enrollment::class),
             ],
             normalizationContext: ['groups' => ['hunt:read', 'hunt:details']],
+        ),
+        new Get(
+            uriTemplate: '/treasure_hunts/code/{invitationCode}',
+            uriVariables: ['invitationCode'],
+            openapi: new Operation(
+                summary: 'Retrieves a published treasure hunt by its invitation code',
+                description: 'Retrieves a published treasure hunt, listed or not, by its invitation code',
+            ),
+            normalizationContext: ['groups' => ['hunt:read', 'hunt:details']],
+            security: "is_granted('ROLE_USER')",
+            provider: TreasureHuntByCodeProvider::class,
         ),
         new GetCollection(
             uriTemplate: '/teams/{id}/treasure-hunts',
