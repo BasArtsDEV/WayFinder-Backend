@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\ApiResource;
 use App\Repository\RiddleRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -14,6 +15,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: RiddleRepository::class)]
+#[ApiResource(operations: [])]
 #[InheritanceType('SINGLE_TABLE')]
 #[DiscriminatorColumn(name: 'discr', type: 'string')]
 #[DiscriminatorMap([
@@ -45,7 +47,7 @@ abstract class Riddle
     #[Groups(['riddle:read', 'qcm:read', 'riddle_gps:read', 'riddle_qrcode:read', 'riddle_text:read'])]
     private ?string $imgDescription = null;
 
-    #[ORM\Column]
+    #[ORM\Column(name: '`index`')]
     #[Groups(['riddle:read', 'qcm:read', 'riddle_gps:read', 'riddle_qrcode:read', 'riddle_text:read'])]
     private int $index;
 

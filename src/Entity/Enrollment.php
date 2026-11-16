@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use ApiPlatform\Doctrine\Orm\Filter\ExistsFilter;
 use ApiPlatform\Doctrine\Orm\Filter\SortFilter;
+use ApiPlatform\Metadata\ApiProperty;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Get;
@@ -132,7 +133,7 @@ class Enrollment
     private EnrollmentStatus $status = EnrollmentStatus::NOT_STARTED;
 
     #[ORM\Column]
-    #[Groups(['enrollment:read', 'enrollment:write'])]
+    #[Groups(['enrollment:read'])]
     #[Assert\PositiveOrZero]
     private int $scoreTotal = 0;
 
@@ -141,9 +142,24 @@ class Enrollment
     private \DateTimeImmutable $registrationDate;
 
     #[ORM\Column]
-    #[Groups(['enrollment:read', 'enrollment:write'])]
+    #[Groups(['enrollment:read'])]
     #[Assert\PositiveOrZero]
     private int $countdown = 0;
+
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
+    #[Groups(['enrollment:read'])]
+    private ?\DateTimeImmutable $startedAt = null;
+
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
+    #[Groups(['enrollment:read'])]
+    private ?\DateTimeImmutable $lastResumedAt = null;
+
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
+    #[Groups(['enrollment:read'])]
+    private ?\DateTimeImmutable $finishedAt = null;
+
+    #[ORM\Column(options: ['default' => 0])]
+    private int $riddleElapsedTime = 0;
 
     #[ORM\ManyToOne(inversedBy: 'enrollments')]
     #[ORM\JoinColumn(nullable: false)]
@@ -164,7 +180,8 @@ class Enrollment
     private Collection $submissions;
 
     #[ORM\ManyToOne(inversedBy: 'enrollments')]
-    #[Groups(['enrollment:read', 'enrollment:write'])]
+    #[Groups(['enrollment:read'])]
+    #[ApiProperty(readableLink: false)]
     private ?Riddle $riddle = null;
 
     #[Groups(['enrollment:read', 'feedback:read'])]
@@ -233,14 +250,70 @@ class Enrollment
         return $this;
     }
 
-    public function getCountdown(): ?int
+    public function getCountdown(?\DateTimeImmutable $now = null): int
     {
-        return $this->countdown;
+        if (EnrollmentStatus::IN_PROGRESS !== $this->status || null === $this->lastResumedAt) {
+            return $this->countdown;
+        }
+
+        if (null === $now) {
+            $now = new \DateTimeImmutable();
+        }
+
+        return $this->countdown + max(0, $now->getTimestamp() - $this->lastResumedAt->getTimestamp());
     }
 
     public function setCountdown(int $countdown): static
     {
         $this->countdown = $countdown;
+
+        return $this;
+    }
+
+    public function getStartedAt(): ?\DateTimeImmutable
+    {
+        return $this->startedAt;
+    }
+
+    public function setStartedAt(?\DateTimeImmutable $startedAt): static
+    {
+        $this->startedAt = $startedAt;
+
+        return $this;
+    }
+
+    public function getLastResumedAt(): ?\DateTimeImmutable
+    {
+        return $this->lastResumedAt;
+    }
+
+    public function setLastResumedAt(?\DateTimeImmutable $lastResumedAt): static
+    {
+        $this->lastResumedAt = $lastResumedAt;
+
+        return $this;
+    }
+
+    public function getFinishedAt(): ?\DateTimeImmutable
+    {
+        return $this->finishedAt;
+    }
+
+    public function setFinishedAt(?\DateTimeImmutable $finishedAt): static
+    {
+        $this->finishedAt = $finishedAt;
+
+        return $this;
+    }
+
+    public function getRiddleElapsedTime(): int
+    {
+        return $this->riddleElapsedTime;
+    }
+
+    public function setRiddleElapsedTime(int $riddleElapsedTime): static
+    {
+        $this->riddleElapsedTime = $riddleElapsedTime;
 
         return $this;
     }

@@ -8,9 +8,8 @@ use ApiPlatform\State\ProcessorInterface;
 use App\Entity\Enrollment;
 use App\Entity\Team;
 use App\Entity\User;
-use App\Enum\EnrollmentStatus;
 use App\Repository\EnrollmentRepository;
-use Doctrine\DBAL\LockMode;
+use App\Service\GameProgressionService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
@@ -20,12 +19,13 @@ use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 /**
  * @implements ProcessorInterface<Enrollment, Enrollment>
  */
-final readonly class EnrollmentProcessor implements ProcessorInterface
+readonly class EnrollmentProcessor implements ProcessorInterface
 {
     public function __construct(
-        private EntityManagerInterface $entityManager,
+        private EntityManagerInterface $em,
         private EnrollmentRepository $enrollmentRepository,
         private Security $security,
+        private GameProgressionService $gameProgressionService,
     ) {
     }
 
@@ -50,19 +50,10 @@ final readonly class EnrollmentProcessor implements ProcessorInterface
             }
 
             $previous = $context['previous_data'] ?? null;
-            if ($previous instanceof Enrollment && EnrollmentStatus::FINISHED === $previous->getStatus()
-                && ($data->getStatus() !== $previous->getStatus()
-                    || $data->getScoreTotal() !== $previous->getScoreTotal()
-                    || $data->getCountdown() !== $previous->getCountdown()
-                    || $data->getRiddle() !== $previous->getRiddle())) {
-                throw new ConflictHttpException('Cette partie est déjà terminée.');
-            }
+            $target = !$previous instanceof Enrollment || $data->getStatus() !== $previous->getStatus() ? $data->getStatus() : null;
 
-            if (null !== $data->getRiddle() && $data->getRiddle()->getTreasureHunt() !== $treasureHunt) {
-                throw new UnprocessableEntityHttpException('Cette énigme ne fait pas partie de la chasse.');
-            }
-
-            $this->entityManager->flush();
+            $this->gameProgressionService->transition($data, $target);
+            $this->em->flush();
 
             return $data;
         }
@@ -76,9 +67,7 @@ final readonly class EnrollmentProcessor implements ProcessorInterface
             throw new UnprocessableEntityHttpException('Seules les équipes participantes peuvent s\'inscrire à une chasse.');
         }
 
-        return $this->entityManager->wrapInTransaction(function () use ($data, $user, $treasureHunt, $team): Enrollment {
-            $this->entityManager->lock($treasureHunt, LockMode::PESSIMISTIC_WRITE);
-
+        return $this->em->wrapInTransaction(function () use ($data, $user, $treasureHunt, $team): Enrollment {
             $existing = $this->enrollmentRepository->findOneBy(['user' => $user, 'treasureHunt' => $treasureHunt]);
             if (null !== $existing) {
                 if ($existing->getTeam() !== $team) {
@@ -94,7 +83,7 @@ final readonly class EnrollmentProcessor implements ProcessorInterface
 
             if (null === $team) {
                 $data->setUser($user);
-                $this->entityManager->persist($data);
+                $this->em->persist($data);
 
                 return $data;
             }
@@ -113,7 +102,7 @@ final readonly class EnrollmentProcessor implements ProcessorInterface
                 $enrollment = $member === $user ? $data : new Enrollment();
                 $enrollment->setUser($member)->setTreasureHunt($treasureHunt);
                 $team->addEnrollment($enrollment);
-                $this->entityManager->persist($enrollment);
+                $this->em->persist($enrollment);
             }
 
             return $data;
