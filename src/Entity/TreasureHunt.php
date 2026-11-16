@@ -8,7 +8,9 @@ use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Link;
 use ApiPlatform\Metadata\QueryParameter;
+use ApiPlatform\OpenApi\Model\Operation;
 use App\Repository\TreasureHuntRepository;
+use App\State\TreasureHuntByCodeProvider;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
@@ -46,6 +48,17 @@ use Symfony\Component\Validator\Constraints as Assert;
             ],
             normalizationContext: ['groups' => ['hunt:read', 'hunt:details']],
         ),
+        new Get(
+            uriTemplate: '/treasure_hunts/code/{invitationCode}',
+            uriVariables: ['invitationCode'],
+            openapi: new Operation(
+                summary: 'Retrieves a published treasure hunt by its invitation code',
+                description: 'Retrieves a published treasure hunt, listed or not, by its invitation code',
+            ),
+            normalizationContext: ['groups' => ['hunt:read', 'hunt:details']],
+            security: "is_granted('ROLE_USER')",
+            provider: TreasureHuntByCodeProvider::class,
+        ),
         new GetCollection(
             uriTemplate: '/teams/{id}/treasure-hunts',
             uriVariables: [
@@ -57,6 +70,8 @@ use Symfony\Component\Validator\Constraints as Assert;
 )]
 class TreasureHunt
 {
+    public const int DEFAULT_DURATION = 3600;
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -111,6 +126,15 @@ class TreasureHunt
     #[ORM\Column(length: 6, nullable: true)]
     #[Groups(['hunt:read', 'hunt:details'])]
     private ?string $invitationCode = null;
+
+    #[ORM\Column(type: Types::BOOLEAN, options: ['default' => false])]
+    #[Groups(['hunt:read', 'hunt:write', 'hunt:details'])]
+    private bool $listed = false;
+
+    #[ORM\Column(options: ['default' => self::DEFAULT_DURATION])]
+    #[Groups(['hunt:read', 'hunt:write', 'hunt:details'])]
+    #[Assert\Positive]
+    private int $duration = self::DEFAULT_DURATION;
 
     public function __construct()
     {
@@ -251,6 +275,30 @@ class TreasureHunt
     public function setInvitationCode(?string $invitationCode): static
     {
         $this->invitationCode = $invitationCode;
+
+        return $this;
+    }
+
+    public function isListed(): bool
+    {
+        return $this->listed;
+    }
+
+    public function setListed(bool $listed): static
+    {
+        $this->listed = $listed;
+
+        return $this;
+    }
+
+    public function getDuration(): int
+    {
+        return $this->duration;
+    }
+
+    public function setDuration(int $duration): static
+    {
+        $this->duration = $duration;
 
         return $this;
     }
