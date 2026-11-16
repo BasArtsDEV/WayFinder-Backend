@@ -53,6 +53,13 @@ readonly class SubmissionProcessor implements ProcessorInterface
             throw new ConflictHttpException('Vous devez répondre à l\'énigme courante de cette chasse.');
         }
 
+        $this->gameProgressionService->updateTimers($enrollment);
+        if (EnrollmentStatus::IN_PROGRESS !== $enrollment->getStatus()) {
+            $this->em->flush();
+
+            throw new ConflictHttpException('Le temps imparti est écoulé.');
+        }
+
         $isRight = $this->answerValidatorService->isCorrect($riddle, $data->getSubmittedValue());
         $data->setIsRight($isRight)->setSubmissionDate(new \DateTimeImmutable());
         $data->setAppliedPenalty($isRight ? 0 : max(0, $riddle->getSecondsPenalty()));
