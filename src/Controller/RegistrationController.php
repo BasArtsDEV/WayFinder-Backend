@@ -13,7 +13,6 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
-use SymfonyCasts\Bundle\VerifyEmail\Exception\VerifyEmailExceptionInterface;
 use SymfonyCasts\Bundle\VerifyEmail\VerifyEmailHelperInterface;
 
 class RegistrationController extends AbstractController
@@ -75,33 +74,26 @@ class RegistrationController extends AbstractController
     }
 
     #[Route('/verify/email', name: 'app_verify_email')]
-    public function verifyUserEmail(Request $request, VerifyEmailHelperInterface $verifyEmailHelper, EntityManagerInterface $entityManager): Response
+    public function verifyUserEmail(Request $request, Security $security): Response
     {
-        $id = $request->query->get('id');
+        /** @var User $user */
+        $user = $security->getUser();
+        $form = $this->createFormBuilder()->getForm();
+        $form->handleRequest($request);
 
-        if (null === $id) {
-            return $this->redirectToRoute('app_register');
+        if ($user->isVerified()) {
+            return $this->redirectToRoute('app_home');
         }
 
-        $user = $entityManager->getRepository(User::class)->find($id);
+        $form = $this->createFormBuilder()->getForm();
+        $form->handleRequest($request);
 
-        if (null === $user) {
-            return $this->redirectToRoute('app_register');
+        if ($form->isSubmitted() && $form->isValid()) {
+            return $this->redirectToRoute('app_home');
         }
 
-        try {
-            $verifyEmailHelper->validateEmailConfirmationFromRequest($request, (string) $user->getId(), $user->getEmail());
-        } catch (VerifyEmailExceptionInterface $e) {
-            $this->addFlash('error', $e->getReason());
-
-            return $this->redirectToRoute('app_register');
-        }
-
-        $user->setIsVerified(true);
-        $entityManager->flush();
-
-        $this->addFlash('success', 'Votre adresse email a bien été vérifiée.');
-
-        return $this->redirectToRoute('app_home');
+        return $this->render('registration/validate_email.html.twig', [
+            'validationForm' => $form->createView(),
+        ]);
     }
 }
