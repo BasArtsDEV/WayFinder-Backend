@@ -68,7 +68,7 @@ final class RiddleController extends AbstractController
             $em->persist($riddle);
             $em->flush();
 
-            return $this->redirectToRoute('app_treasure_hunt_edit', ['id' => $hunt->getId()]);
+            return $this->redirectToRoute('app_treasure_hunt_show', ['id' => $hunt->getId()]);
         }
 
         return $this->render('riddle/new.html.twig', [
