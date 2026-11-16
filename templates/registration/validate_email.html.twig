@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block main %}
+    <h1>Confirmez votre adresse e-mail</h1>
+
+    <p>Votre adresse e-mail n&apos;a pas encore été validée. Veuillez cliquer sur le bouton ci-dessous pour recevoir un nouvel e-mail de confirmation.</p>
+
+    {{ form_start(validationForm) }}
+        <button type="submit" class="btn btn-primary">Renvoyer l&apos;e-mail de confirmation</button>
+    {{ form_end(validationForm) }}
+{% endblock %}
