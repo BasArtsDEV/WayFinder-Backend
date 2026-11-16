@@ -62,6 +62,30 @@ readonly class GameProgressionService
         $enrollment->setCountdown($enrollment->getCountdown($now));
         $enrollment->setRiddleElapsedTime($enrollment->getRiddleElapsedTime() + $elapsed);
         $enrollment->setLastResumedAt($now);
+
+        $this->finishIfTimeIsUp($enrollment, $now);
+    }
+
+    public function getRemainingTime(Enrollment $enrollment, ?\DateTimeImmutable $now = null): int
+    {
+        return max(0, $enrollment->getTreasureHunt()->getDuration() - $enrollment->getCountdown($now));
+    }
+
+    public function isTimedOut(Enrollment $enrollment): bool
+    {
+        return EnrollmentStatus::FINISHED === $enrollment->getStatus() && null !== $enrollment->getRiddle();
+    }
+
+    private function finishIfTimeIsUp(Enrollment $enrollment, \DateTimeImmutable $now): void
+    {
+        if (EnrollmentStatus::IN_PROGRESS !== $enrollment->getStatus() || $this->getRemainingTime($enrollment, $now) > 0) {
+            return;
+        }
+
+        $enrollment->setCountdown($enrollment->getTreasureHunt()->getDuration())
+            ->setStatus(EnrollmentStatus::FINISHED)
+            ->setLastResumedAt(null)
+            ->setFinishedAt($now);
     }
 
     public function applyAnswer(Enrollment $enrollment, bool $isRight): int
@@ -73,11 +97,16 @@ readonly class GameProgressionService
 
         $now = new \DateTimeImmutable();
         $this->updateTimers($enrollment, $now);
+        if (EnrollmentStatus::IN_PROGRESS !== $enrollment->getStatus()) {
+            throw new ConflictHttpException('Le temps imparti est écoulé.');
+        }
+
         $resolutionTime = $enrollment->getRiddleElapsedTime();
 
         if (!$isRight) {
             $penalty = max(0, $riddle->getSecondsPenalty());
             $enrollment->setCountdown($enrollment->getCountdown($now) + $penalty);
+            $this->finishIfTimeIsUp($enrollment, $now);
 
             return $resolutionTime;
         }
