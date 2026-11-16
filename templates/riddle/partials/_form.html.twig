@@ -48,7 +48,7 @@
                 <div class="qcm-choices-container">
                     <div class="qcm-choices-title">
                         <span>Choix de réponse</span>
-                        <button type="button" class="btn btn-secondary btn-sm" id="add-choice-btn">+ Ajouter</button>
+                        <button type="button" class="btn btn-primary btn-sm" id="add-choice-btn">+ Ajouter</button>
                     </div>
                     <div id="qcm-choices-list"
                          data-prototype="{{ form_widget(form.choices.vars.prototype)|e('html_attr') }}"
@@ -144,8 +144,9 @@
 
             const wrapper = document.createElement('div');
             wrapper.classList.add('qcm-choice-item');
+
             wrapper.innerHTML = `
-                <div class="choice-text">${newForm}</div>
+                ${newForm}
                 <button type="button" class="btn btn-danger btn-sm remove-choice-btn">&times;</button>
             `;
 
