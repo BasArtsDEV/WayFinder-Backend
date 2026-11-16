@@ -147,6 +147,7 @@
         ],
         "test:yaml": "php bin/console lint:yaml config",
         "test:codeception": [
+            "@make:jwt:keys",
             "php vendor/bin/codecept clean",
             "bin/console doctrine:schema:drop --force --quiet --env=test",
             "bin/console doctrine:schema:create --quiet --env=test",
