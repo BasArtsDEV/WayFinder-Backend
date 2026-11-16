@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\ApiProperty;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Get;
@@ -9,16 +10,24 @@ use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Link;
 use ApiPlatform\Metadata\Post;
 use App\Repository\SubmissionRepository;
+use App\State\SubmissionProcessor;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Annotation\SerializedName;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: SubmissionRepository::class)]
 #[ApiResource(
     operations: [
-        new Get(normalizationContext: ['groups' => ['submission:read', 'submission:details']]),
-        new GetCollection(normalizationContext: ['groups' => ['submission:read', 'submission:details']]),
+        new Get(
+            normalizationContext: ['groups' => ['submission:read', 'submission:details']],
+            security: "is_granted('ROLE_ADMIN') or is_granted('ROLE_CREATOR') or (is_granted('ROLE_USER') and object.getEnrollment().getUser() == user)",
+        ),
+        new GetCollection(
+            normalizationContext: ['groups' => ['submission:read', 'submission:details']],
+            security: "is_granted('ROLE_ADMIN') or is_granted('ROLE_CREATOR')",
+        ),
 
         new GetCollection(
             uriTemplate: '/enrollments/{id}/submissions',
@@ -26,6 +35,7 @@ use Symfony\Component\Validator\Constraints as Assert;
                 'id' => new Link(toProperty: 'enrollment', fromClass: Enrollment::class),
             ],
             normalizationContext: ['groups' => ['submission:read', 'submission:details']],
+            security: "is_granted('ROLE_USER')",
         ),
         new GetCollection(
             uriTemplate: '/riddles/{id}/submissions',
@@ -33,12 +43,14 @@ use Symfony\Component\Validator\Constraints as Assert;
                 'id' => new Link(toProperty: 'riddle', fromClass: Riddle::class),
             ],
             normalizationContext: ['groups' => ['submission:read', 'submission:details']],
+            security: "is_granted('ROLE_ADMIN') or is_granted('ROLE_CREATOR')",
         ),
 
         new Post(
             normalizationContext: ['groups' => ['submission:read', 'submission:details']],
-            denormalizationContext: ['groups' => 'submission:write'],
-            security: "is_granted('ROLE_ADMIN') or is_granted('ROLE_CREATOR')",
+            denormalizationContext: ['groups' => ['submission:write']],
+            security: "is_granted('ROLE_USER')",
+            processor: SubmissionProcessor::class,
         ),
         new Delete(
             security: "is_granted('ROLE_ADMIN') or is_granted('ROLE_CREATOR')",
@@ -53,13 +65,13 @@ class Submission
     #[Groups(['submission:read', 'submission:details'])]
     private ?int $id = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 2048)]
     #[Assert\NotBlank]
-    #[Groups(['submission:read', 'submission:details'])]
-    private string $submittedValue;
+    #[Assert\Length(max: 2048)]
+    #[Groups(['submission:read', 'submission:details', 'submission:write'])]
+    private string $submittedValue = '';
 
     #[ORM\Column]
-    #[Groups(['submission:read', 'submission:details'])]
     private bool $isRight = false;
 
     #[ORM\Column]
@@ -70,19 +82,28 @@ class Submission
     #[Groups(['submission:read', 'submission:details'])]
     private int $appliedPenalty = 0;
 
-    #[ORM\Column(type: Types::DATE_IMMUTABLE)]
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     #[Groups(['submission:read', 'submission:details'])]
     private \DateTimeImmutable $submissionDate;
 
     #[ORM\ManyToOne(inversedBy: 'submissions')]
     #[ORM\JoinColumn(nullable: false)]
-    #[Groups(['submission:read', 'submission:details'])]
+    #[Groups(['submission:read', 'submission:details', 'submission:write'])]
+    #[ApiProperty(readableLink: false, writableLink: false)]
+    #[Assert\NotNull]
     private Enrollment $enrollment;
 
     #[ORM\ManyToOne(inversedBy: 'submissions')]
     #[ORM\JoinColumn(nullable: false)]
-    #[Groups(['submission:read', 'submission:details'])]
+    #[Groups(['submission:read', 'submission:details', 'submission:write'])]
+    #[ApiProperty(readableLink: false, writableLink: false)]
+    #[Assert\NotNull]
     private Riddle $riddle;
+
+    public function __construct()
+    {
+        $this->submissionDate = new \DateTimeImmutable();
+    }
 
     public function getId(): ?int
     {
@@ -101,7 +122,9 @@ class Submission
         return $this;
     }
 
-    public function isRight(): ?bool
+    #[Groups(['submission:read', 'submission:details'])]
+    #[SerializedName('isRight')]
+    public function isRight(): bool
     {
         return $this->isRight;
     }
@@ -151,7 +174,7 @@ class Submission
 
     public function getEnrollment(): ?Enrollment
     {
-        return $this->enrollment;
+        return $this->enrollment ?? null;
     }
 
     public function setEnrollment(?Enrollment $enrollment): static
@@ -163,7 +186,7 @@ class Submission
 
     public function getRiddle(): ?Riddle
     {
-        return $this->riddle;
+        return $this->riddle ?? null;
     }
 
     public function setRiddle(?Riddle $riddle): static
