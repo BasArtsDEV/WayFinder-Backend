@@ -98,6 +98,39 @@ class GameStateCest
         $I->dontSeeResponseContains('isRight');
     }
 
+    public function startingThenPausingAndResumingTheGame(ApplicationTester $I): void
+    {
+        $user = UserFactory::createOne();
+        $treasureHunt = $this->createHunt();
+        $riddle = RiddleTextFactory::createOne(['index' => 1, 'treasureHunt' => $treasureHunt]);
+        $enrollment = EnrollmentFactory::createOne([
+            'countdown' => 0,
+            'riddle' => null,
+            'status' => EnrollmentStatus::NOT_STARTED,
+            'treasureHunt' => $treasureHunt,
+            'user' => $user,
+        ]);
+        $uri = '/api/enrollments/'.$enrollment->getId();
+
+        $this->loginAs($I, $user);
+        $I->haveHttpHeader('Content-Type', 'application/merge-patch+json');
+
+        $I->sendPatch($uri, json_encode(['status' => 'in_progress']));
+        $I->seeResponseCodeIsSuccessful();
+        $I->sendGet($uri.'/game');
+        $I->seeResponseContainsJson(['status' => 'in_progress', 'step' => 1, 'riddle' => ['iri' => '/api/riddle_texts/'.$riddle->getId()]]);
+
+        $I->sendPatch($uri, json_encode(['status' => 'paused']));
+        $I->seeResponseCodeIsSuccessful();
+        $I->sendGet($uri.'/game');
+        $I->seeResponseContainsJson(['status' => 'paused', 'step' => 1]);
+
+        $I->sendPatch($uri, json_encode(['status' => 'in_progress']));
+        $I->seeResponseCodeIsSuccessful();
+        $I->sendGet($uri.'/game');
+        $I->seeResponseContainsJson(['status' => 'in_progress', 'step' => 1]);
+    }
+
     public function otherUserCannotSeeTheGame(ApplicationTester $I): void
     {
         $user = UserFactory::createOne();
