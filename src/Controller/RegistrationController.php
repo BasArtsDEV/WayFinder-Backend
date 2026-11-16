@@ -7,6 +7,7 @@ use App\Form\RegistrationFormType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Mailer\MailerInterface;
@@ -25,6 +26,7 @@ class RegistrationController extends AbstractController
         EntityManagerInterface $entityManager,
         VerifyEmailHelperInterface $verifyEmailHelper,
         MailerInterface $mailer,
+        Security $security,
     ): Response {
         if ($this->getUser()) {
             return $this->redirectToRoute('app_home');
@@ -66,7 +68,7 @@ class RegistrationController extends AbstractController
 
             $this->addFlash('success', 'Votre compte a été créé avec succès. Un email de vérification vous a été envoyé.');
 
-            return $this->redirectToRoute('app_login');
+            return $security->login($user, 'form_login', 'main');
         }
 
         return $this->render('registration/register.html.twig', [
