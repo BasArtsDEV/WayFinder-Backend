@@ -11,7 +11,6 @@ use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Mailer\MailerInterface;
-use Symfony\Component\Mime\Address;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
 use SymfonyCasts\Bundle\VerifyEmail\Exception\VerifyEmailExceptionInterface;
@@ -54,7 +53,6 @@ class RegistrationController extends AbstractController
 
             // Sending the email
             $email = new TemplatedEmail()
-                ->from(new Address('noreply@wayfinder.com', 'Support'))
                 ->to($user->getEmail())
                 ->subject('Veuillez confirmer votre email')
                 ->htmlTemplate('registration/confirmation_email.html.twig')
