@@ -50,7 +50,11 @@ readonly class EnrollmentProcessor implements ProcessorInterface
             }
 
             $previous = $context['previous_data'] ?? null;
-            $target = !$previous instanceof Enrollment || $data->getStatus() !== $previous->getStatus() ? $data->getStatus() : null;
+            $target = null;
+            if ($previous instanceof Enrollment && $data->getStatus() !== $previous->getStatus()) {
+                $target = $data->getStatus();
+                $data->setStatus($previous->getStatus());
+            }
 
             $this->gameProgressionService->transition($data, $target);
             $this->em->flush();
