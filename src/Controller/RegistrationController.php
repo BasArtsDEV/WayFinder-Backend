@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\User;
+use App\Event\UserConfirmationEmailNotReceivedEvent;
 use App\Event\UserRegisteredEvent;
 use App\Form\RegistrationFormType;
 use Doctrine\ORM\EntityManagerInterface;
@@ -53,22 +54,24 @@ class RegistrationController extends AbstractController
         ]);
     }
 
-    #[Route('/verify/email', name: 'app_verify_email')]
-    public function verifyUserEmail(Request $request, Security $security): Response
+    #[Route('/verify/email/resend', name: 'app_verify_email')]
+    public function validateUserMail(Request $request, Security $security, EventDispatcherInterface $eventDispatcher): Response
     {
         /** @var User $user */
         $user = $security->getUser();
         $form = $this->createFormBuilder()->getForm();
         $form->handleRequest($request);
 
-        if ($user->isVerified()) {
+        if (null == $user || $user->isVerified()) {
             return $this->redirectToRoute('app_home');
         }
 
         $form = $this->createFormBuilder()->getForm();
         $form->handleRequest($request);
-
         if ($form->isSubmitted() && $form->isValid()) {
+            $eventDispatcher->dispatch(new UserConfirmationEmailNotReceivedEvent($user));
+            $this->addFlash('success', 'Un nouvel e-mail de confirmation vous a été envoyé.');
+
             return $this->redirectToRoute('app_home');
         }
 
