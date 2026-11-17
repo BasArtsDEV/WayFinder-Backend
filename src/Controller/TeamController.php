@@ -11,6 +11,8 @@ use App\Form\TeamType;
 use App\Repository\NotificationRepository;
 use App\Repository\TeamRepository;
 use App\Repository\TreasureHuntRepository;
+use App\Repository\UserRepository;
+use App\Security\Voter\TeamVoter;
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bridge\Doctrine\Attribute\MapEntity;
@@ -223,13 +225,11 @@ final class TeamController extends AbstractController
     }
 
     #[Route('/team/{id}/edit', name: 'app_team_edit', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
+    #[IsGranted(TeamVoter::EDIT, 'team')]
     public function edit(Request $request, Team $team, EntityManagerInterface $em): Response
     {
         $form = $this->createForm(TeamType::class, $team);
         $form->handleRequest($request);
-        if (!$this->isGranted('ROLE_ADMIN')) {
-            $this->denyUnlessLeader($team);
-        }
         if ($form->isSubmitted() && $form->isValid()) {
             $em->flush();
 
@@ -238,6 +238,7 @@ final class TeamController extends AbstractController
 
         return $this->render('team/edit.html.twig', [
             'form' => $form->createView(),
+            'team' => $team,
         ]);
     }
 
