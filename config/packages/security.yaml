@@ -60,9 +60,10 @@ security:
         - { path: ^/api/register, roles: PUBLIC_ACCESS }
         - { path: ^/api/verify-email, roles: PUBLIC_ACCESS }
 
-        # Gestion publique des utilisateurs et des avatars
+        # Gestion publique des utilisateurs, des avatars et des bannières
         - { path: ^/api/users/\d+$, roles: PUBLIC_ACCESS }
         - { path: ^/api/users/\d+/avatar, roles: PUBLIC_ACCESS }
+        - { path: ^/api/users/\d+/banner, roles: PUBLIC_ACCESS }
 
         # Lecture publique des chasses au trésor, énigmes, lieux et choix
         - { path: ^/api/treasure_hunts, roles: PUBLIC_ACCESS, methods: [ GET ] }
