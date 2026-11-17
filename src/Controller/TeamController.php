@@ -161,15 +161,12 @@ final class TeamController extends AbstractController
     }
 
     #[Route('/team/{id}', name: 'app_team_delete', requirements: ['id' => '\d+'], methods: ['POST'])]
+    #[IsGranted(TeamVoter::DELETE, 'team')]
     public function delete(
         Request $request,
         Team $team,
         EntityManagerInterface $em,
     ): Response {
-        if (!$this->isGranted('ROLE_ADMIN')) {
-            $this->denyUnlessLeader($team);
-        }
-
         if ($this->isCsrfTokenValid(
             'delete'.$team->getId(),
             $request->getPayload()->getString('_token')
