@@ -20,6 +20,12 @@ class TeamFixtures extends Fixture implements DependentFixtureInterface
         $user = UserFactory::find(['email' => 'user@example.com']);
 
         TeamFactory::createOne([
+            'name' => 'Équipe participant de User',
+            'leader' => $user,
+            'role' => 'participant',
+        ]);
+
+        TeamFactory::createOne([
             'name' => 'Équipe de Admin',
             'leader' => $admin,
         ]);
