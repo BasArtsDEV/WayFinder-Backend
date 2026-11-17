@@ -3,17 +3,16 @@
 namespace App\Controller;
 
 use App\Entity\User;
+use App\Event\UserRegisteredEvent;
 use App\Form\RegistrationFormType;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bridge\Twig\Mime\TemplatedEmail;
+use Psr\EventDispatcher\EventDispatcherInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
-use SymfonyCasts\Bundle\VerifyEmail\VerifyEmailHelperInterface;
 
 class RegistrationController extends AbstractController
 {
@@ -22,9 +21,8 @@ class RegistrationController extends AbstractController
         Request $request,
         UserPasswordHasherInterface $userPasswordHasher,
         EntityManagerInterface $entityManager,
-        VerifyEmailHelperInterface $verifyEmailHelper,
-        MailerInterface $mailer,
         Security $security,
+        EventDispatcherInterface $eventDispatcher,
     ): Response {
         if ($this->getUser()) {
             return $this->redirectToRoute('app_home');
@@ -43,25 +41,7 @@ class RegistrationController extends AbstractController
             $entityManager->persist($user);
             $entityManager->flush();
 
-            $signatureComponents = $verifyEmailHelper->generateSignature(
-                'app_verify_email',
-                (string) $user->getId(),
-                $user->getEmail(),
-                ['id' => $user->getId()]
-            );
-
-            // Sending the email
-            $email = new TemplatedEmail()
-                ->to($user->getEmail())
-                ->subject('Veuillez confirmer votre email')
-                ->htmlTemplate('registration/confirmation_email.html.twig')
-                ->context([
-                    'signedUrl' => $signatureComponents->getSignedUrl(),
-                    'expiresAtMessageKey' => $signatureComponents->getExpirationMessageKey(),
-                    'expiresAtMessageData' => $signatureComponents->getExpirationMessageData(),
-                ]);
-
-            $mailer->send($email);
+            $eventDispatcher->dispatch(new UserRegisteredEvent($user));
 
             $this->addFlash('success', 'Votre compte a été créé avec succès. Un email de vérification vous a été envoyé.');
 
