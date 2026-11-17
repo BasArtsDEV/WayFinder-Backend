@@ -9,18 +9,19 @@ use App\Security\EmailVerifier;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
 
-#[AsEventListener]
 final class EmailVerifierListener
 {
     public function __construct(private EmailVerifier $emailVerifier)
     {
     }
 
+    #[AsEventListener(event: UserRegisteredEvent::class)]
     public function onUserRegisteredEvent(UserRegisteredEvent $event): void
     {
         $this->sendConfirmationEmail($event->getUser());
     }
 
+    #[AsEventListener(event: UserConfirmationEmailNotReceivedEvent::class)]
     public function onUserConfirmationEmailNotReceivedEvent(UserConfirmationEmailNotReceivedEvent $event): void
     {
         $this->sendConfirmationEmail($event->getUser());
