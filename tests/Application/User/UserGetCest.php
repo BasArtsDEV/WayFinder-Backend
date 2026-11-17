@@ -21,6 +21,7 @@ class UserGetCest
             'lastName' => 'string',
             'createdAt' => 'string',
             'timezone' => 'string',
+            'isVerified' => 'boolean',
         ];
     }
 
