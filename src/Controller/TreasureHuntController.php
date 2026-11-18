@@ -159,6 +159,7 @@ final class TreasureHuntController extends AbstractController
     }
 
     #[Route('/treasure_hunt/{id}/edit', name: 'app_treasure_hunt_edit', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
+    #[IsGranted(TreasureHuntVoter::EDIT, 'treasureHunt')]
     public function edit(Request $request, TreasureHunt $treasureHunt, EntityManagerInterface $em): Response
     {
         $form = $this->createForm(TreasureHuntType::class, $treasureHunt);
