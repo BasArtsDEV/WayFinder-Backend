@@ -58,7 +58,7 @@
                     {% endif %}
                 {% endif %}
 
-                {% if is_granted('ROLE_ADMIN') and not is_granted('TEAM_INVITE') %}
+                {% if is_granted('ROLE_ADMIN') and not is_granted('TEAM_EDIT', team) %}
                     <a href="{{ path('app_team_edit', { id: team.id }) }}" class="btn-app-secondary">
                         <i class="bi bi-pencil-square me-1"></i>Modifier
                     </a>
