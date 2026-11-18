@@ -4,17 +4,21 @@ namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiProperty;
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\OpenApi\Model\MediaType;
 use ApiPlatform\OpenApi\Model\Operation;
+use ApiPlatform\OpenApi\Model\RequestBody;
 use ApiPlatform\OpenApi\Model\Response;
 use ApiPlatform\OpenApi\Model\Schema;
 use App\Controller\GetAvatarController;
 use App\Controller\GetBannerController;
 use App\Repository\UserRepository;
 use App\State\MeProvider;
+use App\State\UserAvatarProcessor;
+use App\State\UserBannerProcessor;
 use App\State\UserRegistrationProcessor;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -114,6 +118,80 @@ use Symfony\Component\Validator\Constraints as Assert;
                 summary: 'Retrieves a user banner',
                 description: 'Retrieves the PNG image corresponding to a user banner',
             ),
+        ),
+        new Post(
+            uriTemplate: '/users/{id}/avatar',
+            inputFormats: ['multipart' => ['multipart/form-data']],
+            status: 200,
+            openapi: new Operation(
+                summary: 'Updates the connected user avatar',
+                description: 'Uploads a new image (PNG, JPEG, WebP or GIF, 2 Mo max) as the user avatar',
+                requestBody: new RequestBody(
+                    content: new \ArrayObject([
+                        'multipart/form-data' => new MediaType(
+                            schema: new Schema([
+                                'type' => 'object',
+                                'properties' => [
+                                    'avatar' => ['type' => 'string', 'format' => 'binary'],
+                                ],
+                                'required' => ['avatar'],
+                            ])
+                        ),
+                    ])
+                ),
+            ),
+            normalizationContext: ['groups' => ['user:read', 'user:me']],
+            security: "object == user and is_granted('ROLE_USER')",
+            read: true,
+            deserialize: false,
+            validate: false,
+            processor: UserAvatarProcessor::class,
+        ),
+        new Delete(
+            uriTemplate: '/users/{id}/avatar',
+            openapi: new Operation(
+                summary: 'Removes the connected user avatar',
+                description: 'Removes the custom avatar of the user',
+            ),
+            security: "object == user and is_granted('ROLE_USER')",
+            processor: UserAvatarProcessor::class,
+        ),
+        new Post(
+            uriTemplate: '/users/{id}/banner',
+            inputFormats: ['multipart' => ['multipart/form-data']],
+            status: 200,
+            openapi: new Operation(
+                summary: 'Updates the connected user banner',
+                description: 'Uploads a new image (PNG, JPEG, WebP or GIF, 2 Mo max) as the user banner',
+                requestBody: new RequestBody(
+                    content: new \ArrayObject([
+                        'multipart/form-data' => new MediaType(
+                            schema: new Schema([
+                                'type' => 'object',
+                                'properties' => [
+                                    'banner' => ['type' => 'string', 'format' => 'binary'],
+                                ],
+                                'required' => ['banner'],
+                            ])
+                        ),
+                    ])
+                ),
+            ),
+            normalizationContext: ['groups' => ['user:read', 'user:me']],
+            security: "object == user and is_granted('ROLE_USER')",
+            read: true,
+            deserialize: false,
+            validate: false,
+            processor: UserBannerProcessor::class,
+        ),
+        new Delete(
+            uriTemplate: '/users/{id}/banner',
+            openapi: new Operation(
+                summary: 'Removes the connected user banner',
+                description: 'Removes the custom banner of the user',
+            ),
+            security: "object == user and is_granted('ROLE_USER')",
+            processor: UserBannerProcessor::class,
         ),
         new Patch(
             normalizationContext: ['groups' => ['user:read', 'user:me']],
@@ -287,6 +365,28 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->banner = $banner;
 
         return $this;
+    }
+
+    #[Groups(['user:read', 'user:me'])]
+    #[SerializedName('hasAvatar')]
+    #[ApiProperty(
+        description: "Indique si l'utilisateur a défini un avatar personnalisé",
+        writable: false
+    )]
+    public function isAvatarDefined(): bool
+    {
+        return null !== $this->avatar;
+    }
+
+    #[Groups(['user:read', 'user:me'])]
+    #[SerializedName('hasBanner')]
+    #[ApiProperty(
+        description: "Indique si l'utilisateur a défini une bannière personnalisée",
+        writable: false
+    )]
+    public function isBannerDefined(): bool
+    {
+        return null !== $this->banner;
     }
 
     public function getEmail(): ?string
