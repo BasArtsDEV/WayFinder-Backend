@@ -256,4 +256,41 @@ class GameStateCest
 
         $I->seeResponseCodeIs(404);
     }
+
+    public function unpublishedHuntIsNotFoundById(ApplicationTester $I): void
+    {
+        TeamFactory::createOne();
+        $treasureHunt = TreasureHuntFactory::createOne(['published' => false]);
+
+        $I->sendGet('/api/treasure_hunts/'.$treasureHunt->getId());
+
+        $I->seeResponseCodeIs(404);
+    }
+
+    public function unpublishedHuntCannotBePlayed(ApplicationTester $I): void
+    {
+        $user = UserFactory::createOne();
+        LocationFactory::createOne();
+        TeamFactory::createOne();
+        $treasureHunt = TreasureHuntFactory::createOne(['published' => false]);
+        $riddle = RiddleTextFactory::createOne(['index' => 1, 'treasureHunt' => $treasureHunt]);
+        $enrollment = $this->createEnrollment($user, $treasureHunt, $riddle);
+        $uri = '/api/enrollments/'.$enrollment->getId();
+
+        $this->loginAs($I, $user);
+        $I->sendGet($uri.'/game');
+        $I->seeResponseCodeIs(404);
+
+        $I->haveHttpHeader('Content-Type', 'application/merge-patch+json');
+        $I->sendPatch($uri, json_encode(['status' => 'paused']));
+        $I->seeResponseCodeIs(422);
+
+        $I->haveHttpHeader('Content-Type', 'application/ld+json');
+        $I->sendPost('/api/submissions', [
+            'enrollment' => $uri,
+            'riddle' => '/api/riddle_texts/'.$riddle->getId(),
+            'submittedValue' => 'test',
+        ]);
+        $I->seeResponseCodeIs(422);
+    }
 }

@@ -45,6 +45,10 @@ readonly class SubmissionProcessor implements ProcessorInterface
             throw new UnprocessableEntityHttpException('L\'énigme est obligatoire.');
         }
 
+        if (!$enrollment->getTreasureHunt()?->isPublished()) {
+            throw new UnprocessableEntityHttpException('Cette chasse au trésor n\'est pas publiée.');
+        }
+
         if (EnrollmentStatus::IN_PROGRESS !== $enrollment->getStatus()) {
             throw new ConflictHttpException('La partie doit être en cours pour envoyer une réponse.');
         }

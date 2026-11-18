@@ -49,6 +49,10 @@ readonly class EnrollmentProcessor implements ProcessorInterface
                 throw new AccessDeniedHttpException();
             }
 
+            if (!$treasureHunt->isPublished()) {
+                throw new UnprocessableEntityHttpException('Cette chasse au trésor n\'est pas publiée.');
+            }
+
             $previous = $context['previous_data'] ?? null;
             $target = null;
             if ($previous instanceof Enrollment && $data->getStatus() !== $previous->getStatus()) {
