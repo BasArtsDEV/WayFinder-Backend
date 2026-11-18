@@ -22,6 +22,8 @@ class UserGetCest
             'createdAt' => 'string',
             'timezone' => 'string',
             'isVerified' => 'boolean',
+            'hasAvatar' => 'boolean',
+            'hasBanner' => 'boolean',
         ];
     }
 
