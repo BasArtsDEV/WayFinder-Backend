@@ -13,6 +13,7 @@ use Symfony\Component\Security\Core\Authorization\Voter\Voter;
  */
 final class TreasureHuntVoter extends Voter
 {
+    public const string ADD = 'TREASURE_HUNT_ADD';
     public const string EDIT = 'TREASURE_HUNT_EDIT';
     public const string DELETE = 'TREASURE_HUNT_DELETE';
 
@@ -20,7 +21,7 @@ final class TreasureHuntVoter extends Voter
     {
         // replace with your own logic
         // https://symfony.com/doc/current/security/voters.html
-        return in_array($attribute, [self::EDIT, self::DELETE])
+        return in_array($attribute, [self::EDIT, self::DELETE, self::ADD])
             && $subject instanceof TreasureHunt;
     }
 
@@ -40,7 +41,7 @@ final class TreasureHuntVoter extends Voter
         $team = $subject->getTeam();
 
         return match ($attribute) {
-            self::EDIT, self::DELETE => $user->getTeams()->contains($team),
+            self::EDIT, self::DELETE, self::ADD => $user->getTeams()->contains($team),
             default => throw new \LogicException('This code should not be reached!'),
         };
     }
