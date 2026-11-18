@@ -13,6 +13,7 @@ use Symfony\Component\Security\Core\Authorization\Voter\Voter;
  */
 final class RiddleVoter extends Voter
 {
+    public const string ADD = 'RIDDLE_ADD';
     public const string EDIT = 'RIDDLE_EDIT';
     public const string DELETE = 'RIDDLE_DELETE';
 
@@ -20,7 +21,7 @@ final class RiddleVoter extends Voter
     {
         // replace with your own logic
         // https://symfony.com/doc/current/security/voters.html
-        return in_array($attribute, [self::EDIT, self::DELETE])
+        return in_array($attribute, [self::ADD, self::EDIT, self::DELETE])
             && $subject instanceof Riddle;
     }
 
@@ -40,7 +41,7 @@ final class RiddleVoter extends Voter
         $team = $subject->getTreasureHunt()->getTeam();
 
         return match ($attribute) {
-            self::EDIT, self::DELETE => $user->getTeams()->contains($team),
+            self::ADD, self::EDIT, self::DELETE => $user->getTeams()->contains($team),
             default => throw new \LogicException('This code should not be reached!'),
         };
     }
