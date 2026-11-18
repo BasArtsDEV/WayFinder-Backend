@@ -9,6 +9,7 @@ use App\Entity\TreasureHunt;
 use App\Entity\User;
 use App\Form\TreasureHuntType;
 use App\Repository\EnrollmentRepository;
+use App\Security\Voter\TreasureHuntVoter;
 use App\Service\GameProgressionService;
 use Doctrine\ORM\EntityManagerInterface;
 use Dompdf\Dompdf;
@@ -176,6 +177,7 @@ final class TreasureHuntController extends AbstractController
     }
 
     #[Route('/treasure_hunt/{id}', name: 'app_treasure_hunt_delete', requirements: ['id' => '\d+'], methods: ['POST'])]
+    #[IsGranted(TreasureHuntVoter::DELETE, 'treasureHunt')]
     public function delete(Request $request, TreasureHunt $treasureHunt, EntityManagerInterface $em): Response
     {
         if ($this->isCsrfTokenValid('delete'.$treasureHunt->getId(), $request->getPayload()->getString('_token'))) {
