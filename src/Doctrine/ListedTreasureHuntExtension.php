@@ -10,7 +10,7 @@ use App\Entity\TreasureHunt;
 use Doctrine\ORM\QueryBuilder;
 
 /**
- * Restricts the public treasure hunts collection to published and listed hunts.
+ * Restricts the public treasure hunts collection to listed hunts.
  */
 final readonly class ListedTreasureHuntExtension implements QueryCollectionExtensionInterface
 {
@@ -26,13 +26,10 @@ final readonly class ListedTreasureHuntExtension implements QueryCollectionExten
         }
 
         $rootAlias = $queryBuilder->getRootAliases()[0];
-        $published = $queryNameGenerator->generateParameterName('published');
         $listed = $queryNameGenerator->generateParameterName('listed');
 
         $queryBuilder
-            ->andWhere(sprintf('%s.published = :%s', $rootAlias, $published))
             ->andWhere(sprintf('%s.listed = :%s', $rootAlias, $listed))
-            ->setParameter($published, true)
             ->setParameter($listed, true);
     }
 }
