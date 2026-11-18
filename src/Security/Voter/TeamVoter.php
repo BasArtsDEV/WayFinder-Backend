@@ -13,7 +13,11 @@ use Symfony\Component\Security\Core\User\UserInterface;
  */
 final class TeamVoter extends Voter
 {
+    /** Regular users */
     public const string LEAVE = 'TEAM_LEAVE';
+    public const string REQUEST_JOIN = 'TEAM_REQUEST_JOIN';
+
+    /** Team's leader */
     public const string INVITE = 'TEAM_INVITE';
     public const string EDIT = 'TEAM_EDIT';
     public const string DELETE = 'TEAM_DELETE';
@@ -24,6 +28,7 @@ final class TeamVoter extends Voter
         // https://symfony.com/doc/current/security/voters.html
         return in_array($attribute, [
             self::LEAVE,
+            self::REQUEST_JOIN,
             self::INVITE,
             self::EDIT,
             self::DELETE,
@@ -42,9 +47,13 @@ final class TeamVoter extends Voter
         }
 
         // ... (check conditions and return true to grant permission) ...
+        $isLeader = $subject->getLeader() === $user;
+        $isMember = $subject->getUsers()->contains($user);
+
         return match ($attribute) {
-            self::INVITE, self::DELETE, self::EDIT => $subject->getLeader() === $user,
-            self::LEAVE => $subject->getUsers()->contains($user),
+            self::INVITE, self::DELETE, self::EDIT => $isLeader,
+            self::LEAVE => $isMember,
+            self::REQUEST_JOIN => !$isMember,
             default => throw new \LogicException('This code should not be reached!'),
         };
     }
