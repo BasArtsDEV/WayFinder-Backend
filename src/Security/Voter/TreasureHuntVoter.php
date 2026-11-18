@@ -13,13 +13,15 @@ use Symfony\Component\Security\Core\Authorization\Voter\Voter;
  */
 final class TreasureHuntVoter extends Voter
 {
+    public const string EDIT = 'TREASURE_HUNT_EDIT';
     public const string DELETE = 'TREASURE_HUNT_DELETE';
 
     protected function supports(string $attribute, mixed $subject): bool
     {
         // replace with your own logic
         // https://symfony.com/doc/current/security/voters.html
-        return self::DELETE == $attribute && $subject instanceof TreasureHunt;
+        return in_array($attribute, [self::EDIT, self::DELETE])
+            && $subject instanceof TreasureHunt;
     }
 
     protected function voteOnAttribute(string $attribute, mixed $subject, TokenInterface $token, ?Vote $vote = null): bool
@@ -38,7 +40,7 @@ final class TreasureHuntVoter extends Voter
         $team = $subject->getTeam();
 
         return match ($attribute) {
-            self::DELETE => $user->getTeams()->contains($team),
+            self::EDIT, self::DELETE => $user->getTeams()->contains($team),
             default => throw new \LogicException('This code should not be reached!'),
         };
     }
