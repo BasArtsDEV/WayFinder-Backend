@@ -50,6 +50,10 @@ readonly class GameStateProvider implements ProviderInterface
             throw new AccessDeniedHttpException('Vous ne pouvez consulter que vos propres parties.');
         }
 
+        if (!$enrollment->getTreasureHunt()?->isPublished()) {
+            throw new NotFoundHttpException('Cette chasse au trésor n\'est pas disponible.');
+        }
+
         $this->gameProgressionService->updateTimers($enrollment);
         $this->em->flush();
 
