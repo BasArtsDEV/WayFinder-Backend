@@ -40,7 +40,7 @@
                             <span class="fw-bold small text-dark">{{ avgstars > 0 ? avgstars|number_format(1) : 'Pas d\'avis' }}</span>
                         </div>
 
-                        {% if treasureHunt.invitationCode %}
+                        {% if treasureHunt.published and treasureHunt.invitationCode %}
                             <div class="code-copy-box d-flex align-items-center gap-2 shadow-sm"
                                  onclick="copyInvitationCode(this, '{{ treasureHunt.invitationCode }}')"
                                  title="Cliquer pour copier le code d'accès">
