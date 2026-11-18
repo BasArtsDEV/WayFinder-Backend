@@ -13,6 +13,7 @@ use App\Form\Riddle\RiddleQCMType;
 use App\Form\Riddle\RiddleQRCodeType;
 use App\Form\Riddle\RiddleTextType;
 use App\Repository\RiddleRepository;
+use App\Security\Voter\RiddleVoter;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -79,6 +80,7 @@ final class RiddleController extends AbstractController
     }
 
     #[Route('riddle/{id}/edit', name: 'app_riddle_edit', methods: ['GET', 'POST'])]
+    #[IsGranted(RiddleVoter::EDIT, 'riddle')]
     public function edit(
         Riddle $riddle,
         Request $request,
@@ -109,6 +111,7 @@ final class RiddleController extends AbstractController
     }
 
     #[Route('riddle/{id}/delete', name: 'app_riddle_delete', methods: ['POST'])]
+    #[IsGranted(RiddleVoter::DELETE, 'riddle')]
     public function delete(
         Request $request,
         Riddle $riddle,
