@@ -90,8 +90,6 @@ final class TeamController extends AbstractController
         return $this->render('team/show.html.twig', [
             'team' => $team,
             'treasurehunts' => $treasureHunts,
-            'isLeader' => $isLeader,
-            'isMember' => $isMember,
             'hasPendingRequest' => $hasPendingRequest,
         ]);
     }
