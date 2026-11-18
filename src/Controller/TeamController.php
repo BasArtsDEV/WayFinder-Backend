@@ -11,7 +11,6 @@ use App\Form\TeamType;
 use App\Repository\NotificationRepository;
 use App\Repository\TeamRepository;
 use App\Repository\TreasureHuntRepository;
-use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bridge\Doctrine\Attribute\MapEntity;
@@ -246,7 +245,6 @@ final class TeamController extends AbstractController
     public function invite(
         Team $team,
         Request $request,
-        UserRepository $userRepository,
         NotificationRepository $notificationRepository,
         EntityManagerInterface $em,
     ): Response {
@@ -257,35 +255,49 @@ final class TeamController extends AbstractController
             throw $this->createAccessDeniedException('Seul le chef d\'équipe peut inviter des membres.');
         }
 
-        $form = $this->createForm(InviteMemberType::class);
+        $form = $this->createForm(InviteMemberType::class, null, [
+            'team' => $team,
+        ]);
+
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            // "@username" is permitted: this is how usernames are displayed on the site.
-            $username = ltrim(trim((string) $form->get('username')->getData()), '@');
-            $guest = $userRepository->findOneBy(['username' => $username]);
+            /** @var iterable<User> $guests */
+            $guests = $form->get('username')->getData();
 
-            $error = $this->getInviteError($team, $guest, $notificationRepository);
+            $hasError = false;
 
-            if (null !== $error) {
-                $form->get('username')->addError(new FormError($error));
-            } else {
-                $notification = new Notification();
-                $notification->setType(Notification::TYPE_TEAM_INVITATION);
-                $notification->setTitle('Invitation à rejoindre une équipe');
-                $notification->setDescription(sprintf(
-                    '%s vous invite à rejoindre l\'équipe "%s".',
-                    $leader->getUsername(),
-                    $team->getName(),
-                ));
-                $notification->setTargetUser($guest);
-                $notification->setTargetTeam($team);
-                $notification->addReceiveNotif($guest);
+            foreach ($guests as $guest) {
+                $error = $this->getInviteError($team, $guest, $notificationRepository);
+                if (null !== $error) {
+                    $form->get('username')->addError(new FormError(sprintf('@%s : %s', $guest->getUsername(), $error)));
+                    $hasError = true;
+                }
+            }
 
-                $em->persist($notification);
+            if (!$hasError) {
+                $invitedUsernames = [];
+
+                foreach ($guests as $guest) {
+                    $notification = new Notification();
+                    $notification->setType(Notification::TYPE_TEAM_INVITATION);
+                    $notification->setTitle('Invitation à rejoindre une équipe');
+                    $notification->setDescription(sprintf(
+                        '%s vous invite à rejoindre l\'équipe "%s".',
+                        $leader->getUsername(),
+                        $team->getName(),
+                    ));
+                    $notification->setTargetUser($guest);
+                    $notification->setTargetTeam($team);
+                    $notification->addReceiveNotif($guest);
+
+                    $em->persist($notification);
+                    $invitedUsernames[] = '@'.$guest->getUsername();
+                }
+
                 $em->flush();
 
-                $this->addFlash('success', sprintf('Invitation envoyée à @%s.', $guest->getUsername()));
+                $this->addFlash('success', sprintf('Invitation(s) envoyée(s) à : %s.', implode(', ', $invitedUsernames)));
 
                 return $this->redirectToRoute('app_team_show', ['id' => $team->getId()]);
             }
