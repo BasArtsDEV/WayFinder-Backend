@@ -13,6 +13,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
  */
 final class TeamVoter extends Voter
 {
+    public const string LEAVE = 'TEAM_LEAVE';
     public const string INVITE = 'TEAM_INVITE';
     public const string EDIT = 'TEAM_EDIT';
     public const string DELETE = 'TEAM_DELETE';
@@ -21,8 +22,12 @@ final class TeamVoter extends Voter
     {
         // replace with your own logic
         // https://symfony.com/doc/current/security/voters.html
-        return in_array($attribute, [self::INVITE, self::EDIT, self::DELETE])
-            && $subject instanceof Team;
+        return in_array($attribute, [
+            self::LEAVE,
+            self::INVITE,
+            self::EDIT,
+            self::DELETE,
+        ]) && $subject instanceof Team;
     }
 
     protected function voteOnAttribute(string $attribute, mixed $subject, TokenInterface $token, ?Vote $vote = null): bool
@@ -39,6 +44,7 @@ final class TeamVoter extends Voter
         // ... (check conditions and return true to grant permission) ...
         return match ($attribute) {
             self::INVITE, self::DELETE, self::EDIT => $subject->getLeader() === $user,
+            self::LEAVE => $subject->getUsers()->contains($user),
             default => throw new \LogicException('This code should not be reached!'),
         };
     }
