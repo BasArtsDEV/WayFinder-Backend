@@ -132,9 +132,12 @@
 
                         {% if not treasureHunt.published %}
                             <div class="dropdown" data-turbo="false">
-                                <button type="button" class="btn btn-app-primary" data-bs-toggle="dropdown" aria-expanded="false">
-                                    <i class="bi bi-plus-lg me-1"></i> Ajouter
-                                </button>
+                                {% if is_granted('TREASURE_HUNT_ADD', treasureHunt) %}
+                                    <button type="button" class="btn btn-app-primary" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <i class="bi bi-plus-lg me-1"></i> Ajouter
+                                    </button>
+                                {% endif %}
+
                                 <ul class="dropdown-menu dropdown-menu-end riddle-add-menu">
                                     <li><a class="dropdown-item" href="{{ path('app_riddle_new', { huntId: treasureHunt.id, type: 'text' }) }}"><i class="bi bi-chat-left-text me-2 text-success" aria-hidden="true"></i>Texte</a></li>
                                     <li><a class="dropdown-item" href="{{ path('app_riddle_new', { huntId: treasureHunt.id, type: 'qcm' }) }}"><i class="bi bi-ui-checks me-2 text-success" aria-hidden="true"></i>QCM</a></li>
@@ -195,9 +198,11 @@
 
                                     {% if not treasureHunt.published %}
                                         <div class="d-flex align-items-center gap-2 flex-shrink-0 text-nowrap">
-                                            <a href="{{ path('app_riddle_edit', { id: riddle.id }) }}" class="btn btn-app-secondary btn-sm">
-                                                <i class="bi bi-pencil me-1"></i>Éditer
-                                            </a>
+                                            {% if is_granted('TREASURE_HUNT_EDIT', treasureHunt) %}
+                                                <a href="{{ path('app_riddle_edit', { id: riddle.id }) }}" class="btn btn-app-secondary btn-sm">
+                                                    <i class="bi bi-pencil me-1"></i>Éditer
+                                                </a>
+                                            {% endif %}
 
                                             {% if is_granted('TREASURE_HUNT_DELETE', treasureHunt) %}
                                                 {{ include('_delete_button.html.twig', {
