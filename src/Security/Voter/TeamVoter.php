@@ -21,6 +21,8 @@ final class TeamVoter extends Voter
     public const string INVITE = 'TEAM_INVITE';
     public const string EDIT = 'TEAM_EDIT';
     public const string DELETE = 'TEAM_DELETE';
+    public const string PROMOTE = 'TEAM_PROMOTE';
+    public const string KICK = 'TEAM_KICK';
 
     protected function supports(string $attribute, mixed $subject): bool
     {
@@ -32,6 +34,8 @@ final class TeamVoter extends Voter
             self::INVITE,
             self::EDIT,
             self::DELETE,
+            self::PROMOTE,
+            self::KICK,
         ]) && $subject instanceof Team;
     }
 
@@ -51,8 +55,8 @@ final class TeamVoter extends Voter
         $isMember = $subject->getUsers()->contains($user);
 
         return match ($attribute) {
-            self::INVITE, self::DELETE, self::EDIT => $isLeader,
-            self::LEAVE => $isMember,
+            self::INVITE, self::DELETE, self::EDIT, self::PROMOTE, self::KICK => $isLeader,
+            self::LEAVE => $isMember && !$isLeader,
             self::REQUEST_JOIN => !$isMember,
             default => throw new \LogicException('This code should not be reached!'),
         };
