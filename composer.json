@@ -77,6 +77,7 @@
         "symfony/string": "7.4.*",
         "symfony/translation": "7.4.*",
         "symfony/twig-bundle": "7.4.*",
+        "symfony/ux-autocomplete": "^3.7",
         "symfony/ux-google-map": "^3.6",
         "symfony/ux-turbo": "^3.6",
         "symfony/validator": "7.4.*",

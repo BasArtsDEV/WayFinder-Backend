@@ -1,5 +1,5 @@
 p {
-    margin-bottom: 0px;
+    margin-bottom: 0;
 }
 
 .btn-cta {
@@ -74,7 +74,7 @@ p {
 }
 
 .notif-card-button {
-    margin: 0px;
+    margin: 0;
     background-color: #0a0a0a;
     cursor: pointer;
     transition-duration: 0.4s;
@@ -228,7 +228,7 @@ textarea:focus {
     max-width: 900px;
     margin: 2rem auto 2rem;
     border-radius: 16px;
-    overflow: hidden;
+    overflow: visible !important;
     border: 1px solid #e3e3e3;
 }
 
