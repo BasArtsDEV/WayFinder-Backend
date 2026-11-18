@@ -14,12 +14,14 @@ use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 final class RiddleVoter extends Voter
 {
     public const string EDIT = 'RIDDLE_EDIT';
+    public const string DELETE = 'RIDDLE_DELETE';
 
     protected function supports(string $attribute, mixed $subject): bool
     {
         // replace with your own logic
         // https://symfony.com/doc/current/security/voters.html
-        return self::EDIT == $attribute && $subject instanceof Riddle;
+        return in_array($attribute, [self::EDIT, self::DELETE])
+            && $subject instanceof Riddle;
     }
 
     protected function voteOnAttribute(string $attribute, mixed $subject, TokenInterface $token, ?Vote $vote = null): bool
@@ -38,7 +40,7 @@ final class RiddleVoter extends Voter
         $team = $subject->getTreasureHunt()->getTeam();
 
         return match ($attribute) {
-            self::EDIT => $user->getTeams()->contains($team),
+            self::EDIT, self::DELETE => $user->getTeams()->contains($team),
             default => throw new \LogicException('This code should not be reached!'),
         };
     }
