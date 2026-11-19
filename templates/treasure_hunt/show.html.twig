@@ -59,6 +59,12 @@
 
                 <div class="d-flex flex-column align-items-lg-end gap-3 hunt-header-actions">
                     <div class="d-flex align-items-center justify-content-lg-end gap-2 flex-wrap">
+                        {% if riddles|filter(r => r is instanceof('App\\Entity\\RiddleQRCode'))|length > 0 %}
+                            <a href="{{ path('app_treasure_hunt_qrcodes', { id: treasureHunt.id }) }}" class="btn btn-app-secondary" target="_blank" data-turbo="false">
+                                <i class="bi bi-printer me-1"></i>Imprimer les QR Codes
+                            </a>
+                        {% endif %}
+
                         {% if treasureHunt.published %}
                             <form method="post" action="{{ path('app_treasure_hunt_unpublish', { id: treasureHunt.id }) }}" class="d-inline">
                                 <input type="hidden" name="_token" value="{{ csrf_token('unpublish' ~ treasureHunt.id) }}">
