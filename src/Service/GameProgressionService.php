@@ -68,9 +68,7 @@ readonly class GameProgressionService
 
     public function reset(Enrollment $enrollment): void
     {
-        foreach ($enrollment->getSubmissions() as $submission) {
-            $enrollment->removeSubmission($submission);
-        }
+        $enrollment->getSubmissions()->clear();
 
         $enrollment->setStatus(EnrollmentStatus::NOT_STARTED)
             ->setRiddle(null)

@@ -4,6 +4,7 @@ namespace App\Tests\Application\Game;
 
 use App\Entity\Enrollment;
 use App\Entity\RiddleText;
+use App\Entity\Submission;
 use App\Entity\Team;
 use App\Entity\TreasureHunt;
 use App\Entity\User;
@@ -108,19 +109,40 @@ class LeaderboardCest
 
     public function resetScoresEmptiesTheLeaderboard(ApplicationTester $I): void
     {
+        $user = UserFactory::createOne();
         $treasureHunt = $this->createHunt();
-        $riddle = RiddleTextFactory::createOne(['index' => 1, 'treasureHunt' => $treasureHunt]);
-        $enrollment = $this->createFinishedEnrollment(UserFactory::createOne(), $treasureHunt, 10, 600, $riddle);
-        $enrollment->setNbStars(4);
+        $riddle = RiddleTextFactory::createOne(['index' => 1, 'treasureHunt' => $treasureHunt, 'expectedAnswer' => 'Paris', 'score' => 10]);
+        $enrollment = EnrollmentFactory::createOne([
+            'countdown' => 0,
+            'lastResumedAt' => new \DateTimeImmutable(),
+            'nbStars' => 4,
+            'riddle' => $riddle,
+            'status' => EnrollmentStatus::IN_PROGRESS,
+            'treasureHunt' => $treasureHunt,
+            'user' => $user,
+        ]);
+        $id = $enrollment->getId();
 
+        $this->loginAs($I, $user);
+        $I->haveHttpHeader('Content-Type', 'application/ld+json');
+        $I->sendPost('/api/submissions', [
+            'enrollment' => '/api/enrollments/'.$id,
+            'riddle' => '/api/riddle_texts/'.$riddle->getId(),
+            'submittedValue' => 'Paris',
+        ]);
+        $I->seeResponseContainsJson(['isRight' => true]);
+
+        /** @var Enrollment $finished */
+        $finished = $I->grabEntityFromRepository(Enrollment::class, ['id' => $id]);
         /** @var GameProgressionService $gameProgressionService */
         $gameProgressionService = $I->grabService(GameProgressionService::class);
-        $gameProgressionService->reset($enrollment);
+        $gameProgressionService->reset($finished);
         $I->flushToDatabase();
 
         $I->sendGet('/api/treasure_hunts/'.$treasureHunt->getId().'/leaderboard');
 
         $I->seeResponseContainsJson(['entries' => []]);
-        $I->seeInRepository(Enrollment::class, ['id' => $enrollment->getId(), 'status' => 'not_started', 'scoreTotal' => 0, 'riddle' => null, 'nbStars' => 4]);
+        $I->seeInRepository(Enrollment::class, ['id' => $id, 'status' => EnrollmentStatus::NOT_STARTED, 'scoreTotal' => 0, 'riddle' => null, 'nbStars' => 4]);
+        $I->dontSeeInRepository(Submission::class, ['enrollment' => $id]);
     }
 }
