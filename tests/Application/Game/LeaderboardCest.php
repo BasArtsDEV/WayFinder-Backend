@@ -145,4 +145,16 @@ class LeaderboardCest
         $I->seeInRepository(Enrollment::class, ['id' => $id, 'status' => EnrollmentStatus::NOT_STARTED, 'scoreTotal' => 0, 'riddle' => null, 'nbStars' => 4]);
         $I->dontSeeInRepository(Submission::class, ['enrollment' => $id]);
     }
+
+    public function onlyTeamMembersCanResetScores(ApplicationTester $I): void
+    {
+        $treasureHunt = $this->createHunt();
+        $enrollment = $this->createFinishedEnrollment(UserFactory::createOne(), $treasureHunt, 10, 600);
+
+        $I->amLoggedInAs(UserFactory::createOne());
+        $I->sendPost('/treasure_hunt/'.$treasureHunt->getId().'/reset-scores');
+
+        $I->seeResponseCodeIs(403);
+        $I->seeInRepository(Enrollment::class, ['id' => $enrollment->getId(), 'status' => EnrollmentStatus::FINISHED, 'scoreTotal' => 10]);
+    }
 }
