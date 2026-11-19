@@ -141,17 +141,8 @@
                                         <label for="timezone_select" class="form-label fw-semibold text-dark small">Fuseau horaire</label>
                                         <select id="timezone_select" name="timezone" class="form-select">
                                             {% set userTimezone = app.user.timezone|default('Europe/Paris') %}
-                                            {% for tz, label in {
-                                                UTC: 'UTC (UTC +00:00)',
-                                                'Europe/London': 'Londres (UTC +00:00 / +01:00 DST)',
-                                                'Europe/Paris': 'Paris, Bruxelles, Berlin (UTC +01:00 / +02:00 DST)',
-                                                'America/New_York': 'New York, Toronto (UTC -05:00 / -04:00 DST)',
-                                                'America/Los_Angeles': 'Los Angeles (UTC -08:00 / -07:00 DST)',
-                                                'Asia/Tokyo': 'Tokyo (UTC +09:00)',
-                                            } %}
-                                                <option value="{{ tz }}" {% if userTimezone == tz %}selected{% endif %}>
-                                                    {{ label }}
-                                                </option>
+                                            {% for tz in timezones %}
+                                                <option value="{{ tz }}" {% if userTimezone == tz %}selected{% endif %}>{{ tz }}</option>
                                             {% endfor %}
                                         </select>
                                     </div>

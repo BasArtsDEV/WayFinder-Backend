@@ -15,6 +15,7 @@ final class SettingsController extends AbstractController
     {
         return $this->render('settings/index.html.twig', [
             'user' => $this->getUser(),
+            'timezones' => \DateTimeZone::listIdentifiers(),
         ]);
     }
 }
