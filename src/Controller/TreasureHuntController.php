@@ -8,6 +8,7 @@ use App\Entity\TreasureHunt;
 use App\Entity\User;
 use App\Form\TreasureHuntType;
 use App\Repository\EnrollmentRepository;
+use App\Service\GameProgressionService;
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
 use Random\RandomException;
@@ -182,6 +183,21 @@ final class TreasureHuntController extends AbstractController
             $em->flush();
 
             $this->addFlash('warning', 'La chasse au trésor n\'est plus publiée.');
+        }
+
+        return $this->redirectToRoute('app_treasure_hunt_show', ['id' => $treasureHunt->getId()]);
+    }
+
+    #[Route('/treasure_hunt/{id}/reset-scores', name: 'app_treasure_hunt_reset_scores', requirements: ['id' => '\d+'], methods: ['POST'])]
+    public function resetScores(Request $request, TreasureHunt $treasureHunt, EntityManagerInterface $em, GameProgressionService $gameProgressionService): Response
+    {
+        if ($this->isCsrfTokenValid('reset-scores'.$treasureHunt->getId(), $request->getPayload()->getString('_token'))) {
+            foreach ($treasureHunt->getEnrollments() as $enrollment) {
+                $gameProgressionService->reset($enrollment);
+            }
+            $em->flush();
+
+            $this->addFlash('success', 'Les scores et le classement de la chasse au trésor ont été effacés.');
         }
 
         return $this->redirectToRoute('app_treasure_hunt_show', ['id' => $treasureHunt->getId()]);

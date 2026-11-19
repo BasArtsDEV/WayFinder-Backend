@@ -78,6 +78,13 @@
                                 <i class="bi bi-pencil me-1"></i>Éditer
                             </a>
 
+                            <form method="post" action="{{ path('app_treasure_hunt_reset_scores', { id: treasureHunt.id }) }}" class="d-inline" onsubmit="return confirm('Effacer les scores et le classement de tous les joueurs ?');">
+                                <input type="hidden" name="_token" value="{{ csrf_token('reset-scores' ~ treasureHunt.id) }}">
+                                <button type="submit" class="btn btn-app-secondary">
+                                    <i class="bi bi-arrow-counterclockwise me-1"></i>Effacer les scores
+                                </button>
+                            </form>
+
                             {{ include('_delete_button.html.twig', {
                                 action_path: path('app_treasure_hunt_delete', { id: treasureHunt.id }),
                                 csrf_token_name: 'delete' ~ treasureHunt.id,
