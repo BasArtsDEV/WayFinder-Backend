@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>QR Codes - {{ treasureHunt.title }}</title>
+    <style>
+        body {
+            font-family: DejaVu Sans, sans-serif;
+            text-align: center;
+            color: #212529;
+        }
+
+        .page {
+            page-break-after: always;
+        }
+
+        .page:last-child {
+            page-break-after: auto;
+        }
+
+        .hunt-title {
+            font-size: 14px;
+            color: #6c757d;
+            margin-top: 40px;
+        }
+
+        .riddle-title {
+            font-size: 26px;
+            font-weight: bold;
+            margin: 20px 0 40px;
+        }
+
+        .qrcode {
+            width: 400px;
+            height: 400px;
+        }
+
+        .url {
+            font-size: 11px;
+            color: #6c757d;
+            margin-top: 30px;
+            word-wrap: break-word;
+        }
+    </style>
+</head>
+<body>
+    {% for riddle in riddles %}
+        <div class="page">
+            <p class="hunt-title">{{ treasureHunt.title }}</p>
+            <p class="riddle-title">Énigme n°{{ riddle.index }} : {{ riddle.title }}</p>
+            <img class="qrcode" src="{{ qr_code_data_uri(riddle.url) }}" alt="QR code">
+            <p class="url">{{ riddle.url }}</p>
+        </div>
+    {% endfor %}
+</body>
+</html>
