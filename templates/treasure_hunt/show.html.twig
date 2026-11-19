@@ -130,13 +130,13 @@
                             {{ riddles|length }} énigme{{ riddles|length > 1 ? 's' }}
                         </h2>
 
-                        {% if not treasureHunt.published %}
+                        {% if not treasureHunt.published and is_granted('TREASURE_HUNT_ADD', treasureHunt) %}
                             <div class="dropdown" data-turbo="false">
                                 {% if is_granted('TREASURE_HUNT_ADD', treasureHunt) %}
-                                    <button type="button" class="btn btn-app-primary" data-bs-toggle="dropdown" aria-expanded="false">
-                                        <i class="bi bi-plus-lg me-1"></i> Ajouter
-                                    </button>
-                                {% endif %}
+
+                                <button type="button" class="btn btn-app-primary btn-sm px-3" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="bi bi-plus-lg me-1"></i>Ajouter
+                                </button>
 
                                 <ul class="dropdown-menu dropdown-menu-end riddle-add-menu">
                                     <li><a class="dropdown-item" href="{{ path('app_riddle_new', { huntId: treasureHunt.id, type: 'text' }) }}"><i class="bi bi-chat-left-text me-2 text-success" aria-hidden="true"></i>Texte</a></li>
