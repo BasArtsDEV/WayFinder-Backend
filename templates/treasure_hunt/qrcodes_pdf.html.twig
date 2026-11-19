@@ -4,9 +4,12 @@
     <meta charset="UTF-8">
     <title>QR Codes - {{ treasureHunt.title }}</title>
     <style>
+        @page {
+            margin: 10mm;
+        }
+
         body {
             font-family: DejaVu Sans, sans-serif;
-            text-align: center;
             color: #212529;
         }
 
@@ -19,37 +22,67 @@
         }
 
         .hunt-title {
-            font-size: 14px;
+            font-size: 11px;
             color: #6c757d;
-            margin-top: 40px;
+            text-align: center;
+            margin: 0 0 4mm;
+        }
+
+        table {
+            width: 100%;
+            table-layout: fixed;
+            border-collapse: collapse;
+        }
+
+        td {
+            width: 50%;
+            height: 78mm;
+            border: 1px dashed #adb5bd;
+            text-align: center;
+            vertical-align: middle;
+            padding: 3mm;
         }
 
         .riddle-title {
-            font-size: 26px;
+            font-size: 10px;
             font-weight: bold;
-            margin: 20px 0 40px;
+            margin: 0 0 2mm;
         }
 
         .qrcode {
-            width: 400px;
-            height: 400px;
+            width: 52mm;
+            height: 52mm;
         }
 
         .url {
-            font-size: 11px;
+            font-size: 8px;
             color: #6c757d;
-            margin-top: 30px;
+            margin: 2mm 0 0;
             word-wrap: break-word;
         }
     </style>
 </head>
 <body>
-    {% for riddle in riddles %}
+    {# 6 QR codes par page : 3 lignes de 2 #}
+    {% for pageRiddles in riddles|batch(6) %}
         <div class="page">
             <p class="hunt-title">{{ treasureHunt.title }}</p>
-            <p class="riddle-title">Énigme n°{{ riddle.index }} : {{ riddle.title }}</p>
-            <img class="qrcode" src="{{ qr_code_data_uri(riddle.url) }}" alt="QR code">
-            <p class="url">{{ riddle.url }}</p>
+            <table>
+                {% for row in pageRiddles|batch(2) %}
+                    <tr>
+                        {% for riddle in row %}
+                            <td>
+                                <p class="riddle-title">Énigme n°{{ riddle.index }} : {{ riddle.title }}</p>
+                                <img class="qrcode" src="{{ qr_code_data_uri(riddle.url) }}" alt="QR code">
+                                <p class="url">{{ riddle.url }}</p>
+                            </td>
+                        {% endfor %}
+                        {% if row|length < 2 %}
+                            <td style="border: none;"></td>
+                        {% endif %}
+                    </tr>
+                {% endfor %}
+            </table>
         </div>
     {% endfor %}
 </body>
