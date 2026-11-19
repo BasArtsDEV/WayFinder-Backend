@@ -10,8 +10,8 @@ use App\Enum\EnrollmentStatus;
 
 /**
  * Computes the score and the rank of a player, solo or in a team.
- * In team mode, the score of every member is added to the team score.
- * In the leaderboard, the remaining seconds are added to the score and a team gets the average of its members.
+ * During a game, the score of every member is added to the team score.
+ * Once finished, the remaining seconds are added to the score and a team gets the average of its members.
  *
  * @phpstan-type LeaderboardEntry array{key: string, rank: int, score: int, timedOut: bool, user: ?User, team: ?Team, isCurrentUser: bool}
  */
@@ -24,6 +24,11 @@ readonly class GameScoreService
 
     public function getScore(Enrollment $enrollment): int
     {
+        $entry = $this->findLeaderboardEntry($enrollment);
+        if (null !== $entry) {
+            return $entry['score'];
+        }
+
         $scores = $this->getCompetitorScores($enrollment);
 
         return $scores[$this->getCompetitorKey($enrollment)] ?? 0;
@@ -31,6 +36,11 @@ readonly class GameScoreService
 
     public function getRank(Enrollment $enrollment): int
     {
+        $entry = $this->findLeaderboardEntry($enrollment);
+        if (null !== $entry) {
+            return $entry['rank'];
+        }
+
         $scores = $this->getCompetitorScores($enrollment);
         $score = $scores[$this->getCompetitorKey($enrollment)] ?? 0;
 
@@ -39,6 +49,10 @@ readonly class GameScoreService
 
     public function getCompetitorsCount(Enrollment $enrollment): int
     {
+        if (null !== $this->findLeaderboardEntry($enrollment)) {
+            return count($this->getLeaderboard($enrollment->getTreasureHunt()));
+        }
+
         return count($this->getCompetitorScores($enrollment));
     }
 
@@ -116,6 +130,25 @@ readonly class GameScoreService
         }
 
         return $entries;
+    }
+
+    /**
+     * @return LeaderboardEntry|null
+     */
+    private function findLeaderboardEntry(Enrollment $enrollment): ?array
+    {
+        if (EnrollmentStatus::FINISHED !== $enrollment->getStatus()) {
+            return null;
+        }
+
+        $key = $this->getCompetitorKey($enrollment);
+        foreach ($this->getLeaderboard($enrollment->getTreasureHunt()) as $entry) {
+            if ($entry['key'] === $key) {
+                return $entry;
+            }
+        }
+
+        return null;
     }
 
     /**
