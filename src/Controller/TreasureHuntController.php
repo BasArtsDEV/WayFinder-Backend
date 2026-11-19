@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\RiddleGPS;
+use App\Entity\RiddleQRCode;
 use App\Entity\Team;
 use App\Entity\TreasureHunt;
 use App\Entity\User;
@@ -10,6 +11,7 @@ use App\Form\TreasureHuntType;
 use App\Repository\EnrollmentRepository;
 use App\Service\GameProgressionService;
 use Doctrine\ORM\EntityManagerInterface;
+use Dompdf\Dompdf;
 use Knp\Component\Pager\PaginatorInterface;
 use Random\RandomException;
 use Symfony\Bridge\Doctrine\Attribute\MapEntity;
@@ -119,6 +121,39 @@ final class TreasureHuntController extends AbstractController
             'riddles' => $riddles,
             'feedbacks' => $feedbacks,
             'map' => $hasGpsRiddles ? $map : null,
+        ]);
+    }
+
+    #[Route('/treasure_hunt/{id}/qrcodes', name: 'app_treasure_hunt_qrcodes', requirements: ['id' => '\d+'], methods: ['GET'])]
+    public function printQrCodes(
+        #[MapEntity(expr: 'repository.findByTeam(id)')] TreasureHunt $treasureHunt,
+    ): Response {
+        $qrCodeRiddles = [];
+        foreach ($treasureHunt->getRiddles() as $riddle) {
+            if ($riddle instanceof RiddleQRCode) {
+                $qrCodeRiddles[] = $riddle;
+            }
+        }
+
+        if (0 === count($qrCodeRiddles)) {
+            $this->addFlash('error', 'Cette chasse ne contient aucune énigme QR Code.');
+
+            return $this->redirectToRoute('app_treasure_hunt_show', ['id' => $treasureHunt->getId()]);
+        }
+
+        $html = $this->renderView('treasure_hunt/qrcodes_pdf.html.twig', [
+            'treasureHunt' => $treasureHunt,
+            'riddles' => $qrCodeRiddles,
+        ]);
+
+        $dompdf = new Dompdf();
+        $dompdf->loadHtml($html);
+        $dompdf->setPaper('A4');
+        $dompdf->render();
+
+        return new Response($dompdf->output(), Response::HTTP_OK, [
+            'Content-Type' => 'application/pdf',
+            'Content-Disposition' => 'inline; filename="qrcodes-chasse-'.$treasureHunt->getId().'.pdf"',
         ]);
     }
 
