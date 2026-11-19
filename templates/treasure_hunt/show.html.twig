@@ -12,7 +12,7 @@
         <div class="treasure-card p-4 p-lg-5 mb-4">
             <div class="d-flex flex-column flex-lg-row align-items-lg-start justify-content-between gap-4">
 
-                <div class="flex-grow-1">
+                <div class="flex-grow-1 hunt-header-info">
                     <div class="d-flex align-items-center flex-wrap gap-3 mb-3">
                         {% if treasureHunt.published %}
                             <span class="badge bg-success text-white rounded-pill px-3 py-2 fw-medium">
@@ -57,8 +57,8 @@
                     {{ include('treasure_hunt/partials/_feedbacks.html.twig', ignore_missing: true) }}
                 </div>
 
-                <div class="d-flex flex-column align-items-lg-end gap-3 flex-shrink-0">
-                    <div class="d-flex align-items-center gap-2 flex-wrap">
+                <div class="d-flex flex-column align-items-lg-end gap-3 hunt-header-actions">
+                    <div class="d-flex align-items-center justify-content-lg-end gap-2 flex-wrap">
                         {% if treasureHunt.published %}
                             <form method="post" action="{{ path('app_treasure_hunt_unpublish', { id: treasureHunt.id }) }}" class="d-inline">
                                 <input type="hidden" name="_token" value="{{ csrf_token('unpublish' ~ treasureHunt.id) }}">
@@ -77,6 +77,13 @@
                             <a href="{{ path('app_treasure_hunt_edit', { id: treasureHunt.id }) }}" class="btn btn-app-secondary">
                                 <i class="bi bi-pencil me-1"></i>Éditer
                             </a>
+
+                            <form method="post" action="{{ path('app_treasure_hunt_reset_scores', { id: treasureHunt.id }) }}" class="d-inline" onsubmit="return confirm('Effacer les scores et le classement de tous les joueurs ?');">
+                                <input type="hidden" name="_token" value="{{ csrf_token('reset-scores' ~ treasureHunt.id) }}">
+                                <button type="submit" class="btn btn-app-secondary">
+                                    <i class="bi bi-arrow-counterclockwise me-1"></i>Effacer les scores
+                                </button>
+                            </form>
 
                             {{ include('_delete_button.html.twig', {
                                 action_path: path('app_treasure_hunt_delete', { id: treasureHunt.id }),
@@ -161,7 +168,7 @@
                 <div class="tab-content" id="riddles-tabContent">
                     {% for index, riddle in riddles %}
                         <div class="tab-pane fade {{ loop.first ? 'show active' : '' }}" id="riddle-pane-{{ riddle.id }}" role="tabpanel">
-                            <div class="treasure-card p-4 p-md-5">
+                            <div class="treasure-card text-break p-4 p-md-5">
 
                                 <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3 mb-4 pb-3 border-bottom">
                                     <div class="d-flex align-items-center gap-3">
