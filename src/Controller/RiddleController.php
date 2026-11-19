@@ -15,6 +15,7 @@ use App\Form\Riddle\RiddleTextType;
 use App\Repository\RiddleRepository;
 use App\Security\Voter\RiddleVoter;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -26,17 +27,13 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 final class RiddleController extends AbstractController
 {
     #[Route('/treasure-hunt/{huntId}/new/{type}', name: 'app_riddle_new', methods: ['GET', 'POST'])]
+    #[IsGranted(RiddleVoter::ADD, subject: 'hunt')]
     public function new(
-        int $huntId,
+        #[MapEntity(mapping: ['huntId' => 'id'])] TreasureHunt $hunt,
         string $type,
         Request $request,
         EntityManagerInterface $em,
     ): Response {
-        $hunt = $em->getRepository(TreasureHunt::class)->find($huntId);
-        if (!$hunt) {
-            throw $this->createNotFoundException('Chasse introuvable.');
-        }
-
         $riddle = match ($type) {
             'text' => new RiddleText(),
             'qcm' => new RiddleQCM(),
@@ -73,7 +70,7 @@ final class RiddleController extends AbstractController
         }
 
         return $this->render('riddle/new.html.twig', [
-            'form' => $form->createView(),
+            'form' => $form,
             'hunt' => $hunt,
             'type' => $type,
         ]);
