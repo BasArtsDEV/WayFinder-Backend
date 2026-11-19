@@ -14,6 +14,7 @@ use App\Factory\RiddleTextFactory;
 use App\Factory\TeamFactory;
 use App\Factory\TreasureHuntFactory;
 use App\Factory\UserFactory;
+use App\Service\GameProgressionService;
 use App\Tests\Support\ApplicationTester;
 use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface;
 
@@ -103,5 +104,23 @@ class LeaderboardCest
         $I->sendGet('/api/treasure_hunts/'.$treasureHunt->getId().'/leaderboard');
 
         $I->seeResponseCodeIs(404);
+    }
+
+    public function resetScoresEmptiesTheLeaderboard(ApplicationTester $I): void
+    {
+        $treasureHunt = $this->createHunt();
+        $riddle = RiddleTextFactory::createOne(['index' => 1, 'treasureHunt' => $treasureHunt]);
+        $enrollment = $this->createFinishedEnrollment(UserFactory::createOne(), $treasureHunt, 10, 600, $riddle);
+        $enrollment->setNbStars(4);
+
+        /** @var GameProgressionService $gameProgressionService */
+        $gameProgressionService = $I->grabService(GameProgressionService::class);
+        $gameProgressionService->reset($enrollment);
+        $I->flushToDatabase();
+
+        $I->sendGet('/api/treasure_hunts/'.$treasureHunt->getId().'/leaderboard');
+
+        $I->seeResponseContainsJson(['entries' => []]);
+        $I->seeInRepository(Enrollment::class, ['id' => $enrollment->getId(), 'status' => 'not_started', 'scoreTotal' => 0, 'riddle' => null, 'nbStars' => 4]);
     }
 }
