@@ -1,0 +1,38 @@
+.team-list-box .btn-app-secondary {
+    padding: calc(0.6rem - 2px) calc(1rem - 2px) !important;
+    border: 2px solid #ebebeb !important;
+}
+
+.team-card {
+    border: 2px solid #e8e8e8;
+    border-radius: 1.2rem;
+
+    font-family: 'Lexend', sans-serif;
+
+    background-color: #f7f7f7;
+
+    transition: border-color 0.2s;
+}
+
+.team-card:hover {
+    border-color: var(--app-button-background);
+}
+
+.team-card:focus-visible {
+    outline: 3px solid var(--app-header-button-border);
+    outline-offset: 2px;
+}
+
+.team-card .card-body {
+    background-color: transparent;
+}
+
+.team-card h3 {
+    font-family: 'Lexend', sans-serif;
+}
+
+.team-card-badge {
+    border: 2px solid #e8e8e8;
+    color: var(--app-text);
+    background-color: #ffffff;
+}

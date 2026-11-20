@@ -134,6 +134,126 @@ p, span, label {
     text-decoration: underline !important;
 }
 
+.form-control,
+.form-select {
+    padding: 0.6rem 1rem;
+    border: 2px solid var(--app-input-border);
+    border-radius: 50px;
+
+    font-family: 'Lexend', sans-serif;
+    font-weight: 300;
+    color: var(--app-text);
+
+    background-color: var(--app-input-background);
+}
+
+textarea.form-control {
+    border-radius: 1.2rem;
+}
+
+.form-control:focus,
+.form-select:focus {
+    border-color: var(--app-button-background);
+    background-color: var(--app-input-background);
+    box-shadow: none;
+}
+
+.form-label {
+    font-family: 'Lexend', sans-serif;
+    font-weight: 500;
+}
+
+.ts-wrapper.form-control,
+.ts-wrapper.form-select {
+    display: flex;
+    align-items: center;
+    padding: 0.3rem 0.5rem;
+}
+
+.ts-wrapper.focus.form-control,
+.ts-wrapper.focus.form-select {
+    border-color: var(--app-button-background);
+}
+
+.ts-wrapper .ts-control,
+.ts-wrapper.single.input-active .ts-control {
+    padding: 0.25rem 0.5rem;
+    border: none;
+
+    font-family: 'Lexend', sans-serif;
+    font-weight: 300;
+
+    background: transparent;
+    box-shadow: none;
+}
+
+.ts-wrapper .ts-control input {
+    font-family: 'Lexend', sans-serif;
+    font-weight: 300;
+}
+
+.ts-wrapper.multi .ts-control > .item[data-value] {
+    padding: 0.15rem 0.4rem 0.15rem 0.8rem;
+    border: none;
+    border-radius: 50px;
+
+    font-weight: 500;
+    color: var(--app-button-text);
+    text-shadow: none;
+
+    background: var(--app-button-background);
+    box-shadow: none;
+}
+
+.ts-wrapper.multi .ts-control > .item.active[data-value] {
+    background: var(--app-button-background-hover);
+}
+
+.ts-wrapper.plugin-remove_button .item .remove {
+    margin-left: 0.3rem;
+    border-left: none;
+    border-radius: 50%;
+    color: var(--app-button-text);
+}
+
+.ts-wrapper.plugin-remove_button .item .remove:hover {
+    background: rgb(0 0 0 / 15%);
+}
+
+.ts-wrapper .ts-dropdown {
+    overflow: hidden;
+
+    margin-top: 0.4rem;
+    border: 2px solid #ebebeb;
+    border-radius: 1rem;
+
+    font-family: 'Lexend', sans-serif;
+}
+
+.ts-wrapper .ts-dropdown .option,
+.ts-wrapper .ts-dropdown .no-results {
+    padding: 0.5rem 1rem;
+}
+
+.ts-wrapper .ts-dropdown .active {
+    color: var(--app-text);
+    background-color: #f2f2f2;
+}
+
+.page-header {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    align-items: center;
+    justify-content: space-between;
+
+    margin-bottom: 1.5rem;
+    padding: 1rem 1.5rem;
+    border-radius: 1.2rem;
+
+    background-color: #ffffff;
+}
+
 .app-dropdown-icon {
     color: var(--app-button-background);
     margin-right: 0.5rem;
@@ -275,6 +395,113 @@ p, span, label {
     margin-bottom: 0;
 }
 
+.flash-container {
+    pointer-events: none;
+
+    position: fixed;
+    z-index: 1080;
+    top: 5rem;
+    right: 1rem;
+    left: 1rem;
+
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    align-items: flex-end;
+}
+
+.flash {
+    --flash-color: #252525;
+
+    pointer-events: auto;
+
+    display: flex;
+    gap: 0.8rem;
+    align-items: center;
+
+    width: 100%;
+    margin: 0;
+    padding: 0.6rem 0.6rem 0.6rem 0.7rem;
+    border: 2px solid var(--flash-color);
+    border-radius: 1.2rem;
+
+    font-family: 'Lexend', sans-serif;
+    color: var(--app-text);
+
+    background-color: #ffffff;
+}
+
+.flash-success {
+    --flash-color: var(--app-button-background);
+}
+
+.flash-error {
+    --flash-color: var(--app-button-decline-background);
+}
+
+.flash-warning {
+    --flash-color: #f0a020;
+}
+
+.flash-icon {
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+
+    width: 2.2rem;
+    height: 2.2rem;
+    border-radius: 50%;
+
+    font-size: 1.1rem;
+    color: #ffffff;
+
+    background-color: var(--flash-color);
+}
+
+.flash-message {
+    flex: 1;
+    margin: 0;
+    font-size: 0.95rem;
+    font-weight: 400;
+}
+
+.flash-close {
+    cursor: pointer;
+
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+
+    width: 2rem;
+    height: 2rem;
+    border: none;
+    border-radius: 50%;
+
+    color: #555555;
+
+    background-color: transparent;
+
+    transition: background-color 0.2s;
+}
+
+.flash-close:hover {
+    background-color: #f2f2f2;
+}
+
+.flash-close:focus-visible {
+    outline: 3px solid var(--flash-color);
+    outline-offset: 2px;
+}
+
+@media (min-width: 576px) {
+    .flash-container {
+        left: auto;
+        width: 400px;
+    }
+}
+
 .welcome-card {
     width: 100%;
     max-width: 750px;
@@ -328,50 +555,6 @@ p, span, label {
 
 .app_profil {
     text-decoration: none;
-}
-
-.welcome-btn {
-    width: 100%;
-    max-width: 320px;
-    height: 50px;
-    border-radius: 40px;
-    display: flex;
-    align-items: center;
-    padding: 0 20px;
-    text-decoration: none;
-    font-size: 16px;
-    font-weight: 700;
-    box-sizing: border-box;
-    position: relative;
-    transition: transform 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease;
-}
-
-.login-btn {
-    background-color: #59b344;
-    color: white;
-    box-shadow: 0 4px 0 rgba(0, 0, 0, 0.08);
-    border: none;
-}
-
-.login-btn:hover {
-    background-color: #4ca139;
-    color: white;
-    transform: translateY(-2px);
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.12);
-}
-
-.register-btn {
-    background-color: white;
-    color: #111;
-    box-shadow: 0 4px 0 rgba(0, 0, 0, 0.06);
-    border: none;
-}
-
-.register-btn:hover {
-    background-color: #fafafa;
-    color: #111;
-    transform: translateY(-2px);
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.10);
 }
 
 .btn-icon {

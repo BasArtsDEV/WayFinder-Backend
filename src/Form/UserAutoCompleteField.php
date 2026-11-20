@@ -26,6 +26,8 @@ class UserAutoCompleteField extends AbstractType
             'multiple' => true,
             'max_results' => 10,
             'max_options' => 10,
+            'no_results_found_text' => 'Aucun utilisateur trouvé',
+            'no_more_results_text' => 'Aucun autre résultat',
             'extra_options' => [],
             'constraints' => [
                 new Count(min: 1, minMessage: 'Veuillez sélectionner au moins un utilisateur.'),

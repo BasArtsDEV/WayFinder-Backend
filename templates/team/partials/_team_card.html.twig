@@ -1,8 +1,4 @@
-{% block stylesheets %}
-
-{% endblock %}
-
-<a href="{{ path('app_team_show', { id: team.id }) }}" class="card h-100 text-decoration-none overflow-hidden shadow-sm" style="border-radius: 15px">
+<a href="{{ path('app_team_show', { id: team.id }) }}" class="card team-card h-100 text-decoration-none overflow-hidden">
     <div class="position-relative bg-dark" style="height: 110px;">
         {% if team.banner %}
             <img src="{{ path('app_team_banner', { id: team.id }) }}" alt=""
@@ -17,10 +13,10 @@
     <div class="card-body">
         <h3 class="h6 fw-bold text-dark mb-1">{{ team.name }}</h3>
         <p class="small text-muted mb-2">
-            Propriétaire:
+            Propriétaire :
             {{ team.leader ? '@' ~ team.leader.username : 'Sans chef' }}
         </p>
-        <span class="badge text-bg-light border">
+        <span class="badge team-card-badge">
             <i class="bi bi-people"></i> {{ team.users|length }}/{{ constant('App\\Entity\\Team::MAX_USERS') }}
         </span>
         {% if team.leader and team.leader.id == app.user.id %}

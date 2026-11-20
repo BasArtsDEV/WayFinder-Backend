@@ -88,12 +88,12 @@ p {
 }
 
 .eventpage-box {
-    background: #f6f6f6;
+    background: #ffffff;
     width: 100%;
     max-width: 800px;
-    border-radius: 16px;
+    border-radius: 1.2rem;
     overflow: hidden;
-    border: 1px solid #d8d8d8;
+    font-family: 'Lexend', sans-serif;
 }
 
 .eventpage-header {
@@ -102,12 +102,12 @@ p {
     align-items: center;
     padding: 2rem;
     background: white;
-    border-bottom: 1px solid #e3e3e3;
+    border-bottom: 1px solid #ebebeb;
 }
 
 .event-title-block h1 {
     font-size: 1.8rem;
-    color: #1a202c;
+    color: var(--app-text);
     margin: 0;
     font-weight: 700;
 }
@@ -123,7 +123,7 @@ p {
 
 /* Badge Date */
 .eventpage-date-badge {
-    background: #0d6efd;
+    background: var(--app-button-background);
     color: white;
     padding: 10px;
     border-radius: 12px;
@@ -158,7 +158,7 @@ p {
     align-items: flex-start;
     gap: 12px;
     margin-bottom: 2rem;
-    border: 1px solid #d8d8d8;
+    border: 2px solid #ebebeb;
 }
 
 .info-banner p {
@@ -182,18 +182,18 @@ p {
 textarea {
     width: 100%;
     padding: 1rem;
-    border: 1px solid #d8d8d8;
-    border-radius: 12px;
-    font-family: inherit;
+    border: 2px solid var(--app-input-border);
+    border-radius: 1.2rem;
+    font-family: 'Lexend', sans-serif;
     font-size: 1rem;
-    transition: all 0.2s ease;
+    font-weight: 300;
+    background-color: var(--app-input-background);
     resize: vertical;
 }
 
 textarea:focus {
     outline: none;
-    border-color: #0d6efd;
-    box-shadow: 0 0 0 4px rgba(13, 110, 253, 0.1);
+    border-color: var(--app-button-background);
 }
 
 /* Boutons */
@@ -214,22 +214,14 @@ textarea:focus {
     border: none;
 }
 
-.send-button svg {
-    transition: transform 0.3s ease;
-}
-
-.send-button:hover svg {
-    transform: rotate(15deg) scale(1.1);
-}
-
 .notification-container {
-    background: #fbfbfb;
+    background: #ffffff;
     width: 100%;
     max-width: 900px;
     margin: 2rem auto 2rem;
-    border-radius: 16px;
+    border-radius: 1.2rem;
     overflow: visible !important;
-    border: 1px solid #e3e3e3;
+    font-family: 'Lexend', sans-serif;
 }
 
 .eventpage-header {
@@ -237,13 +229,13 @@ textarea:focus {
     justify-content: space-between;
     align-items: center;
     padding: 2rem;
-    background-color: white;
-    border-bottom: 1px solid #f2f2f2;
+    background-color: transparent;
+    border-bottom: 1px solid #ebebeb;
 }
 
 .notifpage-title-text {
     font-size: 1.8rem;
-    color: #1a202c;
+    color: var(--app-text);
     margin: 0;
     font-weight: 700;
 }
@@ -262,14 +254,13 @@ textarea:focus {
     align-items: center;
     padding: 1.25rem;
     background: white;
-    border: 1px solid #e2e8f0;
-    border-radius: 12px;
-    transition: all 0.2s ease;
+    border: 2px solid #ebebeb;
+    border-radius: 1.2rem;
+    transition: border-color 0.2s;
 }
 
 .notif-card-modern:hover {
     border-color: var(--app-button-background);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
 }
 
 .notif-card-content {
@@ -279,7 +270,7 @@ textarea:focus {
 .notif-card-title {
     font-size: 1.1rem;
     font-weight: 700;
-    color: #2d3748;
+    color: var(--app-text);
     margin-bottom: 6px;
     display: flex;
     align-items: center;
@@ -287,7 +278,7 @@ textarea:focus {
 }
 
 .notif-card-description {
-    color: #4a5568;
+    color: #555555;
     margin-bottom: 8px;
     line-height: 1.5;
 }
@@ -329,7 +320,7 @@ textarea:focus {
 .empty-notif-state {
     text-align: center;
     padding: 4rem 2rem;
-    color: #a0aec0;
+    color: #777777;
 }
 
 .empty-notif-state svg {
@@ -344,4 +335,24 @@ textarea:focus {
 
 .icon-xs {
     font-size: 14px !important;
+}
+
+.notification-container .btn-app-secondary {
+    border: 2px solid #ebebeb !important;
+}
+
+.invite-help {
+    display: flex;
+    gap: 0.5rem;
+    align-items: flex-start;
+
+    margin-top: 0.75rem;
+    padding: 0.75rem 1rem;
+    border: 2px solid #ebebeb;
+    border-radius: 1rem;
+
+    font-size: 0.9rem;
+    color: #555555;
+
+    background-color: #f7f7f7;
 }

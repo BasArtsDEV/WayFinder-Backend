@@ -30,6 +30,7 @@ class TreasureHuntType extends AbstractType
 
         $builder
             ->add('title', TextType::class, [
+                'label' => 'Titre',
                 'attr' => [
                     'minlength' => 10,
                     'maxlength' => 120,
@@ -37,10 +38,11 @@ class TreasureHuntType extends AbstractType
                 ],
             ])
             ->add('description', TextareaType::class, [
+                'label' => 'Description',
                 'attr' => [
                     'minlength' => 50,
                     'maxlength' => 1000,
-                    'placeholder' => 'Titre de la chasse au trésor (50 à 1000 caractères)',
+                    'placeholder' => 'Description de la chasse au trésor (50 à 1000 caractères)',
                 ],
             ])
             ->add('team', EntityType::class, [
@@ -57,7 +59,7 @@ class TreasureHuntType extends AbstractType
                 ],
             ])
             ->add('listed', CheckboxType::class, [
-                'label' => 'Afficher la chasse dans la liste publique',
+                'label' => "Afficher la chasse dans la liste publique. Les joueurs pourront rejoindre sans code d'invitation.",
                 'required' => false,
             ])
         ;

@@ -2,9 +2,14 @@
 
 {% block title %}Création d'une chasse au trésor{% endblock %}
 
+{% block stylesheets %}
+    <link href="{{ asset('styles/treasure_hunt/form.css') }}" type="text/css" rel="stylesheet" />
+{% endblock %}
+
 {% block main %}
     {{ include('treasure_hunt/partials/_form.html.twig', {
         form: form,
+        form_title: 'Créer une chasse au trésor',
         submit_label: 'Ajouter',
         with_context: false,
     }) }}

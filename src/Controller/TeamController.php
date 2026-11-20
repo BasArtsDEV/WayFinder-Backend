@@ -133,7 +133,7 @@ final class TeamController extends AbstractController
         }
 
         if ($user->getTeams()->count() >= User::MAX_TEAMS) {
-            $this->addFlash('danger', sprintf('Vous ne pouvez pas appartenir à plus de %d équipes.', User::MAX_TEAMS));
+            $this->addFlash('error', sprintf('Vous ne pouvez pas appartenir à plus de %d équipes.', User::MAX_TEAMS));
 
             return $this->redirectToRoute('app_team');
         }
@@ -194,21 +194,21 @@ final class TeamController extends AbstractController
 
         // CSRF token verification
         if (!$this->isCsrfTokenValid('leave'.$team->getId(), $request->getPayload()->getString('_token'))) {
-            $this->addFlash('danger', 'Jeton CSRF invalide.');
+            $this->addFlash('error', 'Jeton CSRF invalide.');
 
             return $this->redirectToRoute('app_team_show', ['id' => $team->getId()]);
         }
 
         // The leader cannot leave the team (they must delete it or pass on the role)
         if ($team->getLeader() === $user) {
-            $this->addFlash('danger', 'En tant que chef d\'équipe, vous ne pouvez pas quitter l\'équipe. Promouvez un autre membre ou supprimez l\'équipe.');
+            $this->addFlash('error', 'En tant que chef d\'équipe, vous ne pouvez pas quitter l\'équipe. Promouvez un autre membre ou supprimez l\'équipe.');
 
             return $this->redirectToRoute('app_team_show', ['id' => $team->getId()]);
         }
 
         // Verify that the user belongs to the team
         if (!$team->getUsers()->contains($user)) {
-            $this->addFlash('danger', 'Vous ne faites pas partie de cette équipe.');
+            $this->addFlash('error', 'Vous ne faites pas partie de cette équipe.');
 
             return $this->redirectToRoute('app_team_show', ['id' => $team->getId()]);
         }
@@ -321,13 +321,13 @@ final class TeamController extends AbstractController
         $back = $this->redirectToRoute('app_team_show', ['id' => $team->getId()]);
 
         if (!$this->isCsrfTokenValid('promote'.$team->getId().'-'.$member->getId(), $request->getPayload()->getString('_token'))) {
-            $this->addFlash('danger', 'Jeton CSRF invalide.');
+            $this->addFlash('error', 'Jeton CSRF invalide.');
 
             return $back;
         }
 
         if (!$this->isPromotableMember($team, $member)) {
-            $this->addFlash('danger', 'Cet utilisateur n\'est pas un membre de l\'équipe.');
+            $this->addFlash('error', 'Cet utilisateur n\'est pas un membre de l\'équipe.');
 
             return $back;
         }
@@ -362,13 +362,13 @@ final class TeamController extends AbstractController
         $back = $this->redirectToRoute('app_team_show', ['id' => $team->getId()]);
 
         if (!$this->isCsrfTokenValid('exclude'.$team->getId().'-'.$member->getId(), $request->getPayload()->getString('_token'))) {
-            $this->addFlash('danger', 'Jeton CSRF invalide.');
+            $this->addFlash('error', 'Jeton CSRF invalide.');
 
             return $back;
         }
 
         if (!$this->isPromotableMember($team, $member)) {
-            $this->addFlash('danger', 'Cet utilisateur n\'est pas un membre de l\'équipe.');
+            $this->addFlash('error', 'Cet utilisateur n\'est pas un membre de l\'équipe.');
 
             return $back;
         }
