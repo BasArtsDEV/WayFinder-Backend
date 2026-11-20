@@ -105,6 +105,7 @@
 }
 
 .hunt-header-actions .btn {
+    min-height: calc(1.2rem + 1.1rem * 1.5);
     white-space: nowrap;
 }
 
