@@ -59,7 +59,7 @@ class TreasureHuntType extends AbstractType
                 ],
             ])
             ->add('listed', CheckboxType::class, [
-                'label' => 'Afficher la chasse dans la liste publique',
+                'label' => "Afficher la chasse dans la liste publique. Les joueurs pourront rejoindre sans code d'invitation.",
                 'required' => false,
             ])
         ;
