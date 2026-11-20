@@ -132,8 +132,6 @@
 
                         {% if not treasureHunt.published and is_granted('RIDDLE_ADD', treasureHunt) %}
                             <div class="dropdown" data-turbo="false">
-                                {% if is_granted('TREASURE_HUNT_ADD', treasureHunt) %}
-
                                 <button type="button" class="btn btn-app-primary btn-sm px-3" data-bs-toggle="dropdown" aria-expanded="false">
                                     <i class="bi bi-plus-lg me-1"></i>Ajouter
                                 </button>
