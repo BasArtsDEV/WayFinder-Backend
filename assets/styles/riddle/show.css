@@ -22,6 +22,7 @@
 }
 
 .hunt-header-info {
+    flex: 1 1 0;
     min-width: 0;
     overflow-wrap: anywhere;
 }
@@ -31,30 +32,19 @@
     line-height: 1.6;
 }
 
-.hunt-header-side {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-    align-items: flex-start;
-
-    min-width: 0;
-}
-
 .hunt-header-actions {
     display: flex;
     flex-wrap: wrap;
     gap: 0.5rem;
     align-items: center;
+
+    min-width: 0;
 }
 
 @media (min-width: 992px) {
-    .hunt-header-side {
-        align-items: flex-end;
-        max-width: 50%;
-    }
-
     .hunt-header-actions {
         justify-content: flex-end;
+        max-width: 60%;
     }
 }
 
@@ -105,7 +95,7 @@
     align-items: center;
     justify-content: space-between;
 
-    padding: 0.5rem 0.5rem 0.5rem 1.2rem;
+    padding: 0.3rem 0.3rem 0.3rem 1.2rem;
     border: 2px solid #ebebeb;
     border-radius: 50px;
 
