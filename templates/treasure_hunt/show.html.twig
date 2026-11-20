@@ -72,13 +72,6 @@
                                 </button>
                             </form>
                         {% else %}
-                            <form method="post" action="{{ path('app_treasure_hunt_publish', { id: treasureHunt.id }) }}" class="d-inline">
-                                <input type="hidden" name="_token" value="{{ csrf_token('publish' ~ treasureHunt.id) }}">
-                                <button type="submit" class="btn btn-app-primary">
-                                    <i class="bi bi-rocket-takeoff-fill me-1"></i>Publier
-                                </button>
-                            </form>
-
                             <a href="{{ path('app_treasure_hunt_edit', { id: treasureHunt.id }) }}" class="btn btn-app-secondary">
                                 <i class="bi bi-pencil me-1"></i>Éditer
                             </a>
@@ -86,17 +79,26 @@
                             <button type="button" class="btn btn-app-secondary">
                                 <i class="bi bi-trophy me-1" aria-hidden="true"></i>Classement
                             </button>
+                        {% endif %}
+                    </div>
 
+                    {% if not treasureHunt.published %}
+                        <div class="hunt-header-actions equal-buttons">
                             {{ include('_delete_button.html.twig', {
                                 action_path: path('app_treasure_hunt_delete', { id: treasureHunt.id }),
                                 csrf_token_name: 'delete' ~ treasureHunt.id,
                                 confirm_message: 'Confirmer la suppression de la chasse aux trésors ?',
                                 btn_class: 'btn btn-app-danger',
                             }) }}
-                        {% endif %}
-                    </div>
 
-                    {% if treasureHunt.published and treasureHunt.invitationCode %}
+                            <form method="post" action="{{ path('app_treasure_hunt_publish', { id: treasureHunt.id }) }}" class="d-inline">
+                                <input type="hidden" name="_token" value="{{ csrf_token('publish' ~ treasureHunt.id) }}">
+                                <button type="submit" class="btn btn-app-primary">
+                                    <i class="bi bi-rocket-takeoff-fill me-1"></i>Publier
+                                </button>
+                            </form>
+                        </div>
+                    {% elseif treasureHunt.invitationCode %}
                         <div class="hunt-code">
                             <div class="hunt-code-content">
                                 <span class="hunt-code-label">Code d'invitation :</span>
