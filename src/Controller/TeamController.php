@@ -11,7 +11,6 @@ use App\Form\TeamType;
 use App\Repository\NotificationRepository;
 use App\Repository\TeamRepository;
 use App\Repository\TreasureHuntRepository;
-use App\Repository\UserRepository;
 use App\Security\Voter\TeamVoter;
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
