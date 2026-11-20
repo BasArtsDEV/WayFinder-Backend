@@ -16,8 +16,9 @@
 }
 
 .treasure-card-inner {
+    border: 2px solid #ebebeb;
     border-radius: 1rem;
-    background-color: var(--app-box-background);
+    background-color: #ffffff;
 }
 
 .hunt-header-info {
@@ -92,7 +93,7 @@
 }
 
 .code-copy-box:hover {
-    background-color: var(--app-box-background);
+    background-color: #f5f5f5;
 }
 
 .feedbacks-section {
@@ -142,8 +143,9 @@
 
 .feedback-card {
     padding: 1rem 1.25rem;
+    border: 2px solid #ebebeb;
     border-radius: 1rem;
-    background-color: var(--app-box-background);
+    background-color: #ffffff;
 }
 
 .riddle-sidebar {
@@ -173,7 +175,7 @@
 .riddle-add-menu .dropdown-item:hover,
 .riddle-add-menu .dropdown-item:focus {
     color: var(--app-text);
-    background-color: var(--app-box-background);
+    background-color: #f5f5f5;
 }
 
 .riddle-nav-item {
@@ -198,7 +200,14 @@
 
 .riddle-nav-item.active {
     border-color: var(--app-button-background) !important;
-    background-color: var(--app-box-background) !important;
+    color: var(--app-button-text);
+    background-color: var(--app-button-background) !important;
+}
+
+.riddle-nav-item.active .text-dark,
+.riddle-nav-item.active .text-muted,
+.riddle-nav-item.active .text-success {
+    color: var(--app-button-text) !important;
 }
 
 .riddle-nav-item.dragging {
@@ -223,8 +232,8 @@
 }
 
 .riddle-nav-item.active .riddle-num-badge {
-    color: var(--app-button-text);
-    background-color: var(--app-button-background);
+    color: var(--app-button-background);
+    background-color: #ffffff;
 }
 
 .riddle-type-badge {
