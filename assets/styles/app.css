@@ -134,6 +134,35 @@ p, span, label {
     text-decoration: underline !important;
 }
 
+.form-control,
+.form-select {
+    padding: 0.6rem 1rem;
+    border: 2px solid var(--app-input-border);
+    border-radius: 50px;
+
+    font-family: 'Lexend', sans-serif;
+    font-weight: 300;
+    color: var(--app-text);
+
+    background-color: var(--app-input-background);
+}
+
+textarea.form-control {
+    border-radius: 1.2rem;
+}
+
+.form-control:focus,
+.form-select:focus {
+    border-color: var(--app-button-background);
+    background-color: var(--app-input-background);
+    box-shadow: none;
+}
+
+.form-label {
+    font-family: 'Lexend', sans-serif;
+    font-weight: 500;
+}
+
 .page-header {
     display: flex;
     flex-wrap: wrap;

@@ -65,24 +65,6 @@
     background-color: var(--app-button-decline-background);
 }
 
-.settings-page .form-control,
-.settings-page .form-select {
-    padding: 0.6rem 1rem;
-    border: 2px solid var(--app-input-border);
-    border-radius: 50px;
-
-    font-family: 'Lexend', sans-serif;
-    font-weight: 300;
-
-    background-color: var(--app-input-background);
-}
-
-.settings-page .form-control:focus,
-.settings-page .form-select:focus {
-    border-color: var(--app-button-background);
-    box-shadow: none;
-}
-
 .settings-page .form-control[readonly] {
     color: #6c757d;
 }
