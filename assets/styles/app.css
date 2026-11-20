@@ -163,6 +163,83 @@ textarea.form-control {
     font-weight: 500;
 }
 
+.ts-wrapper.form-control,
+.ts-wrapper.form-select {
+    display: flex;
+    align-items: center;
+    padding: 0.3rem 0.5rem;
+}
+
+.ts-wrapper.focus.form-control,
+.ts-wrapper.focus.form-select {
+    border-color: var(--app-button-background);
+}
+
+.ts-wrapper .ts-control,
+.ts-wrapper.single.input-active .ts-control {
+    padding: 0.25rem 0.5rem;
+    border: none;
+
+    font-family: 'Lexend', sans-serif;
+    font-weight: 300;
+
+    background: transparent;
+    box-shadow: none;
+}
+
+.ts-wrapper .ts-control input {
+    font-family: 'Lexend', sans-serif;
+    font-weight: 300;
+}
+
+.ts-wrapper.multi .ts-control > .item[data-value] {
+    padding: 0.15rem 0.4rem 0.15rem 0.8rem;
+    border: none;
+    border-radius: 50px;
+
+    font-weight: 500;
+    color: var(--app-button-text);
+    text-shadow: none;
+
+    background: var(--app-button-background);
+    box-shadow: none;
+}
+
+.ts-wrapper.multi .ts-control > .item.active[data-value] {
+    background: var(--app-button-background-hover);
+}
+
+.ts-wrapper.plugin-remove_button .item .remove {
+    margin-left: 0.3rem;
+    border-left: none;
+    border-radius: 50%;
+    color: var(--app-button-text);
+}
+
+.ts-wrapper.plugin-remove_button .item .remove:hover {
+    background: rgb(0 0 0 / 15%);
+}
+
+.ts-wrapper .ts-dropdown {
+    overflow: hidden;
+
+    margin-top: 0.4rem;
+    border: 2px solid #ebebeb;
+    border-radius: 1rem;
+
+    font-family: 'Lexend', sans-serif;
+}
+
+.ts-wrapper .ts-dropdown .option,
+.ts-wrapper .ts-dropdown .no-results {
+    padding: 0.5rem 1rem;
+}
+
+.ts-wrapper .ts-dropdown .active {
+    color: var(--app-text);
+    background-color: #f2f2f2;
+}
+
 .page-header {
     display: flex;
     flex-wrap: wrap;
