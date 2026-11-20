@@ -43,6 +43,7 @@
         "doctrine/doctrine-bundle": "^3.3.2",
         "doctrine/doctrine-migrations-bundle": "^4.0.1",
         "doctrine/orm": "^3.7.5",
+        "dompdf/dompdf": "^3.1",
         "endroid/qr-code-bundle": "^7.0.2",
         "knplabs/knp-paginator-bundle": "^6.11",
         "lelyfoto/twig-instanceof": "^1.3",
