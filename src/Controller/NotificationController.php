@@ -44,7 +44,7 @@ final class NotificationController extends AbstractController
         $leader = $team->getLeader();
 
         if (!$leader) {
-            $this->addFlash('danger', 'Cette équipe n\'a pas de chef.');
+            $this->addFlash('error', 'Cette équipe n\'a pas de chef.');
 
             return $this->redirectToRoute('app_team_show', ['id' => $team->getId()]);
         }
@@ -57,7 +57,7 @@ final class NotificationController extends AbstractController
         ]);
 
         if ($existingRequest) {
-            $this->addFlash('warning', 'Vous avez déjà envoyé une demande pour rejoindre cette équipe.');
+            $this->addFlash('info', 'Vous avez déjà envoyé une demande pour rejoindre cette équipe.');
 
             return $this->redirectToRoute('app_team_show', ['id' => $team->getId()]);
         }
@@ -92,7 +92,7 @@ final class NotificationController extends AbstractController
         $currentUser = $this->getUser();
 
         if (!$notification->getReceiveNotif()->contains($currentUser)) {
-            $this->addFlash('danger', 'Accès non autorisé.');
+            $this->addFlash('error', 'Accès non autorisé.');
 
             return $this->redirectToRoute('app_notification');
         }
@@ -106,14 +106,14 @@ final class NotificationController extends AbstractController
 
         // Only invitations and requests call for a response.
         if (null === $team || null === $candidate || (!$isInvitation && !$isJoinRequest)) {
-            $this->addFlash('danger', 'Cette notification n\'appelle aucune réponse.');
+            $this->addFlash('error', 'Cette notification n\'appelle aucune réponse.');
 
             return $this->redirectToRoute('app_notification');
         }
 
         // The manager may have changed since the request was submitted
         if ($isJoinRequest && $team->getLeader()?->getId() !== $currentUser->getId()) {
-            $this->addFlash('danger', 'Vous n\'êtes plus le chef de cette équipe : cette demande ne vous concerne plus.');
+            $this->addFlash('error', 'Vous n\'êtes plus le chef de cette équipe : cette demande ne vous concerne plus.');
             $this->dismiss($notification, $currentUser, $entityManager);
             $entityManager->flush();
 
@@ -147,8 +147,8 @@ final class NotificationController extends AbstractController
             'accepted' => $this->addFlash('success', $isInvitation
                 ? sprintf('Vous avez rejoint l\'équipe "%s" !', $teamName)
                 : sprintf('%s a rejoint votre équipe !', $candidate->getUsername())),
-            'declined' => $this->addFlash('info', $isInvitation ? 'Invitation refusée.' : 'Demande refusée.'),
-            'failed' => $this->addFlash('danger', sprintf('Impossible : %s.', $failure)),
+            'declined' => $this->addFlash('success', $isInvitation ? 'Invitation refusée.' : 'Demande refusée.'),
+            'failed' => $this->addFlash('error', sprintf('Impossible : %s.', $failure)),
             default => null,
         };
 
@@ -256,7 +256,7 @@ final class NotificationController extends AbstractController
         }
 
         $entityManager->flush();
-        $this->addFlash('info', 'Toutes les notifications ont été supprimées.');
+        $this->addFlash('success', 'Toutes les notifications ont été supprimées.');
 
         return $this->redirectToRoute('app_notification');
     }

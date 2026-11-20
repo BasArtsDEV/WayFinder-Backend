@@ -200,7 +200,9 @@ final class TreasureHuntController extends AbstractController
             }
 
             $treasureHunt->setPublished(true);
-            $treasureHunt->generateInvitationCode();
+            if (null === $treasureHunt->getInvitationCode()) {
+                $treasureHunt->generateInvitationCode();
+            }
 
             $em->flush();
 
@@ -217,7 +219,7 @@ final class TreasureHuntController extends AbstractController
             $treasureHunt->setPublished(false);
             $em->flush();
 
-            $this->addFlash('warning', 'La chasse au trésor n\'est plus publiée.');
+            $this->addFlash('success', 'La chasse au trésor n\'est plus publiée.');
         }
 
         return $this->redirectToRoute('app_treasure_hunt_show', ['id' => $treasureHunt->getId()]);

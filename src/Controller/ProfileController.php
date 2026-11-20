@@ -89,7 +89,7 @@ final class ProfileController extends AbstractController
         $user = $this->getUser();
 
         if (!$this->isCsrfTokenValid('delete-account-'.$user->getId(), (string) $request->request->get('_token'))) {
-            $this->addFlash('danger', 'Jeton de sécurité invalide, la suppression a été annulée.');
+            $this->addFlash('error', 'Jeton de sécurité invalide, la suppression a été annulée.');
 
             return $this->redirectToRoute('app_profil_edit');
         }

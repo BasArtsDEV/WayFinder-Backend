@@ -1,0 +1,176 @@
+.hunt-count {
+    padding: 0.1rem 0.7rem;
+    border-radius: 50px;
+
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--app-button-text);
+
+    background-color: var(--app-button-background);
+}
+
+.hunt-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+    gap: 1rem;
+}
+
+.hunt-card {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+
+    height: 100%;
+    padding: 1.1rem 1.2rem;
+    border: 2px solid #e8e8e8;
+    border-radius: 1.2rem;
+
+    font-family: 'Lexend', sans-serif;
+    color: var(--app-text);
+    text-decoration: none;
+
+    background-color: #ffffff;
+
+    transition: border-color 0.2s;
+}
+
+.hunt-card:hover {
+    border-color: var(--app-button-background);
+    color: var(--app-text);
+}
+
+.hunt-card:focus-visible {
+    outline: 3px solid var(--app-header-button-border);
+    outline-offset: 2px;
+}
+
+.hunt-card-header {
+    display: flex;
+    gap: 0.75rem;
+    align-items: flex-start;
+    justify-content: space-between;
+}
+
+.hunt-card-title {
+    margin: 0;
+
+    font-family: 'Lexend', sans-serif;
+    font-size: 1.15rem;
+    font-weight: 700;
+    overflow-wrap: anywhere;
+}
+
+.hunt-status {
+    flex-shrink: 0;
+
+    padding: 0.2rem 0.65rem;
+    border-radius: 50px;
+
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: #555555;
+
+    background-color: #ebebeb;
+}
+
+.hunt-status.published {
+    color: var(--app-button-text);
+    background-color: var(--app-button-background);
+}
+
+.hunt-card-description {
+    display: -webkit-box;
+    overflow: hidden;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+
+    margin: 0;
+
+    font-size: 0.9rem;
+    color: #555555;
+    overflow-wrap: anywhere;
+}
+
+.hunt-card-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+
+    margin: 0;
+    padding: 0;
+
+    list-style: none;
+}
+
+.hunt-card-meta li {
+    display: flex;
+    gap: 0.35rem;
+    align-items: center;
+
+    padding: 0.2rem 0.6rem;
+    border-radius: 50px;
+
+    font-size: 0.8rem;
+
+    background-color: #f2f2f2;
+}
+
+.hunt-card-meta i {
+    color: var(--app-button-background-hover);
+}
+
+.hunt-card-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    margin-top: auto;
+    padding-top: 0.75rem;
+    border-top: 1px solid #ebebeb;
+}
+
+.hunt-card-reviews {
+    display: flex;
+    gap: 0.2rem;
+    align-items: center;
+
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--app-button-background-hover);
+}
+
+.rating-container {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.star-rating {
+    display: inline-flex;
+    gap: 2px;
+    align-items: center;
+    vertical-align: middle;
+}
+
+.star-single {
+    display: block;
+    width: 16px;
+    height: 16px;
+}
+
+.hunt-empty {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    align-items: center;
+
+    padding: 3rem 1rem;
+
+    color: #555555;
+    text-align: center;
+}
+
+.hunt-empty i {
+    font-size: 2.5rem;
+    color: #b1b2b4;
+}

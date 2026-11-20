@@ -5,7 +5,7 @@
 <div class="riddle-editor-container">
     <div class="riddle-header">
         <h2>{{ is_edit ? riddle.title : ('Créer une énigme - ' ~ type_label) }}</h2>
-        <span class="badge bg-primary">
+        <span class="badge bg-success">
             {{ is_edit ? riddle.typeLabel : type_label }}
         </span>
     </div>
@@ -91,13 +91,13 @@
 
     <div class="riddle-card form-actions-card">
         <div class="form-actions">
-            <button type="submit" class="btn btn-primary">
+            <button type="submit" class="btn-app-primary">
                 {{ is_edit ? 'Mettre à jour' : 'Enregistrer l\'énigme' }}
             </button>
-            <a href="{{ path('app_treasure_hunt_show', { id: hunt_id }) }}" class="btn btn-secondary">Annuler</a>
+            <a href="{{ path('app_treasure_hunt_show', { id: hunt_id }) }}" class="btn-app-secondary">Annuler</a>
 
             {% if is_edit %}
-                <button type="button" class="btn btn-danger" onclick="document.getElementById('delete-riddle-form').submit();">Supprimer</button>
+                <button type="button" class="btn-app-danger" onclick="document.getElementById('delete-riddle-form').submit();">Supprimer</button>
             {% endif %}
         </div>
     </div>

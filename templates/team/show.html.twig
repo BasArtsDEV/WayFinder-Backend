@@ -4,6 +4,7 @@
 
 {% block stylesheets %}
     <link href="{{ asset('styles/team/show.css') }}" type="text/css" rel="stylesheet" />
+    <link href="{{ asset('styles/treasure_hunt/list.css') }}" type="text/css" rel="stylesheet" />
 {% endblock %}
 
 {% block main %}
@@ -68,7 +69,7 @@
             <div class="row g-4">
 
                 <div class="col-lg-8">
-                    <div class="card border-0 shadow-sm rounded-4 p-4 h-100 theme-card-bg">
+                    <div class="card border-0 rounded-4 p-4 h-100 theme-card-bg">
                         {{ include('treasure_hunt/partials/_treasure_hunts_display.html.twig', {
                             listTitle: 'Chasses au trésor',
                             treasureHunts: treasurehunts,
@@ -78,7 +79,7 @@
                 </div>
 
                 <div class="col-lg-4">
-                    <div class="card border-0 shadow-sm rounded-4 p-4 h-100 bg-white">
+                    <div class="card border-0 rounded-4 p-4 h-100 bg-white">
                         <h3 class="fw-bold fs-5 text-dark mb-2 d-flex align-items-center gap-2">
                             <i class="bi bi-people-fill text-success"></i> Membres
                         </h3>
@@ -130,12 +131,12 @@
 
                                         {% if isLeader %}
                                             <div class="btn-dropdown flex-shrink-0">
-                                                <button class="btn btn-sm btn-light rounded-circle" type="button"
+                                                <button class="btn btn-sm rounded-circle member-actions-button" type="button"
                                                         data-bs-toggle="dropdown" aria-expanded="false"
                                                         aria-label="Actions pour @{{ user.username }}">
                                                     <i class="bi bi-three-dots-vertical"></i>
                                                 </button>
-                                                <ul class="dropdown-menu dropdown-menu-end shadow border-0">
+                                                <ul class="dropdown-menu dropdown-menu-end member-actions-menu">
                                                     <li>
                                                         <form action="{{ path('app_team_promote', { id: team.id, userId: user.id }) }}" method="POST"
                                                               onsubmit="return confirm('Promouvoir @{{ user.username|e('js') }} chef de l\'équipe ? Vous deviendrez simple membre.');">
