@@ -46,7 +46,7 @@
     display: flex;
     flex-wrap: wrap;
     gap: 0.5rem;
-    align-items: center;
+    align-items: stretch;
 }
 
 @media (min-width: 992px) {
@@ -100,15 +100,15 @@
     height: 16px;
 }
 
-.hunt-header-actions.equal-buttons {
-    align-items: stretch;
-}
-
 .hunt-header-actions.equal-buttons > * {
     flex: 1 1 0;
 }
 
-.hunt-header-actions.equal-buttons button {
+.hunt-header-actions .btn {
+    white-space: nowrap;
+}
+
+.hunt-header-actions.equal-buttons .btn {
     justify-content: center;
     width: 100%;
 }
