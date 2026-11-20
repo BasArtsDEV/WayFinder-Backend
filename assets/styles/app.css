@@ -318,6 +318,113 @@ textarea.form-control {
     margin-bottom: 0;
 }
 
+.flash-container {
+    pointer-events: none;
+
+    position: fixed;
+    z-index: 1080;
+    top: 5rem;
+    right: 1rem;
+    left: 1rem;
+
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    align-items: flex-end;
+}
+
+.flash {
+    --flash-color: #252525;
+
+    pointer-events: auto;
+
+    display: flex;
+    gap: 0.8rem;
+    align-items: center;
+
+    width: 100%;
+    margin: 0;
+    padding: 0.6rem 0.6rem 0.6rem 0.7rem;
+    border: 2px solid var(--flash-color);
+    border-radius: 1.2rem;
+
+    font-family: 'Lexend', sans-serif;
+    color: var(--app-text);
+
+    background-color: #ffffff;
+}
+
+.flash-success {
+    --flash-color: var(--app-button-background);
+}
+
+.flash-error {
+    --flash-color: var(--app-button-decline-background);
+}
+
+.flash-warning {
+    --flash-color: #f0a020;
+}
+
+.flash-icon {
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+
+    width: 2.2rem;
+    height: 2.2rem;
+    border-radius: 50%;
+
+    font-size: 1.1rem;
+    color: #ffffff;
+
+    background-color: var(--flash-color);
+}
+
+.flash-message {
+    flex: 1;
+    margin: 0;
+    font-size: 0.95rem;
+    font-weight: 400;
+}
+
+.flash-close {
+    cursor: pointer;
+
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+
+    width: 2rem;
+    height: 2rem;
+    border: none;
+    border-radius: 50%;
+
+    color: #555555;
+
+    background-color: transparent;
+
+    transition: background-color 0.2s;
+}
+
+.flash-close:hover {
+    background-color: #f2f2f2;
+}
+
+.flash-close:focus-visible {
+    outline: 3px solid var(--flash-color);
+    outline-offset: 2px;
+}
+
+@media (min-width: 576px) {
+    .flash-container {
+        left: auto;
+        width: 400px;
+    }
+}
+
 .welcome-card {
     width: 100%;
     max-width: 750px;
