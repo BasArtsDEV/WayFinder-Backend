@@ -16,9 +16,9 @@ class AccessDeniedHandler implements AccessDeniedHandlerInterface
         'app_treasure_hunt_edit' => ['route_redirection' => 'app_treasure_hunt_show'],
         'app_treasure_hunt_delete' => ['route_redirection' => 'app_treasure_hunt_show'],
 
-        'app_riddle_new' => ['route_redirection' => 'app_team_show'],
-        'app_riddle_edit' => ['route_redirection' => 'app_team_show'],
-        'app_riddle_delete' => ['route_redirection' => 'app_team_show'],
+        'app_riddle_new' => ['route_redirection' => 'app_treasure_hunt_show'],
+        'app_riddle_edit' => ['route_redirection' => 'app_treasure_hunt_show'],
+        'app_riddle_delete' => ['route_redirection' => 'app_treasure_hunt_show'],
 
         'app_team_edit' => ['route_redirection' => 'app_team_show'],
         'app_team_delete' => ['route_redirection' => 'app_team_show'],
