@@ -32,6 +32,7 @@ final class RiddleController extends AbstractController
         #[MapEntity(mapping: ['huntId' => 'id'])] TreasureHunt $hunt,
         string $type,
         Request $request,
+        RiddleRepository $riddleRepository,
         EntityManagerInterface $em,
     ): Response {
         $riddle = match ($type) {
@@ -43,7 +44,7 @@ final class RiddleController extends AbstractController
         };
 
         $riddle->setTreasureHunt($hunt);
-        $riddle->setIndex(count($hunt->getRiddles()) + 1);
+        $riddle->setIndex($riddleRepository->count(['treasureHunt' => $hunt]) + 1);
 
         $formType = match ($type) {
             'qcm' => RiddleQCMType::class,
@@ -136,10 +137,19 @@ final class RiddleController extends AbstractController
             return new JsonResponse(['error' => 'Données invalides'], 400);
         }
 
+        $ids = [];
         foreach ($data['orders'] as $item) {
-            $riddle = $riddleRepository->find($item['id']);
-            if ($riddle) {
-                $riddle->setIndex((int) $item['index']);
+            if (isset($item['id'])) {
+                $ids[] = (int) $item['id'];
+            }
+        }
+
+        $riddles = $riddleRepository->findByIdsIndexed($ids);
+
+        foreach ($data['orders'] as $item) {
+            $id = isset($item['id']) ? (int) $item['id'] : null;
+            if (null !== $id && isset($riddles[$id])) {
+                $riddles[$id]->setIndex((int) $item['index']);
             }
         }
 
