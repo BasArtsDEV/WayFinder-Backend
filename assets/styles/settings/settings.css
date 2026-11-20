@@ -1,0 +1,131 @@
+.settings-page {
+    font-family: 'Lexend', sans-serif;
+}
+
+.settings-page h4,
+.settings-page h5,
+.settings-page h6 {
+    font-family: 'Lexend', sans-serif;
+    font-weight: 700;
+}
+
+.settings-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+}
+
+.settings-nav-link {
+    cursor: pointer;
+
+    display: flex;
+    gap: 0.75rem;
+    align-items: center;
+
+    width: 100%;
+    padding: 0.7rem 1.1rem;
+    border: none;
+    border-radius: 50px;
+
+    font-family: 'Lexend', sans-serif;
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--app-text);
+    text-align: left;
+
+    background-color: transparent;
+
+    transition: background-color 0.3s;
+}
+
+.settings-nav-link i {
+    font-size: 1.2rem;
+}
+
+.settings-nav-link:hover {
+    background-color: var(--app-box-background);
+}
+
+.settings-nav-link.active {
+    color: var(--app-button-text);
+    background-color: var(--app-button-background);
+}
+
+.settings-nav-link:focus-visible {
+    outline: 3px solid var(--app-header-button-border);
+    outline-offset: 2px;
+}
+
+.settings-nav-link.danger {
+    color: var(--app-button-decline-background);
+}
+
+.settings-nav-link.danger.active {
+    color: var(--app-button-decline-text);
+    background-color: var(--app-button-decline-background);
+}
+
+.settings-page .form-control,
+.settings-page .form-select {
+    padding: 0.6rem 1rem;
+    border: 2px solid var(--app-input-border);
+    border-radius: 50px;
+
+    font-family: 'Lexend', sans-serif;
+    font-weight: 300;
+
+    background-color: var(--app-input-background);
+}
+
+.settings-page .form-control:focus,
+.settings-page .form-select:focus {
+    border-color: var(--app-button-background);
+    box-shadow: none;
+}
+
+.settings-page .form-control[readonly] {
+    color: #6c757d;
+}
+
+.settings-page .btn-app-secondary {
+    border: 2px solid var(--app-input-background) !important;
+}
+
+.settings-box {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 1.25rem;
+    border-radius: 1.2rem;
+
+    background-color: var(--app-box-background);
+}
+
+.settings-box.danger {
+    border-left: 6px solid var(--app-button-decline-background);
+}
+
+.avatar-edit-button {
+    cursor: pointer;
+
+    position: absolute;
+    right: 0;
+    bottom: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 32px;
+    height: 32px;
+    border: 2px solid #ffffff;
+    border-radius: 50%;
+
+    font-size: 0.85rem;
+    color: var(--app-button-text);
+
+    background-color: var(--app-button-background);
+}
