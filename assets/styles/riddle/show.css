@@ -7,6 +7,21 @@
     box-shadow: 0 12px 32px rgba(60, 38, 15, 0.08);
 }
 
+.hunt-header-info {
+    min-width: 0;
+    overflow-wrap: anywhere;
+}
+
+.hunt-header-actions {
+    min-width: 0;
+}
+
+@media (min-width: 992px) {
+    .hunt-header-actions {
+        max-width: 55%;
+    }
+}
+
 .riddle-sidebar {
     position: sticky;
     top: 1.5rem;

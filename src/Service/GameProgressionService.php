@@ -66,6 +66,20 @@ readonly class GameProgressionService
         $this->finishIfTimeIsUp($enrollment, $now);
     }
 
+    public function reset(Enrollment $enrollment): void
+    {
+        $enrollment->getSubmissions()->clear();
+
+        $enrollment->setStatus(EnrollmentStatus::NOT_STARTED)
+            ->setRiddle(null)
+            ->setScoreTotal(0)
+            ->setCountdown(0)
+            ->setRiddleElapsedTime(0)
+            ->setStartedAt(null)
+            ->setLastResumedAt(null)
+            ->setFinishedAt(null);
+    }
+
     public function getRemainingTime(Enrollment $enrollment, ?\DateTimeImmutable $now = null): int
     {
         return max(0, $enrollment->getTreasureHunt()->getDuration() - $enrollment->getCountdown($now));
