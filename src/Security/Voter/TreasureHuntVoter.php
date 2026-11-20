@@ -21,8 +21,11 @@ final class TreasureHuntVoter extends Voter
     {
         // replace with your own logic
         // https://symfony.com/doc/current/security/voters.html
-        return in_array($attribute, [self::EDIT, self::DELETE, self::ADD])
-            && $subject instanceof TreasureHunt;
+        return match ($attribute) {
+            self::ADD => null == $subject,
+            self::EDIT, self::DELETE => $subject instanceof TreasureHunt,
+            default => false,
+        };
     }
 
     protected function voteOnAttribute(string $attribute, mixed $subject, TokenInterface $token, ?Vote $vote = null): bool
@@ -38,10 +41,11 @@ final class TreasureHuntVoter extends Voter
         }
 
         // ... (check conditions and return true to grant permission) ...
-        $team = $subject->getTeam();
+        $userTeams = $user->getTeams();
 
         return match ($attribute) {
-            self::EDIT, self::DELETE, self::ADD => $user->getTeams()->contains($team),
+            self::ADD => !$userTeams->isEmpty(),
+            self::EDIT, self::DELETE => $userTeams->contains($subject->getTeam()),
             default => throw new \LogicException('This code should not be reached!'),
         };
     }
