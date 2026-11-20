@@ -60,6 +60,7 @@ final class TreasureHuntController extends AbstractController
     }
 
     #[Route('/treasure_hunt/new', name: 'app_treasure_hunt_new', methods: ['GET', 'POST'])]
+    #[IsGranted(TreasureHuntVoter::ADD)]
     public function new(Request $request, EntityManagerInterface $em): Response
     {
         $treasureHunt = new TreasureHunt();
