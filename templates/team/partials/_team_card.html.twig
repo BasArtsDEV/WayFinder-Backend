@@ -2,7 +2,7 @@
 
 {% endblock %}
 
-<a href="{{ path('app_team_show', { id: team.id }) }}" class="card h-100 text-decoration-none overflow-hidden shadow-sm" style="border-radius: 15px">
+<a href="{{ path('app_team_show', { id: team.id }) }}" class="card h-100 text-decoration-none overflow-hidden border-0" style="border-radius: 1.2rem">
     <div class="position-relative bg-dark" style="height: 110px;">
         {% if team.banner %}
             <img src="{{ path('app_team_banner', { id: team.id }) }}" alt=""
