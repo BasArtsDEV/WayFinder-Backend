@@ -373,50 +373,6 @@ textarea.form-control {
     text-decoration: none;
 }
 
-.welcome-btn {
-    width: 100%;
-    max-width: 320px;
-    height: 50px;
-    border-radius: 40px;
-    display: flex;
-    align-items: center;
-    padding: 0 20px;
-    text-decoration: none;
-    font-size: 16px;
-    font-weight: 700;
-    box-sizing: border-box;
-    position: relative;
-    transition: transform 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease;
-}
-
-.login-btn {
-    background-color: #59b344;
-    color: white;
-    box-shadow: 0 4px 0 rgba(0, 0, 0, 0.08);
-    border: none;
-}
-
-.login-btn:hover {
-    background-color: #4ca139;
-    color: white;
-    transform: translateY(-2px);
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.12);
-}
-
-.register-btn {
-    background-color: white;
-    color: #111;
-    box-shadow: 0 4px 0 rgba(0, 0, 0, 0.06);
-    border: none;
-}
-
-.register-btn:hover {
-    background-color: #fafafa;
-    color: #111;
-    transform: translateY(-2px);
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.10);
-}
-
 .btn-icon {
     display: flex;
     align-items: center;
