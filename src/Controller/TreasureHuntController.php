@@ -200,7 +200,9 @@ final class TreasureHuntController extends AbstractController
             }
 
             $treasureHunt->setPublished(true);
-            $treasureHunt->generateInvitationCode();
+            if (null === $treasureHunt->getInvitationCode()) {
+                $treasureHunt->generateInvitationCode();
+            }
 
             $em->flush();
 
