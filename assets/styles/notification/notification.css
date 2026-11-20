@@ -336,3 +336,7 @@ textarea:focus {
 .icon-xs {
     font-size: 14px !important;
 }
+
+.notification-container .btn-app-secondary {
+    border: 2px solid #ebebeb !important;
+}
