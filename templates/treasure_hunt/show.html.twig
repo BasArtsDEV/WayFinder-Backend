@@ -130,7 +130,7 @@
                             {{ riddles|length }} énigme{{ riddles|length > 1 ? 's' }}
                         </h2>
 
-                        {% if not treasureHunt.published and is_granted('TREASURE_HUNT_ADD', treasureHunt) %}
+                        {% if not treasureHunt.published and is_granted('RIDDLE_ADD', treasureHunt) %}
                             <div class="dropdown" data-turbo="false">
                                 {% if is_granted('TREASURE_HUNT_ADD', treasureHunt) %}
 
