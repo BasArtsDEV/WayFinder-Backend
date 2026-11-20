@@ -134,6 +134,20 @@ p, span, label {
     text-decoration: underline !important;
 }
 
+.page-header {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    align-items: center;
+    justify-content: space-between;
+
+    margin-bottom: 1.5rem;
+    padding: 1rem 1.5rem;
+    border-radius: 1.2rem;
+
+    background-color: #ffffff;
+}
+
 .app-dropdown-icon {
     color: var(--app-button-background);
     margin-right: 0.5rem;
