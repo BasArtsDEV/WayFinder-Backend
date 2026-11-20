@@ -56,65 +56,22 @@
     max-width: 330px;
     height: 1px;
     background: rgba(0, 0, 0, 0.15);
-    margin: 12px auto;
+    margin: 0.75rem auto 1.25rem;
     border: none;
 }
 
-.welcome-btn {
-    width: 100%;
-    max-width: 320px;
-    height: 50px;
-    border-radius: 40px;
+.welcome-actions {
     display: flex;
-    align-items: center;
-    padding: 0 20px;
-    text-decoration: none;
-    font-size: 16px;
-    font-family: 'Lexend', sans-serif;
-    font-weight: 700;
-    box-sizing: border-box;
-    position: relative;
-    transition: background-color 0.2s;
+    flex-direction: column;
+    gap: 0.8rem;
+
+    width: 100%;
+    max-width: 480px;
 }
 
-.login-btn {
-    border: none;
-    color: var(--app-button-text);
-    background-color: var(--app-button-background);
-}
-
-.login-btn:hover {
-    color: var(--app-button-text);
-    background-color: var(--app-button-background-hover);
-}
-
-.register-btn {
-    border: none;
-    color: var(--app-button-secondary-text);
-    background-color: var(--app-button-secondary-background);
-}
-
-.register-btn:hover {
-    color: var(--app-button-secondary-text);
-    background-color: var(--app-button-secondary-background-hover);
-}
-
-.btn-icon .bi {
-    font-size: 1.4rem;
+.welcome-icon {
+    font-size: 1.8rem;
     line-height: 1;
-}
-
-.icon-img {
-    width: 24px;
-    height: 24px;
-    object-fit: contain;
-    display: block;
-}
-
-.btn-text {
-    flex-grow: 1;
-    text-align: center;
-    margin-right: 24px;
 }
 
 @media (max-width: 768px) {
@@ -133,10 +90,5 @@
 
     .welcome-text {
         font-size: 14px;
-    }
-
-    .welcome-btn {
-        max-width: 100%;
-        height: 46px;
     }
 }

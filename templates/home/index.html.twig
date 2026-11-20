@@ -29,26 +29,26 @@
 
             <hr class="separator">
 
-            <div class="actions-container d-flex flex-column justify-content-center align-items-center gap-3 w-100">
+            <div class="welcome-actions">
                 {% if app.user %}
-                    <a href="{{ path('app_profil') }}" class="btn welcome-btn login-btn d-flex align-items-center">
-                        <span class="btn-icon"><img src="{{ asset('icons/enter.png') }}" alt="Tableau de bord" class="icon-img"></span>
-                        <span class="btn-text">Mon profil</span>
+                    <a href="{{ path('app_profil') }}" class="btn-app-primary">
+                        <span class="btn-icon-wrapper"><img src="{{ asset('icons/enter.png') }}" alt="" class="btn-action-icon"></span>
+                        <span>Mon profil</span>
                     </a>
 
-                    <a href="{{ path('app_logout') }}" class="btn welcome-btn register-btn d-flex align-items-center">
-                        <span class="btn-icon"><i class="bi bi-box-arrow-right" aria-hidden="true"></i></span>
-                        <span class="btn-text">Déconnexion</span>
+                    <a href="{{ path('app_logout') }}" class="btn-app-secondary">
+                        <span class="btn-icon-wrapper"><i class="bi bi-box-arrow-right welcome-icon" aria-hidden="true"></i></span>
+                        <span>Déconnexion</span>
                     </a>
                 {% else %}
-                    <a href="{{ path('app_login') }}" class="btn welcome-btn login-btn d-flex align-items-center">
-                        <span class="btn-icon"><img src="{{ asset('icons/enter.png') }}" alt="Connexion" class="icon-img"></span>
-                        <span class="btn-text">Connexion</span>
+                    <a href="{{ path('app_login') }}" class="btn-app-primary">
+                        <span class="btn-icon-wrapper"><img src="{{ asset('icons/enter.png') }}" alt="" class="btn-action-icon"></span>
+                        <span>Connexion</span>
                     </a>
 
-                    <a href="{{ path('app_register') }}" class="btn welcome-btn register-btn d-flex align-items-center">
-                        <span class="btn-icon"><img src="{{ asset('icons/img.png') }}" alt="Créer un compte" class="icon-img"></span>
-                        <span class="btn-text">Créer mon compte</span>
+                    <a href="{{ path('app_register') }}" class="btn-app-secondary">
+                        <span class="btn-icon-wrapper"><img src="{{ asset('icons/img.png') }}" alt="" class="btn-action-icon"></span>
+                        <span>Créer mon compte</span>
                     </a>
                 {% endif %}
             </div>
