@@ -22,23 +22,23 @@
         <div class="eventpage-content">
             {{ form_start(form) }}
             <div class="mb-4">
-                {{ form_label(form.username, null, { label_attr: { class: 'form-label fw-semibold text-dark' } }) }}
-                <div class="input-group input-group-lg">
-                    <span class="input-group-text">@</span>
-                    {{ form_widget(form.username, {
-                        attr: { class: 'form-control' ~ (form.username.vars.errors|length ? ' is-invalid' : '') },
-                    }) }}
-                </div>
+                {{ form_label(form.username, null, { label_attr: { class: 'form-label' } }) }}
+                {{ form_widget(form.username, {
+                    attr: { class: 'form-control' ~ (form.username.vars.errors|length ? ' is-invalid' : '') },
+                }) }}
 
                 {% for error in form.username.vars.errors %}
                     <div class="text-danger small mt-2">
-                        <i class="bi bi-exclamation-circle"></i> {{ error.message }}
+                        <i class="bi bi-exclamation-circle" aria-hidden="true"></i> {{ error.message }}
                     </div>
                 {% endfor %}
 
-                <div class="form-text mt-2">
-                    La personne recevra une notification et pourra accepter ou refuser.
-                    Places restantes : {{ constant('App\\Entity\\Team::MAX_USERS') - team.users|length }}.
+                <div class="invite-help">
+                    <i class="bi bi-info-circle-fill text-success" aria-hidden="true"></i>
+                    <span>
+                        La personne recevra une notification et pourra accepter ou refuser.
+                        Places restantes : <strong>{{ constant('App\\Entity\\Team::MAX_USERS') - team.users|length }}</strong>.
+                    </span>
                 </div>
             </div>
 
