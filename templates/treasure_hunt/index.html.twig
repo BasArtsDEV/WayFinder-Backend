@@ -13,9 +13,11 @@
                 Mes chasses au trésor
                 <span class="hunt-count" title="{{ treasureHunts|length }} chasse{{ treasureHunts|length > 1 ? 's' }}">{{ treasureHunts|length }}</span>
             </h1>
-            <a href="{{ path('app_treasure_hunt_new') }}" class="btn-app-primary">
-                <i class="bi bi-plus-circle"></i> Créer une chasse
-            </a>
+            {% if is_granted('TREASURE_HUNT_ADD') %}
+                <a href="{{ path('app_treasure_hunt_new') }}" class="btn-app-primary">
+                    <i class="bi bi-plus-circle"></i>Créer une chasse
+                </a>
+            {% endif %}
         </div>
 
         <div class="card border-0 rounded-4 p-3 p-md-4 bg-white">
