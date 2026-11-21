@@ -137,7 +137,7 @@ final class TreasureHuntController extends AbstractController
             }
         }
 
-        if (0 === count($qrCodeRiddles)) {
+        if (empty($qrCodeRiddles)) {
             $this->addFlash('error', 'Cette chasse ne contient aucune énigme QR Code.');
 
             return $this->redirectToRoute('app_treasure_hunt_show', ['id' => $treasureHunt->getId()]);
@@ -197,7 +197,7 @@ final class TreasureHuntController extends AbstractController
     public function publish(Request $request, TreasureHunt $treasureHunt, EntityManagerInterface $em): Response
     {
         if ($this->isCsrfTokenValid('publish'.$treasureHunt->getId(), $request->getPayload()->getString('_token'))) {
-            if (0 === count($treasureHunt->getRiddles())) {
+            if ($treasureHunt->getRiddles()->isEmpty()) {
                 $this->addFlash('error', 'Impossible de publier une chasse sans énigmes.');
 
                 return $this->redirectToRoute('app_treasure_hunt_show', ['id' => $treasureHunt->getId()]);
@@ -230,7 +230,7 @@ final class TreasureHuntController extends AbstractController
     }
 
     #[Route('/treasure_hunt/{id}/reset-scores', name: 'app_treasure_hunt_reset_scores', requirements: ['id' => '\d+'], methods: ['POST'])]
-    #[IsGranted(TreasureHuntVoter::EDIT, 'treasureHunt')]
+    #[IsGranted(TreasureHuntVoter::EDIT, 'treasureHunt', message: 'Seuls les membres de l\'équipe peuvent effacer les scores.')]
     public function resetScores(Request $request, TreasureHunt $treasureHunt, EntityManagerInterface $em, GameProgressionService $gameProgressionService): Response
     {
         if ($this->isCsrfTokenValid('reset-scores'.$treasureHunt->getId(), $request->getPayload()->getString('_token'))) {
