@@ -230,14 +230,9 @@ final class TreasureHuntController extends AbstractController
     }
 
     #[Route('/treasure_hunt/{id}/reset-scores', name: 'app_treasure_hunt_reset_scores', requirements: ['id' => '\d+'], methods: ['POST'])]
+    #[IsGranted(TreasureHuntVoter::EDIT, 'treasureHunt')]
     public function resetScores(Request $request, TreasureHunt $treasureHunt, EntityManagerInterface $em, GameProgressionService $gameProgressionService): Response
     {
-        $user = $this->getUser();
-        $team = $treasureHunt->getTeam();
-        if (!$user instanceof User || null === $team || ($team->getLeader() !== $user && !$team->getUsers()->contains($user))) {
-            throw $this->createAccessDeniedException("Seuls les membres de l'équipe peuvent effacer les scores.");
-        }
-
         if ($this->isCsrfTokenValid('reset-scores'.$treasureHunt->getId(), $request->getPayload()->getString('_token'))) {
             foreach ($treasureHunt->getEnrollments() as $enrollment) {
                 $gameProgressionService->reset($enrollment);
