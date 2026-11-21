@@ -2,7 +2,9 @@
 
 namespace App\Tests\Application\TreasureHunt;
 
+use App\Entity\Team;
 use App\Entity\TreasureHunt;
+use App\Entity\User;
 use App\Factory\LocationFactory;
 use App\Factory\RiddleTextFactory;
 use App\Factory\TeamFactory;
@@ -25,10 +27,24 @@ class PublishCest
 
     public function invitationCodeIsKeptWhenRepublishing(ApplicationTester $I): void
     {
-        $treasureHunt = $this->createDraftHunt('AB12CD');
+        LocationFactory::createOne();
+        $user = UserFactory::createOne();
+        $team = TeamFactory::createOne([
+            'leader' => $user,
+            'users' => [$user],
+        ]);
+        $teamInstance = $I->grabEntityFromRepository(Team::class, ['id' => $team->getId()]);
+        $treasureHunt = TreasureHuntFactory::createOne([
+            'team' => $teamInstance,
+            'published' => false,
+            'invitationCode' => 'AB12CD',
+        ]);
+        RiddleTextFactory::createOne(['treasureHunt' => $treasureHunt]);
         $id = $treasureHunt->getId();
 
-        $I->amLoggedInAs(UserFactory::createOne());
+        $userInstance = $I->grabEntityFromRepository(User::class, ['email' => $user->getEmail()]);
+        $I->amLoggedInAs($userInstance);
+
         $I->amOnPage('/treasure_hunt/'.$id);
         $I->click('Publier');
         $I->seeInRepository(TreasureHunt::class, ['id' => $id, 'published' => true, 'invitationCode' => 'AB12CD']);
