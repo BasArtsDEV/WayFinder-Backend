@@ -3,14 +3,17 @@
 namespace App\Controller;
 
 use App\Entity\RiddleGPS;
+use App\Entity\RiddleQCM;
 use App\Entity\RiddleQRCode;
-use App\Entity\Team;
 use App\Entity\TreasureHunt;
 use App\Entity\User;
 use App\Form\TreasureHuntType;
 use App\Repository\EnrollmentRepository;
+use App\Repository\RiddleQCMRepository;
+use App\Repository\RiddleRepository;
+use App\Repository\SubmissionRepository;
+use App\Repository\TreasureHuntRepository;
 use App\Security\Voter\TreasureHuntVoter;
-use App\Service\GameProgressionService;
 use Doctrine\ORM\EntityManagerInterface;
 use Dompdf\Dompdf;
 use Knp\Component\Pager\PaginatorInterface;
@@ -31,28 +34,14 @@ use Symfony\UX\Map\Point;
 final class TreasureHuntController extends AbstractController
 {
     #[Route('/treasure_hunt', name: 'app_treasure_hunt')]
-    public function index(): Response
+    public function index(TreasureHuntRepository $treasureHuntRepository): Response
     {
         $user = $this->getUser();
-        if (!$user) {
+        if (!$user instanceof User) {
             return $this->redirectToRoute('app_login');
         }
 
-        /** @var User $user */
-        $treasureHunts = [];
-        foreach ($user->getTeams() as $team) {
-            if (Team::ROLE_CREATOR !== $team->getRole()) {
-                continue;
-            }
-
-            foreach ($team->getTreasureHunts() as $th) {
-                $treasureHunts[] = $th;
-            }
-        }
-
-        usort($treasureHunts, function ($a, $b) {
-            return $b->getCreationDate() <=> $a->getCreationDate();
-        });
+        $treasureHunts = $treasureHuntRepository->findByCreatorUser($user);
 
         return $this->render('treasure_hunt/index.html.twig', [
             'treasureHunts' => $treasureHunts,
@@ -84,6 +73,7 @@ final class TreasureHuntController extends AbstractController
     public function show(
         #[MapEntity(expr: 'repository.findByTeam(id)')] TreasureHunt $treasureHunt,
         EnrollmentRepository $enrollmentRepository,
+        RiddleQCMRepository $riddleQCMRepository,
         PaginatorInterface $paginator,
         #[MapQueryParameter(options: ['min_range' => 1])] int $page = 1,
     ): Response {
@@ -96,9 +86,12 @@ final class TreasureHuntController extends AbstractController
 
         $map = new Map()->zoom(13);
         $hasGpsRiddles = false;
+        $hasQcmRiddles = false;
 
         foreach ($riddles as $riddle) {
-            if ($riddle instanceof RiddleGPS) {
+            if ($riddle instanceof RiddleQCM) {
+                $hasQcmRiddles = true;
+            } elseif ($riddle instanceof RiddleGPS) {
                 $hasGpsRiddles = true;
                 $point = new Point($riddle->getLatitude(), $riddle->getLongitude());
 
@@ -109,6 +102,10 @@ final class TreasureHuntController extends AbstractController
                     title: $riddle->getLocationName() ?? "Lieu de l'énigme"
                 ));
             }
+        }
+
+        if ($hasQcmRiddles) {
+            $riddleQCMRepository->preloadChoicesForTreasureHunt($treasureHunt);
         }
 
         if ($hasGpsRiddles) {
@@ -194,10 +191,10 @@ final class TreasureHuntController extends AbstractController
      * @throws RandomException
      */
     #[Route('/treasure_hunt/{id}/publish', name: 'app_treasure_hunt_publish', requirements: ['id' => '\d+'], methods: ['POST'])]
-    public function publish(Request $request, TreasureHunt $treasureHunt, EntityManagerInterface $em): Response
+    public function publish(Request $request, TreasureHunt $treasureHunt, RiddleRepository $riddleRepository, EntityManagerInterface $em): Response
     {
         if ($this->isCsrfTokenValid('publish'.$treasureHunt->getId(), $request->getPayload()->getString('_token'))) {
-            if ($treasureHunt->getRiddles()->isEmpty()) {
+            if (0 === $riddleRepository->count(['treasureHunt' => $treasureHunt])) {
                 $this->addFlash('error', 'Impossible de publier une chasse sans énigmes.');
 
                 return $this->redirectToRoute('app_treasure_hunt_show', ['id' => $treasureHunt->getId()]);
@@ -231,13 +228,18 @@ final class TreasureHuntController extends AbstractController
 
     #[Route('/treasure_hunt/{id}/reset-scores', name: 'app_treasure_hunt_reset_scores', requirements: ['id' => '\d+'], methods: ['POST'])]
     #[IsGranted(TreasureHuntVoter::EDIT, 'treasureHunt', message: 'Seuls les membres de l\'équipe peuvent effacer les scores.')]
-    public function resetScores(Request $request, TreasureHunt $treasureHunt, EntityManagerInterface $em, GameProgressionService $gameProgressionService): Response
-    {
+    public function resetScores(
+        Request $request,
+        TreasureHunt $treasureHunt,
+        EntityManagerInterface $em,
+        SubmissionRepository $submissionRepository,
+        EnrollmentRepository $enrollmentRepository,
+    ): Response {
         if ($this->isCsrfTokenValid('reset-scores'.$treasureHunt->getId(), $request->getPayload()->getString('_token'))) {
-            foreach ($treasureHunt->getEnrollments() as $enrollment) {
-                $gameProgressionService->reset($enrollment);
-            }
-            $em->flush();
+            $em->wrapInTransaction(static function () use ($treasureHunt, $submissionRepository, $enrollmentRepository): void {
+                $submissionRepository->deleteByTreasureHunt($treasureHunt);
+                $enrollmentRepository->resetByTreasureHunt($treasureHunt);
+            });
 
             $this->addFlash('success', 'Les scores et le classement de la chasse au trésor ont été effacés.');
         }

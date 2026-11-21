@@ -3,19 +3,22 @@
 namespace App\Service;
 
 use App\Entity\User;
+use App\Repository\TeamRepository;
 use Doctrine\ORM\EntityManagerInterface;
 
 readonly class UserDeletionService
 {
-    public function __construct(private EntityManagerInterface $em)
-    {
+    public function __construct(
+        private EntityManagerInterface $em,
+        private TeamRepository $teamRepository,
+    ) {
     }
 
     public function delete(User $user): void
     {
         $this->em->wrapInTransaction(function () use ($user) {
             // Transmettre la direction de l'équipe ou supprimer si vide
-            foreach ($user->getLedTeams()->toArray() as $team) {
+            foreach ($this->teamRepository->findLedByUserWithMembers($user) as $team) {
                 $candidates = $team->getUsers()
                     ->filter(fn (User $member) => $member !== $user)
                     ->getValues();

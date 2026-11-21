@@ -86,7 +86,8 @@
                     </h3>
 
                     {% set maxTeams = constant('App\\Entity\\User::MAX_TEAMS') %}
-                    {% set currentTeamsCount = user.teams|length %}
+                    {% set userTeams = teams|default(user.teams) %}
+                    {% set currentTeamsCount = userTeams|length %}
                     {% set teamsPercentage = (currentTeamsCount / maxTeams) * 100 %}
                     {% if teamsPercentage > 100 %}{% set teamsPercentage = 100 %}{% endif %}
 
@@ -101,8 +102,8 @@
                     </div>
 
                     <div class="team-list d-flex flex-column gap-2">
-                        {% if user.teams|length > 0 %}
-                            {% for team in user.teams %}
+                        {% if currentTeamsCount > 0 %}
+                            {% for team in userTeams %}
                                 {% set memberCount = team.users|length %}
 
                                 <a href="{{ path('app_team_show', { id: team.id }) }}" class="team-card-item p-3 rounded-3 bg-light border border-light">

@@ -245,7 +245,7 @@ final class NotificationController extends AbstractController
         /** @var User $user */
         $user = $this->getUser();
 
-        $notifications = $repository->findByAny($user);
+        $notifications = $repository->findByUserWithRecipients($user);
 
         foreach ($notifications as $notification) {
             $notification->removeReceiveNotif($user);
