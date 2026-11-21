@@ -72,9 +72,11 @@
                                 </button>
                             </form>
                         {% else %}
-                            <a href="{{ path('app_treasure_hunt_edit', { id: treasureHunt.id }) }}" class="btn btn-app-secondary">
-                                <i class="bi bi-pencil me-1"></i>Éditer
-                            </a>
+                            {% if is_granted('TREASURE_HUNT_EDIT', treasureHunt) %}
+                                <a href="{{ path('app_treasure_hunt_edit', { id: treasureHunt.id }) }}" class="btn btn-app-secondary">
+                                    <i class="bi bi-pencil me-1"></i>Éditer
+                                </a>
+                            {% endif %}
 
                             <button type="button" class="btn btn-app-secondary">
                                 <i class="bi bi-trophy me-1" aria-hidden="true"></i>Classement
@@ -83,21 +85,32 @@
                     </div>
 
                     {% if not treasureHunt.published %}
-                        <div class="hunt-header-actions equal-buttons">
-                            {{ include('_delete_button.html.twig', {
-                                action_path: path('app_treasure_hunt_delete', { id: treasureHunt.id }),
-                                csrf_token_name: 'delete' ~ treasureHunt.id,
-                                confirm_message: 'Confirmer la suppression de la chasse aux trésors ?',
-                                btn_class: 'btn btn-app-danger',
-                            }) }}
-
-                            <form method="post" action="{{ path('app_treasure_hunt_publish', { id: treasureHunt.id }) }}" class="d-inline">
-                                <input type="hidden" name="_token" value="{{ csrf_token('publish' ~ treasureHunt.id) }}">
-                                <button type="submit" class="btn btn-app-primary">
-                                    <i class="bi bi-rocket-takeoff-fill me-1"></i>Publier
+                        {% if is_granted('TREASURE_HUNT_RESET_SCORES', treasureHunt) %}
+                            <form method="post" action="{{ path('app_treasure_hunt_reset_scores', { id: treasureHunt.id }) }}" class="d-inline" onsubmit="return confirm('Effacer les scores et le classement de tous les joueurs ?');">
+                                <input type="hidden" name="_token" value="{{ csrf_token('reset-scores' ~ treasureHunt.id) }}">
+                                <button type="submit" class="btn btn-app-secondary">
+                                    <i class="bi bi-arrow-counterclockwise me-1"></i>Effacer les scores
                                 </button>
                             </form>
-                        </div>
+                        {% endif %}
+
+                        {% if is_granted('TREASURE_HUNT_DELETE', treasureHunt) %}
+                            <div class="hunt-header-actions equal-buttons">
+                                {{ include('_delete_button.html.twig', {
+                                    action_path: path('app_treasure_hunt_delete', { id: treasureHunt.id }),
+                                    csrf_token_name: 'delete' ~ treasureHunt.id,
+                                    confirm_message: 'Confirmer la suppression de la chasse aux trésors ?',
+                                    btn_class: 'btn btn-app-danger',
+                                }) }}
+
+                                <form method="post" action="{{ path('app_treasure_hunt_publish', { id: treasureHunt.id }) }}" class="d-inline">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('publish' ~ treasureHunt.id) }}">
+                                    <button type="submit" class="btn btn-app-primary">
+                                        <i class="bi bi-rocket-takeoff-fill me-1"></i>Publier
+                                    </button>
+                                </form>
+                            </div>
+                        {% endif %}
                     {% elseif treasureHunt.invitationCode %}
                         <div class="hunt-code">
                             <div class="hunt-code-content">
@@ -126,11 +139,12 @@
                             {{ riddles|length }} énigme{{ riddles|length > 1 ? 's' }}
                         </h2>
 
-                        {% if not treasureHunt.published %}
+                        {% if not treasureHunt.published and is_granted('RIDDLE_ADD', treasureHunt) %}
                             <div class="dropdown" data-turbo="false">
-                                <button type="button" class="btn btn-app-primary" data-bs-toggle="dropdown" aria-expanded="false">
-                                    <i class="bi bi-plus-lg me-1"></i> Ajouter
+                                <button type="button" class="btn btn-app-primary btn-sm px-3" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="bi bi-plus-lg me-1"></i>Ajouter
                                 </button>
+
                                 <ul class="dropdown-menu dropdown-menu-end riddle-add-menu">
                                     <li><a class="dropdown-item" href="{{ path('app_riddle_new', { huntId: treasureHunt.id, type: 'text' }) }}"><i class="bi bi-chat-left-text me-2 text-success" aria-hidden="true"></i>Texte</a></li>
                                     <li><a class="dropdown-item" href="{{ path('app_riddle_new', { huntId: treasureHunt.id, type: 'qcm' }) }}"><i class="bi bi-ui-checks me-2 text-success" aria-hidden="true"></i>QCM</a></li>
@@ -191,16 +205,20 @@
 
                                     {% if not treasureHunt.published %}
                                         <div class="d-flex align-items-center gap-2 flex-shrink-0 text-nowrap">
-                                            <a href="{{ path('app_riddle_edit', { id: riddle.id }) }}" class="btn btn-app-secondary btn-sm">
-                                                <i class="bi bi-pencil me-1"></i>Éditer
-                                            </a>
+                                            {% if is_granted('TREASURE_HUNT_EDIT', treasureHunt) %}
+                                                <a href="{{ path('app_riddle_edit', { id: riddle.id }) }}" class="btn btn-app-secondary btn-sm">
+                                                    <i class="bi bi-pencil me-1"></i>Éditer
+                                                </a>
+                                            {% endif %}
 
-                                            {{ include('_delete_button.html.twig', {
-                                                action_path: path('app_riddle_delete', { id: riddle.id }),
-                                                csrf_token_name: 'delete' ~ riddle.id,
-                                                confirm_message: 'Confirmer la suppression de cette énigme ?',
-                                                btn_class: 'btn btn-app-danger btn-sm',
-                                            }) }}
+                                            {% if is_granted('TREASURE_HUNT_DELETE', treasureHunt) %}
+                                                {{ include('_delete_button.html.twig', {
+                                                    action_path: path('app_riddle_delete', { id: riddle.id }),
+                                                    csrf_token_name: 'delete' ~ riddle.id,
+                                                    confirm_message: 'Confirmer la suppression de cette énigme ?',
+                                                    btn_class: 'btn btn-app-danger btn-sm',
+                                                }) }}
+                                            {% endif %}
                                         </div>
                                     {% endif %}
                                 </div>

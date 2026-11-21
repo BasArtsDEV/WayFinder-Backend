@@ -1,12 +1,14 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Mise à jour d'une team{% endblock %}
+{% block title %}Mise à jour d&apos;une team{% endblock %}
 
 {% block main %}
-    {{ include('team/partials/_form.html.twig', {
-        form: form,
-        form_title: 'Modifier mon équipe',
-        submit_label: 'Mettre à jour',
-        with_context: false,
-    }) }}
+    {% if is_granted('TEAM_EDIT', team) %}
+        {{ include('team/partials/_form.html.twig', {
+            form: form,
+            form_title: 'Modifier mon équipe',
+            submit_label: 'Mettre à jour',
+            with_context: false,
+        }) }}
+    {% endif %}
 {% endblock %}
