@@ -7,6 +7,7 @@ use ApiPlatform\State\ProviderInterface;
 use App\ApiResource\Leaderboard;
 use App\ApiResource\LeaderboardEntry;
 use App\Entity\User;
+use App\Enum\EnrollmentStatus;
 use App\Repository\TreasureHuntRepository;
 use App\Service\GameProgressionService;
 use App\Service\GameScoreService;
@@ -30,15 +31,22 @@ readonly class LeaderboardProvider implements ProviderInterface
 
     public function provide(Operation $operation, array $uriVariables = [], array $context = []): Leaderboard
     {
-        $treasureHunt = $this->treasureHuntRepository->find($uriVariables['id'] ?? 0);
+        $treasureHunt = $this->treasureHuntRepository->findWithLeaderboardData((int) ($uriVariables['id'] ?? 0));
         if (null === $treasureHunt || !$treasureHunt->isPublished()) {
             throw new NotFoundHttpException('Cette chasse au trésor n\'est pas disponible.');
         }
 
+        $hasUpdates = false;
         foreach ($treasureHunt->getEnrollments() as $enrollment) {
-            $this->gameProgressionService->updateTimers($enrollment);
+            if (EnrollmentStatus::IN_PROGRESS === $enrollment->getStatus() && null !== $enrollment->getLastResumedAt()) {
+                $this->gameProgressionService->updateTimers($enrollment);
+                $hasUpdates = true;
+            }
         }
-        $this->em->flush();
+
+        if ($hasUpdates) {
+            $this->em->flush();
+        }
 
         $user = $this->security->getUser();
 
