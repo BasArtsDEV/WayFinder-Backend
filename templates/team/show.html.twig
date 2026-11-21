@@ -17,57 +17,61 @@
 
         <div class="container team-content-wrapper pb-5">
             <div class="d-flex justify-content-end gap-2 mb-4">
-                {% if app.user %}
-                    {% if isLeader %}
-                        <a href="{{ path('app_team_invite', { id: team.id }) }}" class="btn-app-primary">
-                            <i class="bi bi-person-plus-fill me-1"></i>Inviter un membre
-                        </a>
+                {% if is_granted('TEAM_INVITE', team) %}
+                    <a href="{{ path('app_team_invite', { id: team.id }) }}" class="btn-app-primary">
+                        <i class="bi bi-person-plus-fill me-1"></i>Inviter un membre
+                    </a>
+                {% endif %}
 
-                        <a href="{{ path('app_team_edit', { id: team.id }) }}" class="btn-app-secondary">
-                            <i class="bi bi-pencil-square me-1"></i>Modifier
-                        </a>
+                {% if is_granted('TEAM_EDIT', team) %}
+                    <a href="{{ path('app_team_edit', { id: team.id }) }}" class="btn-app-secondary">
+                        <i class="bi bi-pencil-square me-1"></i>Modifier
+                    </a>
+                {% endif %}
 
-                        {{ include('_delete_button.html.twig', {
-                            action_path: path('app_team_delete', { id: team.id }),
-                            csrf_token_name: 'delete' ~ team.id,
-                            confirm_message: 'En tant que chef, souhaitez-vous vraiment supprimer cette équipe ? Cette action est irréversible.',
-                        }) }}
+                {% if is_granted('TEAM_DELETE', team) %}
+                    {{ include('_delete_button.html.twig', {
+                        action_path: path('app_team_delete', { id: team.id }),
+                        csrf_token_name: 'delete' ~ team.id,
+                        confirm_message: 'En tant que chef, souhaitez-vous vraiment supprimer cette équipe ? Cette action est irréversible.',
+                    }) }}
+                {% endif %}
 
-                    {% elseif isMember %}
-                        <form action="{{ path('app_team_leave', { id: team.id }) }}" method="POST" onsubmit="return confirm('Es-tu sûr de vouloir quitter cette équipe ?');">
-                            <input type="hidden" name="_token" value="{{ csrf_token('leave' ~ team.id) }}">
-                            <button type="submit" class="btn btn-app-danger">
-                                <i class="bi bi-person-dash-fill me-1"></i>Quitter
-                            </button>
-                        </form>
+                {% if is_granted('TEAM_LEAVE', team) %}
+                    <form action="{{ path('app_team_leave', { id: team.id }) }}" method="POST" onsubmit="return confirm('Es-tu sûr de vouloir quitter cette équipe ?');">
+                        <input type="hidden" name="_token" value="{{ csrf_token('leave' ~ team.id) }}">
+                        <button type="submit" class="btn btn-app-danger">
+                            <i class="bi bi-person-dash-fill me-1"></i>Quitter
+                        </button>
+                    </form>
+                {% endif %}
 
-                    {% elseif hasPendingRequest %}
+                {% if is_granted('TEAM_REQUEST_JOIN', team) %}
+                    {% if hasPendingRequest %}
                         <button type="button" class="btn-app-secondary" disabled>
                             <i class="bi bi-hourglass-split me-1"></i>Demande en attente
                         </button>
-
                     {% else %}
                         <a class="btn-app-primary" href="{{ path('app_team_request_join', { id: team.id }) }}">
                             <i class="bi bi-person-plus-fill me-1"></i>Rejoindre
                         </a>
                     {% endif %}
+                {% endif %}
 
-                    {% if is_granted('ROLE_ADMIN') and not isLeader %}
-                        <a href="{{ path('app_team_edit', { id: team.id }) }}" class="btn-app-secondary">
-                            <i class="bi bi-pencil-square me-1"></i>Modifier
-                        </a>
+                {% if is_granted('ROLE_ADMIN') and not is_granted('TEAM_EDIT', team) %}
+                    <a href="{{ path('app_team_edit', { id: team.id }) }}" class="btn-app-secondary">
+                        <i class="bi bi-pencil-square me-1"></i>Modifier
+                    </a>
 
-                        {{ include('_delete_button.html.twig', {
-                            action_path: path('app_team_delete', { id: team.id }),
-                            csrf_token_name: 'delete' ~ team.id,
-                            confirm_message: 'Es-tu sûr de vouloir supprimer cette équipe ?',
-                        }) }}
-                    {% endif %}
+                    {{ include('_delete_button.html.twig', {
+                        action_path: path('app_team_delete', { id: team.id }),
+                        csrf_token_name: 'delete' ~ team.id,
+                        confirm_message: 'Es-tu sûr de vouloir supprimer cette équipe ?',
+                    }) }}
                 {% endif %}
             </div>
 
             <div class="row g-4">
-
                 <div class="col-lg-8">
                     <div class="card border-0 rounded-4 p-4 h-100 theme-card-bg">
                         {{ include('treasure_hunt/partials/_treasure_hunts_display.html.twig', {
@@ -129,7 +133,7 @@
                                             <span class="badge bg-dark text-white fw-semibold px-2.5 py-1 rounded-pill">Moi</span>
                                         {% endif %}
 
-                                        {% if isLeader %}
+                                        {% if is_granted('TEAM_PROMOTE', team) and is_granted('TEAM_KICK', team) %}
                                             <div class="btn-dropdown flex-shrink-0">
                                                 <button class="btn btn-sm rounded-circle member-actions-button" type="button"
                                                         data-bs-toggle="dropdown" aria-expanded="false"
@@ -151,7 +155,7 @@
                                                               onsubmit="return confirm('Exclure @{{ user.username|e('js') }} de l\'équipe ?');">
                                                             <input type="hidden" name="_token" value="{{ csrf_token('exclude' ~ team.id ~ '-' ~ user.id) }}">
                                                             <button type="submit" class="dropdown-item text-danger">
-                                                                <i class="bi bi-person-x me-2"></i>Exclure de l'équipe
+                                                                <i class="bi bi-person-x me-2"></i>Exclure de l&apos;équipe
                                                             </button>
                                                         </form>
                                                     </li>
@@ -168,7 +172,6 @@
                         </div>
                     </div>
                 </div>
-
             </div>
         </div>
     </div>

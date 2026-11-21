@@ -11,6 +11,7 @@ use App\Form\TeamType;
 use App\Repository\NotificationRepository;
 use App\Repository\TeamRepository;
 use App\Repository\TreasureHuntRepository;
+use App\Security\Voter\TeamVoter;
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bridge\Doctrine\Attribute\MapEntity;
@@ -88,8 +89,6 @@ final class TeamController extends AbstractController
         return $this->render('team/show.html.twig', [
             'team' => $team,
             'treasurehunts' => $treasureHunts,
-            'isLeader' => $isLeader,
-            'isMember' => $isMember,
             'hasPendingRequest' => $hasPendingRequest,
         ]);
     }
@@ -159,15 +158,12 @@ final class TeamController extends AbstractController
     }
 
     #[Route('/team/{id}', name: 'app_team_delete', requirements: ['id' => '\d+'], methods: ['POST'])]
+    #[IsGranted(TeamVoter::DELETE, 'team')]
     public function delete(
         Request $request,
         Team $team,
         EntityManagerInterface $em,
     ): Response {
-        if (!$this->isGranted('ROLE_ADMIN')) {
-            $this->denyUnlessLeader($team);
-        }
-
         if ($this->isCsrfTokenValid(
             'delete'.$team->getId(),
             $request->getPayload()->getString('_token')
@@ -223,13 +219,11 @@ final class TeamController extends AbstractController
     }
 
     #[Route('/team/{id}/edit', name: 'app_team_edit', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
+    #[IsGranted(TeamVoter::EDIT, 'team')]
     public function edit(Request $request, Team $team, EntityManagerInterface $em): Response
     {
         $form = $this->createForm(TeamType::class, $team);
         $form->handleRequest($request);
-        if (!$this->isGranted('ROLE_ADMIN')) {
-            $this->denyUnlessLeader($team);
-        }
         if ($form->isSubmitted() && $form->isValid()) {
             $em->flush();
 
@@ -238,10 +232,12 @@ final class TeamController extends AbstractController
 
         return $this->render('team/edit.html.twig', [
             'form' => $form->createView(),
+            'team' => $team,
         ]);
     }
 
     #[Route('/team/{id}/invite', name: 'app_team_invite', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
+    #[IsGranted(TeamVoter::INVITE, 'team')]
     public function invite(
         Team $team,
         Request $request,
@@ -255,10 +251,7 @@ final class TeamController extends AbstractController
             throw $this->createAccessDeniedException('Seul le chef d\'équipe peut inviter des membres.');
         }
 
-        $form = $this->createForm(InviteMemberType::class, null, [
-            'team' => $team,
-        ]);
-
+        $form = $this->createForm(InviteMemberType::class);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -310,14 +303,13 @@ final class TeamController extends AbstractController
     }
 
     #[Route('/team/{id}/members/{userId}/promote', name: 'app_team_promote', requirements: ['id' => '\d+', 'userId' => '\d+'], methods: ['POST'])]
+    #[IsGranted(TeamVoter::PROMOTE, 'team')]
     public function promote(
         Request $request,
         Team $team,
         #[MapEntity(id: 'userId')] User $member,
         EntityManagerInterface $em,
     ): Response {
-        $this->denyUnlessLeader($team);
-
         $back = $this->redirectToRoute('app_team_show', ['id' => $team->getId()]);
 
         if (!$this->isCsrfTokenValid('promote'.$team->getId().'-'.$member->getId(), $request->getPayload()->getString('_token'))) {
@@ -351,14 +343,13 @@ final class TeamController extends AbstractController
     }
 
     #[Route('/team/{id}/members/{userId}/exclude', name: 'app_team_exclude', requirements: ['id' => '\d+', 'userId' => '\d+'], methods: ['POST'])]
+    #[IsGranted(TeamVoter::KICK, 'team')]
     public function exclude(
         Request $request,
         Team $team,
         #[MapEntity(id: 'userId')] User $member,
         EntityManagerInterface $em,
     ): Response {
-        $this->denyUnlessLeader($team);
-
         $back = $this->redirectToRoute('app_team_show', ['id' => $team->getId()]);
 
         if (!$this->isCsrfTokenValid('exclude'.$team->getId().'-'.$member->getId(), $request->getPayload()->getString('_token'))) {
@@ -428,18 +419,6 @@ final class TeamController extends AbstractController
         }
 
         return null;
-    }
-
-    /**
-     * Only the team leader can manage its members.
-     */
-    private function denyUnlessLeader(Team $team): void
-    {
-        $user = $this->getUser();
-
-        if (!$user instanceof User || $team->getLeader()?->getId() !== $user->getId()) {
-            throw $this->createAccessDeniedException('Seul le chef d\'équipe peut gérer les membres.');
-        }
     }
 
     /**

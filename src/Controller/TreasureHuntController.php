@@ -9,6 +9,7 @@ use App\Entity\TreasureHunt;
 use App\Entity\User;
 use App\Form\TreasureHuntType;
 use App\Repository\EnrollmentRepository;
+use App\Security\Voter\TreasureHuntVoter;
 use App\Service\GameProgressionService;
 use Doctrine\ORM\EntityManagerInterface;
 use Dompdf\Dompdf;
@@ -59,6 +60,7 @@ final class TreasureHuntController extends AbstractController
     }
 
     #[Route('/treasure_hunt/new', name: 'app_treasure_hunt_new', methods: ['GET', 'POST'])]
+    #[IsGranted(TreasureHuntVoter::ADD)]
     public function new(Request $request, EntityManagerInterface $em): Response
     {
         $treasureHunt = new TreasureHunt();
@@ -135,7 +137,7 @@ final class TreasureHuntController extends AbstractController
             }
         }
 
-        if (0 === count($qrCodeRiddles)) {
+        if (empty($qrCodeRiddles)) {
             $this->addFlash('error', 'Cette chasse ne contient aucune énigme QR Code.');
 
             return $this->redirectToRoute('app_treasure_hunt_show', ['id' => $treasureHunt->getId()]);
@@ -158,6 +160,7 @@ final class TreasureHuntController extends AbstractController
     }
 
     #[Route('/treasure_hunt/{id}/edit', name: 'app_treasure_hunt_edit', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
+    #[IsGranted(TreasureHuntVoter::EDIT, 'treasureHunt')]
     public function edit(Request $request, TreasureHunt $treasureHunt, EntityManagerInterface $em): Response
     {
         $form = $this->createForm(TreasureHuntType::class, $treasureHunt);
@@ -176,6 +179,7 @@ final class TreasureHuntController extends AbstractController
     }
 
     #[Route('/treasure_hunt/{id}', name: 'app_treasure_hunt_delete', requirements: ['id' => '\d+'], methods: ['POST'])]
+    #[IsGranted(TreasureHuntVoter::DELETE, 'treasureHunt')]
     public function delete(Request $request, TreasureHunt $treasureHunt, EntityManagerInterface $em): Response
     {
         if ($this->isCsrfTokenValid('delete'.$treasureHunt->getId(), $request->getPayload()->getString('_token'))) {
@@ -193,7 +197,7 @@ final class TreasureHuntController extends AbstractController
     public function publish(Request $request, TreasureHunt $treasureHunt, EntityManagerInterface $em): Response
     {
         if ($this->isCsrfTokenValid('publish'.$treasureHunt->getId(), $request->getPayload()->getString('_token'))) {
-            if (0 === count($treasureHunt->getRiddles())) {
+            if ($treasureHunt->getRiddles()->isEmpty()) {
                 $this->addFlash('error', 'Impossible de publier une chasse sans énigmes.');
 
                 return $this->redirectToRoute('app_treasure_hunt_show', ['id' => $treasureHunt->getId()]);
@@ -226,14 +230,9 @@ final class TreasureHuntController extends AbstractController
     }
 
     #[Route('/treasure_hunt/{id}/reset-scores', name: 'app_treasure_hunt_reset_scores', requirements: ['id' => '\d+'], methods: ['POST'])]
+    #[IsGranted(TreasureHuntVoter::EDIT, 'treasureHunt', message: 'Seuls les membres de l\'équipe peuvent effacer les scores.')]
     public function resetScores(Request $request, TreasureHunt $treasureHunt, EntityManagerInterface $em, GameProgressionService $gameProgressionService): Response
     {
-        $user = $this->getUser();
-        $team = $treasureHunt->getTeam();
-        if (!$user instanceof User || null === $team || ($team->getLeader() !== $user && !$team->getUsers()->contains($user))) {
-            throw $this->createAccessDeniedException("Seuls les membres de l'équipe peuvent effacer les scores.");
-        }
-
         if ($this->isCsrfTokenValid('reset-scores'.$treasureHunt->getId(), $request->getPayload()->getString('_token'))) {
             foreach ($treasureHunt->getEnrollments() as $enrollment) {
                 $gameProgressionService->reset($enrollment);

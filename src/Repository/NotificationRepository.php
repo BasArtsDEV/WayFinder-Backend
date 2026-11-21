@@ -28,7 +28,7 @@ class NotificationRepository extends ServiceEntityRepository
             ->innerJoin('n.receiveNotif', 'u')
             ->where('u.id = :userId')
             ->setParameter('userId', $user->getId())
-            ->orderBy('n.date', 'DESC')
+            ->orderBy('n.date', \SortDirection::Descending)
             ->getQuery()
             ->getResult();
     }
