@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Team;
 use App\Entity\TreasureHunt;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -35,6 +36,8 @@ class TreasureHuntRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('tre')
             ->leftJoin('tre.team', 'tea')
             ->addSelect('tea')
+            ->leftJoin('tea.leader', 'l')
+            ->addSelect('l')
             ->leftJoin('tre.riddles', 'r')
             ->addSelect('r')
             ->where('tre.id = :id')
@@ -56,5 +59,40 @@ class TreasureHuntRepository extends ServiceEntityRepository
             ->setParameter('team', $team)
             ->getQuery()
             ->getResult();
+    }
+
+    /**
+     * @return TreasureHunt[]
+     */
+    public function findByCreatorUser(User $user): array
+    {
+        return $this->createQueryBuilder('th')
+            ->innerJoin('th.team', 't')
+            ->addSelect('t')
+            ->leftJoin('th.enrollments', 'e')
+            ->addSelect('e')
+            ->where('t.role = :role')
+            ->andWhere(':user MEMBER OF t.users')
+            ->setParameter('role', Team::ROLE_CREATOR)
+            ->setParameter('user', $user)
+            ->orderBy('th.creationDate', 'DESC')
+            ->addOrderBy('th.id', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function findWithLeaderboardData(int $id): ?TreasureHunt
+    {
+        return $this->createQueryBuilder('th')
+            ->leftJoin('th.enrollments', 'e')
+            ->addSelect('e')
+            ->leftJoin('e.user', 'u')
+            ->addSelect('u')
+            ->leftJoin('e.team', 't')
+            ->addSelect('t')
+            ->where('th.id = :id')
+            ->setParameter('id', $id)
+            ->getQuery()
+            ->getOneOrNullResult();
     }
 }
