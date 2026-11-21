@@ -15,6 +15,7 @@ use App\Factory\RiddleTextFactory;
 use App\Factory\TeamFactory;
 use App\Factory\TreasureHuntFactory;
 use App\Factory\UserFactory;
+use App\Security\Voter\TreasureHuntVoter;
 use App\Service\GameProgressionService;
 use App\Tests\Support\ApplicationTester;
 use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface;
@@ -148,13 +149,16 @@ class LeaderboardCest
 
     public function onlyTeamMembersCanResetScores(ApplicationTester $I): void
     {
+        $user = UserFactory::createOne();
+        $userInstance = $I->grabEntityFromRepository(User::class, ['email' => $user->getEmail()]);
         $treasureHunt = $this->createHunt();
-        $enrollment = $this->createFinishedEnrollment(UserFactory::createOne(), $treasureHunt, 10, 600);
+        $enrollment = $this->createFinishedEnrollment($userInstance, $treasureHunt, 10, 600);
 
-        $I->amLoggedInAs(UserFactory::createOne());
+        $I->amLoggedInAs($userInstance);
         $I->sendPost('/treasure_hunt/'.$treasureHunt->getId().'/reset-scores');
+        $I->dontSeeUserIsGranted(TreasureHuntVoter::RESET, $treasureHunt);
 
-        $I->seeResponseCodeIs(403);
+        $I->seeCurrentUrlEquals('/treasure_hunt/'.$treasureHunt->getId());
         $I->seeInRepository(Enrollment::class, ['id' => $enrollment->getId(), 'status' => EnrollmentStatus::FINISHED, 'scoreTotal' => 10]);
     }
 }
