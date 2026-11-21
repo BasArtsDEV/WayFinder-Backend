@@ -257,11 +257,21 @@ final class TeamController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             /** @var iterable<User> $guests */
             $guests = $form->get('username')->getData();
+            $guestsList = is_array($guests) ? $guests : iterator_to_array($guests);
+
+            $pendingByUser = [];
+            foreach ($notificationRepository->findPendingTeamNotifications($team, $guestsList) as $notification) {
+                $targetUserId = $notification->getTargetUser()?->getId();
+                $type = $notification->getType();
+                if (null !== $targetUserId && null !== $type) {
+                    $pendingByUser[$targetUserId][$type] = true;
+                }
+            }
 
             $hasError = false;
 
-            foreach ($guests as $guest) {
-                $error = $this->getInviteError($team, $guest, $notificationRepository);
+            foreach ($guestsList as $guest) {
+                $error = $this->getInviteError($team, $guest, $pendingByUser[$guest->getId()] ?? []);
                 if (null !== $error) {
                     $form->get('username')->addError(new FormError(sprintf('@%s : %s', $guest->getUsername(), $error)));
                     $hasError = true;
@@ -271,7 +281,7 @@ final class TeamController extends AbstractController
             if (!$hasError) {
                 $invitedUsernames = [];
 
-                foreach ($guests as $guest) {
+                foreach ($guestsList as $guest) {
                     $notification = new Notification();
                     $notification->setType(Notification::TYPE_TEAM_INVITATION);
                     $notification->setTitle('Invitation à rejoindre une équipe');
@@ -381,8 +391,10 @@ final class TeamController extends AbstractController
 
     /**
      * Returns the reason for the invitation being declined, or null if it is possible.
+     *
+     * @param array<string, bool> $pendingNotifications
      */
-    private function getInviteError(Team $team, ?User $guest, NotificationRepository $notificationRepository): ?string
+    private function getInviteError(Team $team, ?User $guest, array $pendingNotifications): ?string
     {
         if (null === $guest) {
             return 'Aucun utilisateur ne porte ce nom.';
@@ -401,20 +413,12 @@ final class TeamController extends AbstractController
         }
 
         // Invitation already pending = notification still present for the guest
-        if (null !== $notificationRepository->findOneBy([
-            'type' => Notification::TYPE_TEAM_INVITATION,
-            'targetUser' => $guest,
-            'targetTeam' => $team,
-        ])) {
+        if (isset($pendingNotifications[Notification::TYPE_TEAM_INVITATION])) {
             return sprintf('Une invitation est déjà en attente pour @%s.', $guest->getUsername());
         }
 
         // The guest has already requested to join, there is no need to invite them.
-        if (null !== $notificationRepository->findOneBy([
-            'type' => Notification::TYPE_TEAM_JOIN_REQUEST,
-            'targetUser' => $guest,
-            'targetTeam' => $team,
-        ])) {
+        if (isset($pendingNotifications[Notification::TYPE_TEAM_JOIN_REQUEST])) {
             return sprintf('@%s a déjà demandé à rejoindre l\'équipe : répondez à sa demande dans vos notifications.', $guest->getUsername());
         }
 

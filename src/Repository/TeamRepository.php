@@ -72,6 +72,37 @@ class TeamRepository extends ServiceEntityRepository
         return $qb->getQuery();
     }
 
+    /**
+     * @return Team[]
+     */
+    public function findByUserWithMembers(User $user): array
+    {
+        return $this->createQueryBuilder('t')
+            ->innerJoin('t.users', 'memberFilter')
+            ->leftJoin('t.leader', 'l')
+            ->addSelect('l')
+            ->leftJoin('t.users', 'u')
+            ->addSelect('u')
+            ->where('memberFilter = :user')
+            ->setParameter('user', $user)
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * @return Team[]
+     */
+    public function findLedByUserWithMembers(User $user): array
+    {
+        return $this->createQueryBuilder('t')
+            ->leftJoin('t.users', 'u')
+            ->addSelect('u')
+            ->where('t.leader = :user')
+            ->setParameter('user', $user)
+            ->getQuery()
+            ->getResult();
+    }
+
     public function findBannerById(int $id): ?string
     {
         return $this->createQueryBuilder('t')

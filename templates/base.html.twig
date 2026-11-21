@@ -66,7 +66,7 @@
                 </div>
 
                 {% if app.user %}
-                    {% set notifCount = app_notifications|length %}
+                    {% set notifCount = app_notifications_count() %}
                     <div class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle text-white d-flex align-items-center gap-2 p-0 custom-profile-toggle"
                            href="#"

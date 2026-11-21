@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\User;
+use App\Repository\TeamRepository;
 use App\Service\AvatarService;
 use App\Service\UserDeletionService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -18,10 +19,14 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 final class ProfileController extends AbstractController
 {
     #[Route('/profil', name: 'app_profil')]
-    public function index(): Response
+    public function index(TeamRepository $teamRepository): Response
     {
+        /** @var User $user */
+        $user = $this->getUser();
+
         return $this->render('profile/index.html.twig', [
             'controller_name' => 'ProfilController',
+            'teams' => $teamRepository->findByUserWithMembers($user),
         ]);
     }
 

@@ -22,38 +22,53 @@ readonly class GameScoreService
     ) {
     }
 
-    public function getScore(Enrollment $enrollment): int
+    /**
+     * @param iterable<Enrollment>|null $enrollments
+     *
+     * @return array{score: int, rank: int, competitorsCount: int}
+     */
+    public function getStanding(Enrollment $enrollment, ?iterable $enrollments = null): array
     {
-        $entry = $this->findLeaderboardEntry($enrollment);
-        if (null !== $entry) {
-            return $entry['score'];
+        $enrollments ??= $enrollment->getTreasureHunt()->getEnrollments();
+
+        if (EnrollmentStatus::FINISHED === $enrollment->getStatus()) {
+            $leaderboard = $this->getLeaderboard($enrollment->getTreasureHunt(), null, $enrollments);
+            $key = $this->getCompetitorKey($enrollment);
+
+            foreach ($leaderboard as $entry) {
+                if ($entry['key'] === $key) {
+                    return [
+                        'score' => $entry['score'],
+                        'rank' => $entry['rank'],
+                        'competitorsCount' => count($leaderboard),
+                    ];
+                }
+            }
         }
 
-        $scores = $this->getCompetitorScores($enrollment);
+        $scores = $this->getCompetitorScores($enrollment, $enrollments);
+        $score = $scores[$this->getCompetitorKey($enrollment)] ?? 0;
 
-        return $scores[$this->getCompetitorKey($enrollment)] ?? 0;
+        return [
+            'score' => $score,
+            'rank' => 1 + count(array_filter($scores, static fn (int $other): bool => $other > $score)),
+            'competitorsCount' => count($scores),
+        ];
+    }
+
+    public function getScore(Enrollment $enrollment): int
+    {
+        return $this->getStanding($enrollment)['score'];
     }
 
     public function getRank(Enrollment $enrollment): int
     {
-        $entry = $this->findLeaderboardEntry($enrollment);
-        if (null !== $entry) {
-            return $entry['rank'];
-        }
-
-        $scores = $this->getCompetitorScores($enrollment);
-        $score = $scores[$this->getCompetitorKey($enrollment)] ?? 0;
-
-        return 1 + count(array_filter($scores, static fn (int $other): bool => $other > $score));
+        return $this->getStanding($enrollment)['rank'];
     }
 
     public function getCompetitorsCount(Enrollment $enrollment): int
     {
-        if (null !== $this->findLeaderboardEntry($enrollment)) {
-            return count($this->getLeaderboard($enrollment->getTreasureHunt()));
-        }
-
-        return count($this->getCompetitorScores($enrollment));
+        return $this->getStanding($enrollment)['competitorsCount'];
     }
 
     public function getFinalScore(Enrollment $enrollment): int
@@ -64,13 +79,15 @@ readonly class GameScoreService
     /**
      * Finished competitors of a treasure hunt, from the best to the worst score.
      *
+     * @param iterable<Enrollment>|null $enrollments
+     *
      * @return list<LeaderboardEntry>
      */
-    public function getLeaderboard(TreasureHunt $treasureHunt, ?User $currentUser = null): array
+    public function getLeaderboard(TreasureHunt $treasureHunt, ?User $currentUser = null, ?iterable $enrollments = null): array
     {
         $competitors = [];
 
-        foreach ($treasureHunt->getEnrollments() as $enrollment) {
+        foreach ($enrollments ?? $treasureHunt->getEnrollments() as $enrollment) {
             $user = $enrollment->getUser();
             if (null === $user) {
                 continue;
@@ -117,10 +134,17 @@ readonly class GameScoreService
         usort($leaderboard, static fn (array $a, array $b): int => [$b['score'], $a['finishedAt']] <=> [$a['score'], $b['finishedAt']]);
 
         $entries = [];
-        foreach ($leaderboard as $competitor) {
+        $previousScore = null;
+        $rank = 0;
+        foreach ($leaderboard as $index => $competitor) {
+            if ($previousScore !== $competitor['score']) {
+                $rank = $index + 1;
+                $previousScore = $competitor['score'];
+            }
+
             $entries[] = [
                 'key' => $competitor['key'],
-                'rank' => 1 + count(array_filter($leaderboard, static fn (array $other): bool => $other['score'] > $competitor['score'])),
+                'rank' => $rank,
                 'score' => $competitor['score'],
                 'timedOut' => $competitor['timedOut'],
                 'user' => $competitor['user'],
@@ -133,32 +157,15 @@ readonly class GameScoreService
     }
 
     /**
-     * @return LeaderboardEntry|null
-     */
-    private function findLeaderboardEntry(Enrollment $enrollment): ?array
-    {
-        if (EnrollmentStatus::FINISHED !== $enrollment->getStatus()) {
-            return null;
-        }
-
-        $key = $this->getCompetitorKey($enrollment);
-        foreach ($this->getLeaderboard($enrollment->getTreasureHunt()) as $entry) {
-            if ($entry['key'] === $key) {
-                return $entry;
-            }
-        }
-
-        return null;
-    }
-
-    /**
+     * @param iterable<Enrollment>|null $enrollments
+     *
      * @return array<string, int>
      */
-    private function getCompetitorScores(Enrollment $enrollment): array
+    private function getCompetitorScores(Enrollment $enrollment, ?iterable $enrollments = null): array
     {
         $scores = [];
 
-        foreach ($enrollment->getTreasureHunt()->getEnrollments() as $other) {
+        foreach ($enrollments ?? $enrollment->getTreasureHunt()->getEnrollments() as $other) {
             if (null === $other->getUser()) {
                 continue;
             }

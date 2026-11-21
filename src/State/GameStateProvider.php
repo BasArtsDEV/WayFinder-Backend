@@ -16,6 +16,7 @@ use App\Entity\RiddleText;
 use App\Entity\User;
 use App\Enum\EnrollmentStatus;
 use App\Repository\EnrollmentRepository;
+use App\Repository\RiddleRepository;
 use App\Service\GameProgressionService;
 use App\Service\GameScoreService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -30,6 +31,7 @@ readonly class GameStateProvider implements ProviderInterface
 {
     public function __construct(
         private EnrollmentRepository $enrollmentRepository,
+        private RiddleRepository $riddleRepository,
         private EntityManagerInterface $em,
         private Security $security,
         private GameProgressionService $gameProgressionService,
@@ -40,7 +42,7 @@ readonly class GameStateProvider implements ProviderInterface
 
     public function provide(Operation $operation, array $uriVariables = [], array $context = []): GameState
     {
-        $enrollment = $this->enrollmentRepository->find($uriVariables['id'] ?? 0);
+        $enrollment = $this->enrollmentRepository->findWithGameContext((int) ($uriVariables['id'] ?? 0));
         if (null === $enrollment) {
             throw new NotFoundHttpException('Cette partie n\'existe pas.');
         }
@@ -54,8 +56,10 @@ readonly class GameStateProvider implements ProviderInterface
             throw new NotFoundHttpException('Cette chasse au trésor n\'est pas disponible.');
         }
 
-        $this->gameProgressionService->updateTimers($enrollment);
-        $this->em->flush();
+        if (EnrollmentStatus::IN_PROGRESS === $enrollment->getStatus() && null !== $enrollment->getLastResumedAt()) {
+            $this->gameProgressionService->updateTimers($enrollment);
+            $this->em->flush();
+        }
 
         return $this->createGameState($enrollment);
     }
@@ -63,8 +67,9 @@ readonly class GameStateProvider implements ProviderInterface
     private function createGameState(Enrollment $enrollment): GameState
     {
         $treasureHunt = $enrollment->getTreasureHunt();
-        $riddles = $treasureHunt->getRiddles()->toArray();
-        usort($riddles, static fn (Riddle $a, Riddle $b): int => $a->getIndex() <=> $b->getIndex());
+        $riddles = $this->riddleRepository->findOrderedByTreasureHunt($treasureHunt);
+        $enrollments = $this->enrollmentRepository->findForTreasureHuntWithCompetitors($treasureHunt);
+        $standing = $this->gameScoreService->getStanding($enrollment, $enrollments);
 
         $state = new GameState();
         $state->id = (int) $enrollment->getId();
@@ -78,9 +83,9 @@ readonly class GameStateProvider implements ProviderInterface
         $state->duration = $treasureHunt->getDuration();
         $state->elapsedTime = $enrollment->getCountdown();
         $state->remainingTime = $this->gameProgressionService->getRemainingTime($enrollment);
-        $state->score = $this->gameScoreService->getScore($enrollment);
-        $state->rank = $this->gameScoreService->getRank($enrollment);
-        $state->competitorsCount = $this->gameScoreService->getCompetitorsCount($enrollment);
+        $state->score = $standing['score'];
+        $state->rank = $standing['rank'];
+        $state->competitorsCount = $standing['competitorsCount'];
 
         $riddle = $enrollment->getRiddle();
         $position = null === $riddle ? false : array_search($riddle, $riddles, true);

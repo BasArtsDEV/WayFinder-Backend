@@ -100,13 +100,13 @@ readonly class EnrollmentProcessor implements ProcessorInterface
                 throw new ConflictHttpException('Cette équipe a déjà commencé cette chasse.');
             }
 
-            foreach ($team->getUsers() as $member) {
-                if (null !== $this->enrollmentRepository->findOneBy(['user' => $member, 'treasureHunt' => $treasureHunt])) {
-                    throw new ConflictHttpException(sprintf('%s est déjà inscrit à cette chasse.', $member->getUsername()));
-                }
+            $members = $team->getUsers()->toArray();
+            $existingMemberEnrollment = $this->enrollmentRepository->findOneByUsersAndTreasureHunt($members, $treasureHunt);
+            if (null !== $existingMemberEnrollment) {
+                throw new ConflictHttpException(sprintf('%s est déjà inscrit à cette chasse.', $existingMemberEnrollment->getUser()?->getUsername()));
             }
 
-            foreach ($team->getUsers() as $member) {
+            foreach ($members as $member) {
                 $enrollment = $member === $user ? $data : new Enrollment();
                 $enrollment->setUser($member)->setTreasureHunt($treasureHunt);
                 $team->addEnrollment($enrollment);

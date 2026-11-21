@@ -6,10 +6,10 @@ use App\Entity\User;
 use App\Repository\NotificationRepository;
 use Symfony\Bundle\SecurityBundle\Security;
 use Twig\Extension\AbstractExtension;
-use Twig\Extension\GlobalsInterface;
 use Twig\TwigFilter;
+use Twig\TwigFunction;
 
-class AppExtension extends AbstractExtension implements GlobalsInterface
+class AppExtension extends AbstractExtension
 {
     public function __construct(
         private readonly NotificationRepository $notificationRepository,
@@ -17,17 +17,22 @@ class AppExtension extends AbstractExtension implements GlobalsInterface
     ) {
     }
 
-    public function getGlobals(): array
+    public function getFunctions(): array
+    {
+        return [
+            new TwigFunction('app_notifications_count', $this->getNotificationsCount(...)),
+        ];
+    }
+
+    public function getNotificationsCount(): int
     {
         $user = $this->security->getUser();
 
         if (!$user instanceof User) {
-            return ['app_notifications' => []];
+            return 0;
         }
 
-        return [
-            'app_notifications' => $this->notificationRepository->findByAny($user),
-        ];
+        return $this->notificationRepository->countByUser($user);
     }
 
     public function getFilters(): array
