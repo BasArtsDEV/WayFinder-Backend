@@ -62,14 +62,14 @@
 
                         {% if treasureHunt.published %}
                             {% if is_granted('TREASURE_HUNT_RESET_SCORES', treasureHunt) %}
-                                <a href="{{ path('app_treasure_hunt_leaderboard', { id: treasureHunt.id }) }}" class="btn btn-app-secondary">
+                                <a href="{{ path('app_treasure_hunt_leaderboard', { id: treasureHunt.id }) }}" class="btn btn-app-secondary leaderboard_btn">
                                     <i class="bi bi-trophy me-1" aria-hidden="true"></i>{{ 'treasure_hunt.show.leaderboard'|trans }}
                                 </a>
                             {% endif %}
 
                             <form method="post" action="{{ path('app_treasure_hunt_unpublish', { id: treasureHunt.id }) }}" class="d-inline">
                                 <input type="hidden" name="_token" value="{{ csrf_token('unpublish' ~ treasureHunt.id) }}">
-                                <button type="submit" class="btn btn-app-danger">
+                                <button type="submit" class="btn btn-app-danger unpublish_btn">
                                     <i class="bi bi-pause-circle me-1"></i>{{ 'treasure_hunt.show.unpublish'|trans }}
                                 </button>
                             </form>
@@ -109,7 +109,7 @@
 
                                 <form method="post" action="{{ path('app_treasure_hunt_publish', { id: treasureHunt.id }) }}" class="d-inline">
                                     <input type="hidden" name="_token" value="{{ csrf_token('publish' ~ treasureHunt.id) }}">
-                                    <button type="submit" class="btn btn-app-primary">
+                                    <button type="submit" class="btn btn-app-primary publish_btn">
                                         <i class="bi bi-rocket-takeoff-fill me-1"></i>{{ 'treasure_hunt.show.publish'|trans }}
                                     </button>
                                 </form>
