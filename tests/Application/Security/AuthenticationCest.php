@@ -34,4 +34,17 @@ final class AuthenticationCest
         $I->seeResponseCodeIsSuccessful();
         $I->dontSeeAuthentication();
     }
+
+    public function loginWithWrongCredentialsFails(ApplicationTester $I): void
+    {
+        $user = UserFactory::createOne();
+        $I->amOnPage('/login');
+        $I->seeResponseCodeIsSuccessful();
+
+        $I->fillField(['name' => '_username'], $user->getEmail());
+        $I->fillField(['name' => '_password'], 'ABC78d');
+        $I->click('.btn-login-submit');
+
+        $I->dontSeeAuthentication();
+    }
 }
