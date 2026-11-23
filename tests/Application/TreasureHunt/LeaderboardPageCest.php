@@ -13,6 +13,7 @@ use App\Factory\RiddleTextFactory;
 use App\Factory\TeamFactory;
 use App\Factory\TreasureHuntFactory;
 use App\Factory\UserFactory;
+use App\Security\Voter\TreasureHuntVoter;
 use App\Tests\Support\ApplicationTester;
 
 class LeaderboardPageCest
@@ -67,7 +68,9 @@ class LeaderboardPageCest
         $I->amLoggedInAs(UserFactory::createOne());
         $I->amOnPage('/treasure_hunt/'.$treasureHunt->getId().'/leaderboard');
 
-        $I->seeResponseCodeIs(403);
+        $I->dontSeeUserIsGranted(TreasureHuntVoter::RESET, $treasureHunt);
+        $I->seeCurrentUrlEquals('/treasure_hunt/'.$treasureHunt->getId());
+        $I->dontSeeElement('.leaderboard-table');
     }
 
     public function creatorCanRemoveOneEntry(ApplicationTester $I): void

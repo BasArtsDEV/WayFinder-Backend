@@ -3,7 +3,6 @@
 namespace App\Controller;
 
 use App\Entity\TreasureHunt;
-use App\Entity\User;
 use App\Repository\EnrollmentRepository;
 use App\Repository\SubmissionRepository;
 use App\Security\Voter\TreasureHuntVoter;
@@ -21,9 +20,9 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 final class LeaderboardController extends AbstractController
 {
     #[Route('/treasure_hunt/{id}/leaderboard', name: 'app_treasure_hunt_leaderboard', requirements: ['id' => '\d+'], methods: ['GET'])]
+    #[IsGranted(TreasureHuntVoter::RESET, 'treasureHunt')]
     public function index(TreasureHunt $treasureHunt, HuntStatisticsService $huntStatisticsService, EntityManagerInterface $em, GameProgressionService $gameProgressionService): Response
     {
-        $this->denyAccessUnlessCreator($treasureHunt);
         $this->updateTimers($treasureHunt, $em, $gameProgressionService);
 
         $rows = $huntStatisticsService->getDetailedLeaderboard($treasureHunt);
@@ -38,9 +37,9 @@ final class LeaderboardController extends AbstractController
     }
 
     #[Route('/treasure_hunt/{id}/leaderboard/export', name: 'app_treasure_hunt_leaderboard_export', requirements: ['id' => '\d+'], methods: ['GET'])]
+    #[IsGranted(TreasureHuntVoter::RESET, 'treasureHunt')]
     public function export(TreasureHunt $treasureHunt, HuntStatisticsService $huntStatisticsService, EntityManagerInterface $em, GameProgressionService $gameProgressionService): Response
     {
-        $this->denyAccessUnlessCreator($treasureHunt);
         $this->updateTimers($treasureHunt, $em, $gameProgressionService);
 
         $file = fopen('php://temp', 'r+');
@@ -97,10 +96,9 @@ final class LeaderboardController extends AbstractController
     }
 
     #[Route('/treasure_hunt/{id}/leaderboard/remove', name: 'app_treasure_hunt_leaderboard_remove', requirements: ['id' => '\d+'], methods: ['POST'])]
+    #[IsGranted(TreasureHuntVoter::RESET, 'treasureHunt')]
     public function removeEntries(Request $request, TreasureHunt $treasureHunt, EntityManagerInterface $em, GameScoreService $gameScoreService, GameProgressionService $gameProgressionService): Response
     {
-        $this->denyAccessUnlessCreator($treasureHunt);
-
         $payload = $request->getPayload();
         if (!$this->isCsrfTokenValid('remove-entries'.$treasureHunt->getId(), $payload->getString('_token'))) {
             $this->addFlash('error', 'Le formulaire a expiré, veuillez réessayer.');
@@ -141,14 +139,5 @@ final class LeaderboardController extends AbstractController
         }
 
         $em->flush();
-    }
-
-    private function denyAccessUnlessCreator(TreasureHunt $treasureHunt): void
-    {
-        $user = $this->getUser();
-        $team = $treasureHunt->getTeam();
-        if (!$user instanceof User || null === $team || ($team->getLeader() !== $user && !$team->getUsers()->contains($user))) {
-            throw $this->createAccessDeniedException("Seuls les membres de l'équipe créatrice peuvent consulter le classement.");
-        }
     }
 }
