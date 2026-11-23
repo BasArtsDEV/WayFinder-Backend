@@ -1,0 +1,235 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ treasureHunt.title }} - Classement{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('styles/leaderboard/leaderboard.css') }}">
+{% endblock %}
+
+{% block main %}
+    <div class="container-fluid px-2 px-md-4 py-4 leaderboard-page">
+
+        <a href="{{ path('app_treasure_hunt_show', { id: treasureHunt.id }) }}" class="leaderboard-back">
+            <i class="bi bi-arrow-left" aria-hidden="true"></i>
+            Retour à la chasse
+        </a>
+
+        <header class="leaderboard-card leaderboard-header">
+            <div class="leaderboard-header-info">
+                <span class="leaderboard-header-icon" aria-hidden="true">
+                    <i class="bi bi-trophy-fill"></i>
+                </span>
+                <div class="min-w-0">
+                    <h1 class="leaderboard-title">Classement</h1>
+                    <p class="leaderboard-subtitle">{{ treasureHunt.title }}</p>
+                </div>
+            </div>
+        </header>
+
+        <section aria-labelledby="leaderboard-stats-title">
+            <h2 id="leaderboard-stats-title" class="visually-hidden">Statistiques</h2>
+            <ul class="leaderboard-stats">
+                <li class="leaderboard-stat">
+                    <i class="bi bi-people-fill leaderboard-stat-icon" aria-hidden="true"></i>
+                    <span class="leaderboard-stat-value">{{ summary.players }}</span>
+                    <span class="leaderboard-stat-label">Inscrit{{ summary.players > 1 ? 's' }}</span>
+                    <span class="leaderboard-stat-detail">{{ summary.started }} ont commencé</span>
+                </li>
+                <li class="leaderboard-stat">
+                    <i class="bi bi-flag-fill leaderboard-stat-icon" aria-hidden="true"></i>
+                    <span class="leaderboard-stat-value">{{ summary.finished }}</span>
+                    <span class="leaderboard-stat-label">Partie{{ summary.finished > 1 ? 's' }} terminée{{ summary.finished > 1 ? 's' }}</span>
+                    <span class="leaderboard-stat-detail">dont {{ summary.timedOut }} temps écoulé</span>
+                </li>
+                <li class="leaderboard-stat">
+                    <i class="bi bi-hourglass-split leaderboard-stat-icon" aria-hidden="true"></i>
+                    <span class="leaderboard-stat-value">{{ summary.ongoing }}</span>
+                    <span class="leaderboard-stat-label">En cours ou en pause</span>
+                    <span class="leaderboard-stat-detail">{{ summary.players - summary.started }} pas encore commencé</span>
+                </li>
+                <li class="leaderboard-stat">
+                    <i class="bi bi-check-circle-fill leaderboard-stat-icon" aria-hidden="true"></i>
+                    <span class="leaderboard-stat-value">{{ summary.completionRate is null ? '-' : summary.completionRate ~ ' %' }}</span>
+                    <span class="leaderboard-stat-label">Taux de réussite</span>
+                    <span class="leaderboard-stat-detail">{{ summary.completed }} chasse{{ summary.completed > 1 ? 's' }} finie{{ summary.completed > 1 ? 's' }} à temps</span>
+                </li>
+                <li class="leaderboard-stat">
+                    <i class="bi bi-star-fill leaderboard-stat-icon" aria-hidden="true"></i>
+                    <span class="leaderboard-stat-value">{{ summary.averageScore ?? '-' }}{% if summary.averageScore is not null %} <small>pts</small>{% endif %}</span>
+                    <span class="leaderboard-stat-label">Score moyen</span>
+                    <span class="leaderboard-stat-detail">Meilleur : {{ summary.bestScore ?? '-' }} pts</span>
+                </li>
+                <li class="leaderboard-stat">
+                    <i class="bi bi-stopwatch-fill leaderboard-stat-icon" aria-hidden="true"></i>
+                    <span class="leaderboard-stat-value">{{ summary.averagePlayTime is null ? '-' : summary.averagePlayTime|duration }}</span>
+                    <span class="leaderboard-stat-label">Temps de jeu moyen</span>
+                    <span class="leaderboard-stat-detail">Limite : {{ treasureHunt.duration|duration }}</span>
+                </li>
+            </ul>
+        </section>
+
+        <section class="leaderboard-card" aria-labelledby="leaderboard-participants-title">
+            <div class="leaderboard-card-header">
+                <h2 id="leaderboard-participants-title" class="leaderboard-section-title">
+                    Participants
+                    <span class="leaderboard-count">{{ rows|length }}</span>
+                </h2>
+            </div>
+
+            {% if rows is empty %}
+                <p class="leaderboard-empty">Personne n'a encore terminé cette chasse au trésor.</p>
+            {% else %}
+                <div class="leaderboard-table-wrapper">
+                    <table class="leaderboard-table">
+                        <caption class="visually-hidden">Classement des participants, du meilleur au moins bon score</caption>
+                        <thead>
+                            <tr>
+                                <th scope="col">Rang</th>
+                                <th scope="col">Participant</th>
+                                <th scope="col">Score</th>
+                                <th scope="col" class="leaderboard-optional">Points</th>
+                                <th scope="col" class="leaderboard-optional">Bonus temps</th>
+                                <th scope="col" class="leaderboard-optional">Temps de jeu</th>
+                                <th scope="col" class="leaderboard-optional">Fin de partie</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for row in rows %}
+                                {% set entry = row.entry %}
+                                {% set name = entry.team ? entry.team.name : entry.user.username %}
+                                <tr class="leaderboard-row">
+                                    <td>
+                                        <span class="leaderboard-rank {{ entry.rank <= 3 ? 'leaderboard-rank-' ~ entry.rank }}">
+                                            <span class="visually-hidden">Place </span>{{ entry.rank }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <div class="leaderboard-player">
+                                            {% if entry.team %}
+                                                <span class="leaderboard-avatar leaderboard-team-icon" aria-hidden="true">
+                                                    <i class="bi bi-people-fill"></i>
+                                                </span>
+                                            {% else %}
+                                                {{ include('profile/partials/_avatar.html.twig', { user: entry.user, size: 40, class: 'leaderboard-avatar' }) }}
+                                            {% endif %}
+                                            <span class="leaderboard-name">
+                                                {{ name }}
+                                                {% if entry.team %}
+                                                    <span class="leaderboard-tag">Équipe · {{ row.players }} joueur{{ row.players > 1 ? 's' }}</span>
+                                                {% endif %}
+                                                {% if entry.timedOut %}
+                                                    <span class="leaderboard-tag leaderboard-tag-warning">Temps écoulé</span>
+                                                {% endif %}
+                                            </span>
+                                        </div>
+                                    </td>
+                                    <td class="leaderboard-score">{{ entry.score }} <span class="leaderboard-score-unit">pts</span></td>
+                                    <td class="leaderboard-optional">{{ row.points }}</td>
+                                    <td class="leaderboard-optional">+{{ row.bonus }}</td>
+                                    <td class="leaderboard-optional">{{ row.playTime|duration }}</td>
+                                    <td class="leaderboard-optional">{{ row.finishedAt ? row.finishedAt|date_formatter : '-' }}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% endif %}
+        </section>
+
+        <div class="leaderboard-columns">
+            <section class="leaderboard-card leaderboard-riddles" aria-labelledby="leaderboard-riddles-title">
+                <div class="leaderboard-card-header">
+                    <h2 id="leaderboard-riddles-title" class="leaderboard-section-title">Analyse des énigmes</h2>
+                </div>
+
+                {% if riddleStatistics is empty %}
+                    <p class="leaderboard-empty">Cette chasse ne contient aucune énigme.</p>
+                {% else %}
+                    <div class="leaderboard-table-wrapper">
+                        <table class="leaderboard-table">
+                            <caption class="visually-hidden">Résultats des joueurs pour chaque énigme</caption>
+                            <thead>
+                                <tr>
+                                    <th scope="col">N°</th>
+                                    <th scope="col">Énigme</th>
+                                    <th scope="col">Réussite</th>
+                                    <th scope="col" class="leaderboard-optional">Mauvaises réponses</th>
+                                    <th scope="col" class="leaderboard-optional">Temps moyen</th>
+                                    <th scope="col" class="leaderboard-optional">Bloqués</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for statistic in riddleStatistics %}
+                                    <tr>
+                                        <td><span class="leaderboard-riddle-index">{{ statistic.riddle.index }}</span></td>
+                                        <td>
+                                            <span class="leaderboard-name">
+                                                {{ statistic.riddle.title }}
+                                                {% if statistic.isHardest %}
+                                                    <span class="leaderboard-tag leaderboard-tag-warning">La plus difficile</span>
+                                                {% endif %}
+                                            </span>
+                                        </td>
+                                        <td>
+                                            {% if statistic.successRate is null %}
+                                                <span class="text-muted small">Aucune réponse</span>
+                                            {% else %}
+                                                <div class="leaderboard-progress-label">
+                                                    <span>{{ statistic.successRate }} %</span>
+                                                    <span class="text-muted small">{{ statistic.solved }}/{{ statistic.attempts }}</span>
+                                                </div>
+                                                <div class="leaderboard-progress" role="progressbar" aria-label="Taux de réussite de l'énigme {{ statistic.riddle.index }}" aria-valuenow="{{ statistic.successRate }}" aria-valuemin="0" aria-valuemax="100">
+                                                    <div class="leaderboard-progress-bar" style="width: {{ statistic.successRate }}%;"></div>
+                                                </div>
+                                            {% endif %}
+                                        </td>
+                                        <td class="leaderboard-optional">{{ statistic.wrongAnswers }}</td>
+                                        <td class="leaderboard-optional">{{ statistic.averageTime is null ? '-' : statistic.averageTime|duration }}</td>
+                                        <td class="leaderboard-optional" title="Parties terminées par manque de temps sur cette énigme">{{ statistic.blocked }}</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% endif %}
+            </section>
+
+            <section class="leaderboard-card leaderboard-ongoing" aria-labelledby="leaderboard-ongoing-title">
+                <div class="leaderboard-card-header">
+                    <h2 id="leaderboard-ongoing-title" class="leaderboard-section-title">
+                        Parties en cours
+                        <span class="leaderboard-count">{{ ongoingGames|length }}</span>
+                    </h2>
+                </div>
+
+                {% if ongoingGames is empty %}
+                    <p class="leaderboard-empty">Aucune partie en cours.</p>
+                {% else %}
+                    <ul class="leaderboard-ongoing-list">
+                        {% for game in ongoingGames %}
+                            <li class="leaderboard-ongoing-item">
+                                {{ include('profile/partials/_avatar.html.twig', { user: game.user, size: 40, class: 'leaderboard-avatar' }) }}
+                                <div class="leaderboard-ongoing-info">
+                                    <span class="leaderboard-name">
+                                        {{ game.user.username }}
+                                        {% if game.status.value == 'paused' %}
+                                            <span class="leaderboard-tag">En pause</span>
+                                        {% else %}
+                                            <span class="leaderboard-tag leaderboard-tag-success">En cours</span>
+                                        {% endif %}
+                                    </span>
+                                    <span class="leaderboard-ongoing-detail">
+                                        {% if game.team %}{{ game.team.name }} · {% endif %}
+                                        Énigme {{ game.riddle ? game.riddle.index : '-' }}/{{ riddleStatistics|length }}
+                                        · {{ game.countdown|duration }} joué
+                                    </span>
+                                </div>
+                                <span class="leaderboard-score">{{ game.scoreTotal }} <span class="leaderboard-score-unit">pts</span></span>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            </section>
+        </div>
+    </div>
+{% endblock %}
