@@ -303,6 +303,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Groups(['user:read', 'user:me', 'user:write'])]
     private string $timezone = 'Europe/Paris';
 
+    #[ORM\Column(options: ['default' => false])]
+    private bool $hasCompletedTutorial = false;
+
     /**
      * @var Collection<int, Team>
      */
@@ -629,6 +632,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setTimezone(string $timezone): static
     {
         $this->timezone = $timezone;
+
+        return $this;
+    }
+
+    public function hasCompletedTutorial(): bool
+    {
+        return $this->hasCompletedTutorial;
+    }
+
+    public function setHasCompletedTutorial(bool $hasCompletedTutorial): static
+    {
+        $this->hasCompletedTutorial = $hasCompletedTutorial;
 
         return $this;
     }
