@@ -21,9 +21,10 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 final class LeaderboardController extends AbstractController
 {
     #[Route('/treasure_hunt/{id}/leaderboard', name: 'app_treasure_hunt_leaderboard', requirements: ['id' => '\d+'], methods: ['GET'])]
-    public function index(TreasureHunt $treasureHunt, HuntStatisticsService $huntStatisticsService): Response
+    public function index(TreasureHunt $treasureHunt, HuntStatisticsService $huntStatisticsService, EntityManagerInterface $em, GameProgressionService $gameProgressionService): Response
     {
         $this->denyAccessUnlessCreator($treasureHunt);
+        $this->updateTimers($treasureHunt, $em, $gameProgressionService);
 
         $rows = $huntStatisticsService->getDetailedLeaderboard($treasureHunt);
 
@@ -37,9 +38,10 @@ final class LeaderboardController extends AbstractController
     }
 
     #[Route('/treasure_hunt/{id}/leaderboard/export', name: 'app_treasure_hunt_leaderboard_export', requirements: ['id' => '\d+'], methods: ['GET'])]
-    public function export(TreasureHunt $treasureHunt, HuntStatisticsService $huntStatisticsService): Response
+    public function export(TreasureHunt $treasureHunt, HuntStatisticsService $huntStatisticsService, EntityManagerInterface $em, GameProgressionService $gameProgressionService): Response
     {
         $this->denyAccessUnlessCreator($treasureHunt);
+        $this->updateTimers($treasureHunt, $em, $gameProgressionService);
 
         $file = fopen('php://temp', 'r+');
         if (false === $file) {
@@ -130,6 +132,15 @@ final class LeaderboardController extends AbstractController
         }
 
         return $this->redirectToRoute('app_treasure_hunt_leaderboard', ['id' => $treasureHunt->getId()]);
+    }
+
+    private function updateTimers(TreasureHunt $treasureHunt, EntityManagerInterface $em, GameProgressionService $gameProgressionService): void
+    {
+        foreach ($treasureHunt->getEnrollments() as $enrollment) {
+            $gameProgressionService->updateTimers($enrollment);
+        }
+
+        $em->flush();
     }
 
     private function denyAccessUnlessCreator(TreasureHunt $treasureHunt): void
