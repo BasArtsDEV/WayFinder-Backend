@@ -251,7 +251,9 @@ final class TeamController extends AbstractController
             throw $this->createAccessDeniedException('Seul le chef d\'équipe peut inviter des membres.');
         }
 
-        $form = $this->createForm(InviteMemberType::class);
+        $form = $this->createForm(InviteMemberType::class, null, [
+            'team' => $team,
+        ]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
