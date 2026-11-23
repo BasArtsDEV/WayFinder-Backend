@@ -86,7 +86,7 @@
             </ul>
         </section>
 
-        <section class="leaderboard-card" aria-labelledby="leaderboard-participants-title">
+        <section class="leaderboard-card" aria-labelledby="leaderboard-participants-title" data-controller="leaderboard">
             <div class="leaderboard-card-header">
                 <h2 id="leaderboard-participants-title" class="leaderboard-section-title">
                     Participants
@@ -97,22 +97,41 @@
             {% if rows is empty %}
                 <p class="leaderboard-empty">Personne n'a encore terminé cette chasse au trésor.</p>
             {% else %}
-                <form method="post" action="{{ path('app_treasure_hunt_leaderboard_remove', { id: treasureHunt.id }) }}"
+                <div class="leaderboard-toolbar">
+                    <div class="leaderboard-search">
+                        <label for="leaderboard-search" class="visually-hidden">Rechercher un participant</label>
+                        <i class="bi bi-search" aria-hidden="true"></i>
+                        <input type="search" id="leaderboard-search" class="form-control" placeholder="Rechercher un participant"
+                               data-leaderboard-target="search" data-action="input->leaderboard#filter">
+                    </div>
+
+                    <label for="leaderboard-filter" class="visually-hidden">Filtrer les participants</label>
+                    <select id="leaderboard-filter" class="form-select leaderboard-filter" data-leaderboard-target="filter" data-action="change->leaderboard#filter">
+                        <option value="all">Tous les participants</option>
+                        <option value="solo">Joueurs seuls</option>
+                        <option value="team">Équipes</option>
+                        <option value="timed-out">Temps écoulé</option>
+                    </select>
+
+                    <button type="submit" form="leaderboard-remove-form" class="btn btn-app-danger" data-leaderboard-target="removeSelected"
+                            data-confirm="Retirer les entrées sélectionnées du classement ? Leurs parties seront remises à zéro.">
+                        <i class="bi bi-trash me-1" aria-hidden="true"></i><span>Retirer la sélection (<span data-leaderboard-target="count">0</span>)</span>
+                    </button>
+                </div>
+
+                <form method="post" id="leaderboard-remove-form" action="{{ path('app_treasure_hunt_leaderboard_remove', { id: treasureHunt.id }) }}"
                       onsubmit="return confirm(event.submitter.dataset.confirm);">
                     <input type="hidden" name="_token" value="{{ csrf_token('remove-entries' ~ treasureHunt.id) }}">
-
-                    <div class="leaderboard-toolbar">
-                        <button type="submit" class="btn btn-app-danger" data-confirm="Retirer les entrées sélectionnées du classement ? Leurs parties seront remises à zéro.">
-                            <i class="bi bi-trash me-1" aria-hidden="true"></i>Retirer la sélection
-                        </button>
-                    </div>
 
                     <div class="leaderboard-table-wrapper">
                         <table class="leaderboard-table">
                             <caption class="visually-hidden">Classement des participants, du meilleur au moins bon score</caption>
                             <thead>
                                 <tr>
-                                    <th scope="col"><span class="visually-hidden">Sélection</span></th>
+                                    <th scope="col">
+                                        <input type="checkbox" class="form-check-input leaderboard-check" aria-label="Sélectionner tous les participants affichés"
+                                               data-leaderboard-target="checkAll" data-action="change->leaderboard#toggleAll">
+                                    </th>
                                     <th scope="col">Rang</th>
                                     <th scope="col">Participant</th>
                                     <th scope="col">Score</th>
@@ -127,9 +146,11 @@
                                 {% for row in rows %}
                                     {% set entry = row.entry %}
                                     {% set name = entry.team ? entry.team.name : entry.user.username %}
-                                    <tr class="leaderboard-row">
+                                    <tr class="leaderboard-row" data-leaderboard-target="row" data-name="{{ name|lower }}"
+                                        data-type="{{ entry.team ? 'team' : 'solo' }}" data-timed-out="{{ entry.timedOut ? 1 : 0 }}">
                                         <td>
-                                            <input type="checkbox" class="form-check-input leaderboard-check" name="keys[]" value="{{ entry.key }}" aria-label="Sélectionner {{ name }}">
+                                            <input type="checkbox" class="form-check-input leaderboard-check" name="keys[]" value="{{ entry.key }}" aria-label="Sélectionner {{ name }}"
+                                               data-leaderboard-target="check" data-action="change->leaderboard#updateSelection">
                                         </td>
                                         <td>
                                             <span class="leaderboard-rank {{ entry.rank <= 3 ? 'leaderboard-rank-' ~ entry.rank }}">
@@ -174,6 +195,8 @@
                         </table>
                     </div>
                 </form>
+
+                <p class="leaderboard-empty" data-leaderboard-target="noResult" hidden>Aucun participant ne correspond à la recherche.</p>
             {% endif %}
         </section>
 

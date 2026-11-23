@@ -203,7 +203,31 @@
     margin-bottom: 0.5rem;
 }
 
+.leaderboard-search {
+    position: relative;
+    flex: 1 1 14rem;
+}
+
+.leaderboard-search i {
+    position: absolute;
+    top: 50%;
+    left: 1rem;
+    transform: translateY(-50%);
+
+    color: #6c757d;
+}
+
+.leaderboard-search .form-control {
+    padding-left: 2.5rem;
+}
+
+.leaderboard-filter {
+    flex: 1 1 12rem;
+    width: auto;
+}
+
 .leaderboard-toolbar .btn {
+    flex: 1 1 auto;
     min-height: calc(1.2rem + 1.1rem * 1.5);
     white-space: nowrap;
 }
