@@ -5,7 +5,7 @@
 <div class="form-wrapper-center">
     <div class="team-form-card">
         <header class="team-form-card-header">
-            <h1 class="team-form-card-title">{{ form_title|default('Créer une équipe') }}</h1>
+            <h1 class="team-form-card-title">{{ form_title|default('team.form.default_title'|trans) }}</h1>
             {% if form_subtitle|default(null) %}
                 <p class="team-form-card-subtitle">{{ form_subtitle }}</p>
             {% endif %}
@@ -21,7 +21,7 @@
             </div>
 
             <div class="mb-4">
-                <label class="form-label fw-semibold text-dark fs-6">Bannière de l'équipe</label>
+                <label class="form-label fw-semibold text-dark fs-6">{{ 'form.team.banner.label'|trans }}</label>
 
                 <div class="dropzone-card">
                     <div class="dropzone-area" id="dropzoneArea">
@@ -36,8 +36,8 @@
                         <div class="dropzone-prompt" id="dropzonePrompt">
                             <i class="bi bi-cloud-arrow-up fs-2 mb-2"></i>
                             <div class="dropzone-text" id="dropzoneText">
-                                <span>Veuillez uploader une image valide (JPG, PNG, WEBP)</span>
-                                <small>Taille maximale : 2 MO</small>
+                                <span>{{ 'team.form.dropzone_prompt'|trans }}</span>
+                                <small>{{ 'team.form.max_size'|trans }}</small>
                             </div>
                         </div>
                     </div>
@@ -47,7 +47,7 @@
 
             <button type="submit" class="btn-app-primary" style="margin-right: auto; margin-left: auto">
                 <i class="bi bi-check-circle-fill"></i>
-                <span>{{ submit_label|default('Enregistrer l\'équipe') }}</span>
+                <span>{{ submit_label|default('team.form.default_submit'|trans) }}</span>
             </button>
 
             {{ form_end(form) }}

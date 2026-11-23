@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Accueil{% endblock %}
+{% block title %}{{ 'home.title'|trans }}{% endblock %}
 
 {% block stylesheets %}
     <link href="{{ asset('styles/home/home.css') }}" type="text/css" rel="stylesheet" />
@@ -15,15 +15,15 @@
                 </video>
             </div>
 
-            <h1 class="fw-bold mt-2">Bienvenue !</h1>
+            <h1 class="fw-bold mt-2">{{ 'home.welcome'|trans }}</h1>
 
             {% if app.user %}
                 <p class="welcome-text mb-2">
-                    Ravi de te revoir, {{ app.user.username }} ! Prêt à reprendre l'aventure ?
+                    {{ 'home.welcome_back'|trans({ username: app.user.username }) }}
                 </p>
             {% else %}
                 <p class="welcome-text mb-2">
-                    Pour commencer à créer ou à jouer à une carte au trésor, veuillez utiliser un compte.
+                    {{ 'home.welcome_guest'|trans }}
                 </p>
             {% endif %}
 
@@ -33,22 +33,22 @@
                 {% if app.user %}
                     <a href="{{ path('app_profil') }}" class="btn-app-primary">
                         <span class="btn-icon-wrapper"><img src="{{ asset('icons/enter.png') }}" alt="" class="btn-action-icon"></span>
-                        <span>Mon profil</span>
+                        <span>{{ 'home.my_profile'|trans }}</span>
                     </a>
 
                     <a href="{{ path('app_logout') }}" class="btn-app-secondary">
                         <span class="btn-icon-wrapper"><i class="bi bi-box-arrow-right welcome-icon" aria-hidden="true"></i></span>
-                        <span>Déconnexion</span>
+                        <span>{{ 'home.logout'|trans }}</span>
                     </a>
                 {% else %}
                     <a href="{{ path('app_login') }}" class="btn-app-primary">
                         <span class="btn-icon-wrapper"><img src="{{ asset('icons/enter.png') }}" alt="" class="btn-action-icon"></span>
-                        <span>Connexion</span>
+                        <span>{{ 'nav.login'|trans }}</span>
                     </a>
 
                     <a href="{{ path('app_register') }}" class="btn-app-secondary">
                         <span class="btn-icon-wrapper"><img src="{{ asset('icons/img.png') }}" alt="" class="btn-action-icon"></span>
-                        <span>Créer mon compte</span>
+                        <span>{{ 'home.create_account'|trans }}</span>
                     </a>
                 {% endif %}
             </div>

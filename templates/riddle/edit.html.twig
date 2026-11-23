@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Éditer l'énigme - {{ riddle.title }}{% endblock %}
+{% block title %}{{ 'riddle.edit.title'|trans({ title: riddle.title }) }}{% endblock %}
 
 {% block main %}
     {{ include('riddle/partials/_form.html.twig', {

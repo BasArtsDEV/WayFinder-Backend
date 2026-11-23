@@ -4,16 +4,16 @@
 
 <div class="riddle-editor-container">
     <div class="riddle-header">
-        <h2>{{ is_edit ? riddle.title : ('Créer une énigme - ' ~ type_label) }}</h2>
+        <h2>{{ is_edit ? riddle.title : 'riddle.form.create_heading'|trans({ type: type_label|trans }) }}</h2>
         <span class="badge bg-success">
-            {{ is_edit ? riddle.typeLabel : type_label }}
+            {{ (is_edit ? riddle.typeLabel : type_label)|trans }}
         </span>
     </div>
 
     {{ form_start(form) }}
     <div class="riddle-grid">
         <div class="riddle-card">
-            <h3 class="card-title">Informations générales</h3>
+            <h3 class="card-title">{{ 'riddle.form.general'|trans }}</h3>
 
             {{ form_row(form.title) }}
             {{ form_row(form.description) }}
@@ -38,7 +38,7 @@
         </div>
 
         <div class="riddle-card">
-            <h3 class="card-title">Configuration spécifique</h3>
+            <h3 class="card-title">{{ 'riddle.form.specific'|trans }}</h3>
 
             {% if form.question is defined %}
                 {{ form_row(form.question) }}
@@ -47,8 +47,8 @@
             {% if form.choices is defined %}
                 <div class="qcm-choices-container">
                     <div class="qcm-choices-title">
-                        <span>Choix de réponse</span>
-                        <button type="button" class="btn btn-primary btn-sm" id="add-choice-btn">+ Ajouter</button>
+                        <span>{{ 'riddle.form.choices'|trans }}</span>
+                        <button type="button" class="btn btn-primary btn-sm" id="add-choice-btn">{{ 'riddle.form.add_choice'|trans }}</button>
                     </div>
                     <div id="qcm-choices-list"
                          data-prototype="{{ form_widget(form.choices.vars.prototype)|e('html_attr') }}"
@@ -91,20 +91,20 @@
 
     <div class="riddle-card form-actions-card">
         <div class="form-actions">
-            <button type="submit" class="btn-app-primary">
-                {{ is_edit ? 'Mettre à jour' : 'Enregistrer l\'énigme' }}
+            <button type="submit" class="btn btn-app-primary">
+                {{ is_edit ? 'team.edit.submit'|trans : 'riddle.form.save'|trans }}
             </button>
-            <a href="{{ path('app_treasure_hunt_show', { id: hunt_id }) }}" class="btn-app-secondary">Annuler</a>
+            <a href="{{ path('app_treasure_hunt_show', { id: hunt_id }) }}" class="btn-app-secondary">{{ 'common.cancel'|trans }}</a>
 
             {% if is_edit %}
-                <button type="button" class="btn-app-danger" onclick="document.getElementById('delete-riddle-form').submit();">Supprimer</button>
+                <button type="button" class="btn btn-app-danger" onclick="document.getElementById('delete-riddle-form').submit();">{{ 'common.delete'|trans }}</button>
             {% endif %}
         </div>
     </div>
     {{ form_end(form) }}
 
     {% if is_edit %}
-        <form id="delete-riddle-form" action="{{ path('app_riddle_delete', { id: riddle.id }) }}" method="POST" onsubmit="return confirm('Confirmer la suppression ?');" style="display:none;">
+        <form id="delete-riddle-form" action="{{ path('app_riddle_delete', { id: riddle.id }) }}" method="POST" onsubmit="return confirm('{{ 'riddle.form.confirm_delete'|trans|e('js') }}');" style="display:none;">
             <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ riddle.id) }}">
         </form>
     {% endif %}

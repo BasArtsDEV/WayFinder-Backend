@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Mon profil{% endblock %}
+{% block title %}{{ 'home.my_profile'|trans }}{% endblock %}
 
 {% block main %}
     {{ include('profile/partials/_profil.html.twig', { user: app.user, teams: teams }) }}

@@ -1,15 +1,15 @@
 {% extends 'base.html.twig' %}
 
 {% set type_labels = {
-    text: 'Question simple',
-    qcm: 'Question QCM',
-    gps: 'Aller à des coordonnées GPS',
-    qrcode: 'Trouver un QR Code',
+    text: 'riddle.new.type.text',
+    qcm: 'riddle.new.type.qcm',
+    gps: 'riddle.new.type.gps',
+    qrcode: 'riddle.new.type.qrcode',
 } %}
 
-{% set type_label = type_labels[type] ?? 'Énigme' %}
+{% set type_label = type_labels[type] ?? 'riddle.new.type.default' %}
 
-{% block title %}Créer une nouvelle énigme - {{ type_label }}{% endblock %}
+{% block title %}{{ 'riddle.new.title'|trans({ type: type_label|trans }) }}{% endblock %}
 
 {% block main %}
     {{ include('riddle/partials/_form.html.twig', {

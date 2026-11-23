@@ -35,11 +35,11 @@ class PublishCest
         $I->amLoggedInAs($userInstance);
 
         $I->amOnPage('/treasure_hunt/'.$id);
-        $I->click('Publier');
+        $I->click('.publish_btn');
         $I->seeInRepository(TreasureHunt::class, ['id' => $id, 'published' => true, 'invitationCode' => 'AB12CD']);
 
-        $I->click('Dépublier');
-        $I->click('Publier');
+        $I->click('.unpublish_btn');
+        $I->click('.publish_btn');
         $I->seeInRepository(TreasureHunt::class, ['id' => $id, 'published' => true, 'invitationCode' => 'AB12CD']);
     }
 
@@ -64,7 +64,7 @@ class PublishCest
         $I->amLoggedInAs($userInstance);
 
         $I->amOnPage('/treasure_hunt/'.$id);
-        $I->click('Publier');
+        $I->click('.publish_btn');
 
         /** @var TreasureHunt $published */
         $published = $I->grabEntityFromRepository(TreasureHunt::class, ['id' => $id]);

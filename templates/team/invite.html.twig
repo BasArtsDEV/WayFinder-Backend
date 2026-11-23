@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Inviter un membre{% endblock %}
+{% block title %}{{ 'team.invite.title'|trans }}{% endblock %}
 
 {% block stylesheets %}
     <link rel="stylesheet" href="{{ asset('styles/notification/notification.css') }}">
@@ -10,12 +10,12 @@
     <div class="notification-container">
         <header class="eventpage-header">
             <div class="event-title-block">
-                <h1 class="notifpage-title-text">Inviter un membre</h1>
+                <h1 class="notifpage-title-text">{{ 'team.invite.title'|trans }}</h1>
                 <p class="eventpage-subtitle">{{ team.name }}</p>
             </div>
 
             <a href="{{ path('app_team_show', { id: team.id }) }}" class="btn-app-secondary">
-                <i class="bi bi-arrow-left"></i><span>Retour</span>
+                <i class="bi bi-arrow-left"></i><span>{{ 'common.back'|trans }}</span>
             </a>
         </header>
 
@@ -36,14 +36,13 @@
                 <div class="invite-help">
                     <i class="bi bi-info-circle-fill text-success" aria-hidden="true"></i>
                     <span>
-                        La personne recevra une notification et pourra accepter ou refuser.
-                        Places restantes : <strong>{{ constant('App\\Entity\\Team::MAX_USERS') - team.users|length }}</strong>.
+                        {{ 'team.invite.help'|trans({ remaining: constant('App\\Entity\\Team::MAX_USERS') - team.users|length })|raw }}
                     </span>
                 </div>
             </div>
 
             <button type="submit" class="btn-app-primary">
-                <i class="bi bi-send-fill"></i><span>Inviter</span>
+                <i class="bi bi-send-fill"></i><span>{{ 'team.invite.submit'|trans }}</span>
             </button>
             {{ form_end(form) }}
         </div>

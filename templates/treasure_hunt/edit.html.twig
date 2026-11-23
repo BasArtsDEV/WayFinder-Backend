@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Mise à jour d'une chasse au trésor{% endblock %}
+{% block title %}{{ 'treasure_hunt.edit_title'|trans }}{% endblock %}
 
 {% block stylesheets %}
     <link href="{{ asset('styles/treasure_hunt/form.css') }}" type="text/css" rel="stylesheet" />
@@ -9,7 +9,7 @@
 {% block main %}
     {{ include('treasure_hunt/partials/_form.html.twig', {
         form: form,
-        form_title: 'Modifier la chasse au trésor',
-        submit_label: 'Mettre à jour',
+        form_title: 'treasure_hunt.form.edit_heading'|trans,
+        submit_label: 'team.edit.submit'|trans,
     }, with_context: false) }}
 {% endblock %}

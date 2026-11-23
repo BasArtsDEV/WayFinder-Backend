@@ -1,0 +1,551 @@
+api:
+    error:
+        already_enrolled_other_mode: Vous êtes déjà inscrit à cette chasse dans un autre mode de jeu.
+        answer_current_riddle: Vous devez répondre à l'énigme courante de cette chasse.
+        answer_invalid_choice: Un choix sélectionné est invalide.
+        answer_invalid_json: Le format JSON de la réponse est invalide.
+        answer_needs_choice: La réponse doit contenir au moins un choix.
+        game_must_be_in_progress: La partie doit être en cours.
+        game_must_be_running_to_answer: La partie doit être en cours pour envoyer une réponse.
+        game_no_current_riddle: Cette partie ne possède pas d'énigme courante.
+        game_not_found: Cette partie n'existe pas.
+        game_transition_forbidden: Cette transition de partie n'est pas autorisée.
+        gps_invalid: Les coordonnées GPS sont invalides.
+        gps_required: Les coordonnées GPS sont obligatoires.
+        hunt_no_riddle: Cette chasse ne contient aucune énigme.
+        hunt_not_published: Cette chasse au trésor n'est pas publiée.
+        hunt_required: La chasse au trésor est obligatoire.
+        hunt_unavailable: Cette chasse au trésor n'est pas disponible.
+        member_already_enrolled: '{username} est déjà inscrit à cette chasse.'
+        no_file_sent: Aucun fichier n'a été envoyé.
+        no_hunt_for_code: Aucune chasse au trésor ne correspond à ce code.
+        not_in_team: Vous ne faites pas partie de cette équipe.
+        only_participating_teams: Seules les équipes participantes peuvent s'inscrire à une chasse.
+        own_enrollment_only: Vous ne pouvez répondre que pour votre propre inscription.
+        own_games_only: Vous ne pouvez consulter que vos propres parties.
+        riddle_not_in_hunt: L'énigme courante n'appartient plus à cette chasse.
+        riddle_required: L'énigme est obligatoire.
+        riddle_type_unsupported: Type d'énigme non pris en charge.
+        team_already_started: Cette équipe a déjà commencé cette chasse.
+        time_is_up: Le temps imparti est écoulé.
+common:
+    add: Ajouter
+    back: Retour
+    cancel: Annuler
+    delete: Supprimer
+    edit: Modifier
+    edit_alt: Éditer
+    email: Adresse e-mail
+    first_name: Prénom
+    last_name: Nom
+    password: Mot de passe
+    password_confirm: Confirmer le mot de passe
+    save: Enregistrer
+    search: Rechercher
+    username: Nom d'utilisateur
+date:
+    absolute: le {date} à {time}
+    pattern:
+        date: dd/MM/yyyy
+        time: HH:mm
+    relative:
+        hours: il y a {count, plural, one {# heure} other {# heures}}
+        minutes: il y a {count, plural, one {# minute} other {# minutes}}
+        now: À l'instant
+    weekday: '{day} à {time}'
+delete_button:
+    confirm: Êtes-vous sûr de vouloir supprimer cet élément ?
+email:
+    confirmation:
+        expires: Ce lien expirera dans {duration}.
+        heading: Bienvenue sur WayFinder !
+        instructions: 'Veuillez confirmer votre adresse email en cliquant sur le lien suivant :'
+        link: Confirmer mon email
+        subject: Confirmez votre inscription
+    reset_password:
+        button: Réinitialiser votre mot de passe
+        expires: Ce lien expirera dans 1 heure.
+        footer: Envoyé avec ♥ par WayFinder
+        greeting: Bonjour !
+        ignore_or_click: 'Si vous n''êtes pas à l''origine de cette demande, vous pouvez ignorer cet e-mail. Dans le cas contraire, cliquez sur le bouton ci-dessous pour réinitialiser votre mot de passe :'
+        request_received: Nous avons reçu une demande de réinitialisation de votre mot de passe pour votre compte WayFinder.
+        signoff: 'À bientôt,<br>
+
+            L''équipe WayFinder'
+        subject: Demande de réinitialisation de votre mot de passe
+        title: Réinitialisation de votre mot de passe
+    signature:
+        regards: Cordialement,
+        team: L'équipe WayFinder
+flash:
+    close: Fermer
+    invalid_csrf: Jeton CSRF invalide.
+footer:
+    company: Société
+    contact: Nous contacter
+    copyright: WayFinder © {year} Tous droits réservés.
+    create_account: Créer un compte
+    faq: Foire aux questions
+    legal: Légal
+    legal_notice: Mentions légales
+    product: Produit
+    resources: Ressources
+    tagline: Aventures & chasses au trésor interactives.
+form:
+    change_password:
+        first:
+            label: Nouveau mot de passe
+            placeholder: Entrez votre nouveau mot de passe
+        second:
+            label: Répéter le mot de passe
+            placeholder: Répétez votre nouveau mot de passe
+    choice:
+        choice:
+            label: Proposition
+        is_right:
+            label: Bonne réponse ?
+    invite:
+        username:
+            label: Nom d'utilisateur
+            placeholder: Saisissez un nom d'utilisateur
+    registration:
+        email:
+            label: Adresse mail
+            placeholder: john.doe@gmail.com
+        first_name:
+            label: Prénom
+            placeholder: John
+        last_name:
+            label: Nom
+            placeholder: Doe
+        password:
+            label: Mot de passe
+            placeholder: Saisir votre mot de passe
+        password_confirm:
+            label: Confirmer le mot de passe
+            placeholder: Répéter votre mot de passe
+        username:
+            label: Nom d'utilisateur
+            placeholder: Entrez un nom d'utilisateur
+    riddle:
+        description:
+            label: Description
+        expected_answer:
+            label: Réponse attendue
+        image:
+            label: Image
+        image_description:
+            label: Description de l'image
+        index:
+            label: Position dans la liste des énigmes
+        latitude:
+            label: Latitude
+        location:
+            label: Lieu associé
+            placeholder: Aucun lieu
+        longitude:
+            label: Longitude
+        penalty:
+            label: Pénalité si mauvaise réponse
+        qrcode_url:
+            label: URL du QR Code
+        question:
+            label: Question posée
+        score:
+            label: Points attribués
+        title:
+            label: Titre de l'énigme
+    team:
+        banner:
+            label: Bannière de l'équipe
+        name:
+            label: Nom de l'équipe
+            placeholder: 'Ex: Les Explorateurs'
+    treasure_hunt:
+        description:
+            label: Description
+            placeholder: Description de la chasse au trésor (50 à 1000 caractères)
+        duration:
+            label: Durée limite (en minutes)
+            placeholder: Durée maximale d'une partie
+        listed:
+            label: Afficher la chasse dans la liste publique. Les joueurs pourront rejoindre sans code d'invitation.
+        team:
+            label: Équipe
+        title:
+            label: Titre
+            placeholder: Titre de la chasse au trésor (10 à 120 caractères)
+    user_autocomplete:
+        label: Sélectionnez un utilisateur
+        no_more_results: Aucun autre résultat
+        no_results: Aucun utilisateur trouvé
+home:
+    create_account: Créer mon compte
+    logout: Déconnexion
+    my_profile: Mon profil
+    title: Accueil
+    welcome: Bienvenue !
+    welcome_back: Ravi de te revoir, {username} ! Prêt à reprendre l'aventure ?
+    welcome_guest: Pour commencer à créer ou à jouer à une carte au trésor, veuillez utiliser un compte.
+login:
+    forgot_password: Mot de passe oublié ?
+    no_account: Vous n'avez pas de compte ?
+    placeholder:
+        password: Entrez votre mot de passe
+    remember_me: Se souvenir de moi
+    title: Connexion
+nav:
+    creation_mode: Mode création
+    hunts: Chasses
+    language: Langue
+    login: Connexion
+    logo_alt: Logo WayFinder
+    logout: Se déconnecter
+    my_hunts: Mes chasses
+    my_teams: Mes équipes
+    new_notifications: Nouvelles notifications
+    notifications: Notifications
+    settings: Paramètres
+    teams: Équipes
+notification:
+    accept: Accepter
+    decline: Refuser
+    delete_all: Tout supprimer
+    empty: Vous n'avez aucune notification.
+    failure:
+        max_teams: le nombre maximum d'équipes par joueur est atteint
+        team_full: l'équipe est complète
+    flash:
+        all_deleted: Toutes les notifications ont été supprimées.
+        already_member: Cette personne fait déjà partie de l'équipe.
+        candidate_joined: '{username} a rejoint votre équipe !'
+        failed: 'Impossible : {reason}.'
+        forbidden: Accès non autorisé.
+        invitation_declined: Invitation refusée.
+        joined_team: Vous avez rejoint l'équipe « {team} » !
+        no_answer_needed: Cette notification n'appelle aucune réponse.
+        not_leader_anymore: 'Vous n''êtes plus le chef de cette équipe : cette demande ne vous concerne plus.'
+        request_already_sent: Vous avez déjà envoyé une demande pour rejoindre cette équipe.
+        request_declined: Demande refusée.
+        request_sent: Votre demande pour rejoindre l'équipe a été envoyée au chef.
+        team_no_leader: Cette équipe n'a pas de chef.
+    invitation_accepted:
+        description: '{sender} a accepté votre invitation et a rejoint l''équipe « {team} ».'
+        title: Invitation acceptée
+    invitation_declined:
+        description: '{sender} a refusé votre invitation à rejoindre l''équipe « {team} ».'
+        title: Invitation refusée
+    invitation_failed:
+        description: '{sender} n''a pas pu rejoindre l''équipe « {team} » : {reason}.'
+        title: Invitation sans suite
+    request_accepted:
+        description: '{sender} a accepté votre demande : vous avez rejoint l''équipe « {team} » !'
+        title: Demande acceptée
+    request_declined:
+        description: '{sender} a refusé votre demande pour rejoindre l''équipe « {team} ».'
+        title: Demande refusée
+    request_failed:
+        description: '{sender} a accepté votre demande pour rejoindre l''équipe « {team} », mais vous n''avez pas pu la rejoindre : {reason}.'
+        title: Demande sans suite
+    subtitle: Vous trouverez ci-dessous vos notifications
+    team_excluded:
+        description: Vous avez été exclu de l'équipe « {team} ».
+        title: Vous avez été exclu d'une équipe
+    team_invitation:
+        description: '{sender} vous invite à rejoindre l''équipe « {team} ».'
+        title: Invitation à rejoindre une équipe
+    team_join_request:
+        description: '{sender} souhaite rejoindre votre équipe « {team} ».'
+        title: Demande à rejoindre l'équipe
+    team_promoted:
+        description: '{sender} vous a confié la direction de l''équipe « {team} ».'
+        title: Vous êtes le nouveau chef d'équipe
+    title: Vos notifications
+profile:
+    avatar_alt: Avatar de {username}
+    edit: Modifier le profil
+    email: Adresse e-mail
+    flash:
+        account_deleted: Votre compte a bien été supprimé.
+        delete_invalid_token: Jeton de sécurité invalide, la suppression a été annulée.
+        updated: Profil mis à jour avec succès !
+    full_name: Prénom & nom
+    general_info: Informations générales
+    no_teams: Aucune équipe rejointe pour le moment.
+    registration_date: Date d'inscription
+    teams: Équipes
+    teams_joined: Équipes rejointes
+registration:
+    flash:
+        account_created: Votre compte a été créé avec succès. Un email de vérification vous a été envoyé.
+        email_resent: Un nouvel e-mail de confirmation vous a été envoyé.
+        email_verified: Votre adresse e-mail a bien été vérifiée.
+    have_account: Vous avez déjà un compte ?
+    heading: Créer un compte
+    login_link: Se connecter
+    placeholder:
+        email: example@gmail.com
+        first_name: Jean
+        last_name: Dupont
+        password: Choisissez un mot de passe
+        password_confirm: Répétez votre mot de passe
+        username: JohnDoe
+    submit: S'inscrire
+    title: S'inscrire
+reset_password:
+    back_to_login: Retour à la connexion
+    check:
+        heading: E-mail envoyé
+        message: 'Si un compte correspondant à votre adresse e-mail existe, un e-mail vient d''être envoyé contenant un lien que vous pouvez utiliser pour réinitialiser votre mot de passe.<br><br>
+
+            Ce lien expirera dans 1 heure.'
+        no_email: 'Si vous ne recevez pas d''e-mail, veuillez vérifier votre dossier spam ou
+
+            <a href="{link}" class="text-success fw-bold hover-green" style="text-decoration: none;">essayer à nouveau</a>.'
+        title: Vérification de l'e-mail - Mot de passe oublié
+    request:
+        heading: Mot de passe oublié
+        placeholder: exemple@gmail.com
+        submit: Envoyer le lien
+    reset:
+        heading: Nouveau mot de passe
+        submit: Réinitialiser le mot de passe
+    title: Réinitialiser votre mot de passe
+riddle:
+    confirm_delete: Confirmer la suppression de cette énigme ?
+    edit:
+        title: Éditer l'énigme - {title}
+    form:
+        add_choice: + Ajouter
+        choices: Choix de réponse
+        confirm_delete: Confirmer la suppression ?
+        create_heading: Créer une énigme - {type}
+        general: Informations générales
+        save: Enregistrer l'énigme
+        specific: Configuration spécifique
+    hint: Indice
+    illustration_alt: Illustration énigme
+    new:
+        title: Créer une nouvelle énigme - {type}
+        type:
+            default: Énigme
+            gps: Aller à des coordonnées GPS
+            qcm: Question QCM
+            qrcode: Trouver un QR Code
+            text: Question simple
+    show:
+        correct_answer: Bonne réponse
+        expected_answer: 'Réponse attendue : <strong>{answer}</strong>'
+        free_answer: Réponse libre
+        gps_location: Localisation GPS
+        qcm_question: Question QCM
+        scan_qrcode: Scanner un QR Code
+        target_link: Lien cible
+    type:
+        gps: GPS
+        qcm: QCM
+        qrcode: QR Code
+        text: Texte
+    type_label:
+        gps: GPS
+        other: Autre
+        qcm: QCM
+        qrcode: QR Code
+        text: Question simple
+settings:
+    avatar:
+        change: Changer
+        change_title: Changer l'avatar
+        delete: Supprimer l'avatar
+        preview: Aperçu de l'avatar
+    banner: Bannière
+    danger:
+        delete_account: Supprimer le compte
+        delete_button: Supprimer mon compte
+        heading: Zone de danger
+        hint: Une fois supprimé, toutes vos données personnelles seront définitivement effacées.
+    email: Email
+    flash:
+        invalid_preferences: Langue ou fuseau horaire invalide.
+        preferences_saved: Vos préférences ont bien été enregistrées.
+    modal:
+        body: Cette action supprimera définitivement votre compte utilisateur ainsi que l'ensemble des données associées.
+        confirm: Confirmer la suppression
+        title: Êtes-vous absolument sûr ?
+        warning: 'Attention : cette opération est irréversible.'
+    nav:
+        deletion: Suppression
+        preferences: Langue et fuseau horaire
+        profile: Paramètres du profil
+    preferences:
+        heading: Préférences d'affichage
+        language: Langue
+        timezone: Fuseau horaire
+    security:
+        account_password: Mot de passe du compte
+        change_password: Changer le mot de passe
+        heading: Sécurité et mot de passe
+        hint: Modifiez régulièrement votre mot de passe pour assurer la sécurité de votre profil.
+    timezone:
+        london: Londres (UTC +00:00 / +01:00 DST)
+        los_angeles: Los Angeles (UTC -08:00 / -07:00 DST)
+        new_york: New York, Toronto (UTC -05:00 / -04:00 DST)
+        paris: Paris, Bruxelles, Berlin (UTC +01:00 / +02:00 DST)
+        tokyo: Tokyo (UTC +09:00)
+    title: Paramètres
+team:
+    card:
+        no_leader: Sans chef
+        owner: 'Propriétaire : {owner}'
+        yours: Votre équipe
+    create:
+        submit: Créer mon équipe
+        title: Création d'une nouvelle équipe
+    edit:
+        heading: Modifier mon équipe
+        submit: Mettre à jour
+        title: Mise à jour d'une équipe
+    error:
+        not_found: L'équipe demandée n'existe pas.
+        only_leader_invite: Seul le chef d'équipe peut inviter des membres.
+        only_leader_manage: Seul le chef d'équipe peut gérer les membres.
+    filter:
+        all: Toutes
+        leader: Chef
+        member: Membre
+    flash:
+        created: Votre équipe a bien été créée.
+        excluded: '@{username} a été exclu de l''équipe.'
+        invited: 'Invitation(s) envoyée(s) à : {users}.'
+        leader_cannot_leave: En tant que chef d'équipe, vous ne pouvez pas quitter l'équipe. Promouvez un autre membre ou supprimez l'équipe.
+        left: Vous avez quitté l'équipe avec succès.
+        max_teams: Vous ne pouvez pas appartenir à plus de {count, plural, one {# équipe} other {# équipes}}.
+        not_a_member: Cet utilisateur n'est pas un membre de l'équipe.
+        not_in_team: Vous ne faites pas partie de cette équipe.
+        promoted: '@{username} est désormais chef de l''équipe. Vous en êtes maintenant simple membre.'
+    form:
+        default_submit: Enregistrer l'équipe
+        default_title: Créer une équipe
+        dropzone_prompt: Veuillez uploader une image valide (JPG, PNG, WEBP)
+        file_selected: 'Fichier sélectionné : {name}'
+        max_size: 'Taille maximale : 2 Mo'
+    invite:
+        help: 'La personne recevra une notification et pourra accepter ou refuser.
+
+            Places restantes : <strong>{remaining}</strong>.'
+        submit: Inviter
+        title: Inviter un membre
+    invite_error:
+        already_invited: Une invitation est déjà en attente pour @{username}.
+        already_member: '@{username} fait déjà partie de l''équipe.'
+        already_requested: '@{username} a déjà demandé à rejoindre l''équipe : répondez à sa demande dans vos notifications.'
+        guest_max_teams: '@{username} a atteint le nombre maximum d''équipes.'
+        team_full: Votre équipe est complète ({count, plural, one {# membre maximum} other {# membres maximum}}).
+        unknown_user: Aucun utilisateur ne porte ce nom.
+    leader_badge: Chef
+    leader_title: Chef d'équipe
+    list:
+        count: '{count, plural, one {# équipe} other {# équipes}}'
+        create: Créer une équipe
+        empty: Aucune équipe ne correspond à votre recherche.
+        filter_label: Filtrer les équipes
+        for_query: pour « {query} »
+        search_label: Rechercher une équipe
+        search_placeholder: Rechercher une équipe ou un chef…
+        title: Liste des équipes
+    member_count: '{count, plural, one {# membre} other {# membres}}'
+    show:
+        actions_for: Actions pour @{username}
+        confirm_delete: Es-tu sûr de vouloir supprimer cette équipe ?
+        confirm_delete_leader: En tant que chef, souhaitez-vous vraiment supprimer cette équipe ? Cette action est irréversible.
+        confirm_exclude: Exclure @{username} de l'équipe ?
+        confirm_leave: Es-tu sûr de vouloir quitter cette équipe ?
+        confirm_promote: Promouvoir @{username} chef de l'équipe ? Vous deviendrez simple membre.
+        exclude: Exclure de l'équipe
+        join: Rejoindre
+        leave: Quitter
+        me: Moi
+        members: Membres
+        no_hunts: Cette équipe n'a pas encore créé de chasses au trésor.
+        no_members: Aucun membre dans cette équipe pour le moment.
+        pending: Demande en attente
+        promote: Promouvoir chef
+treasure_hunt:
+    anonymous_player: Joueur anonyme
+    confirm_delete: Êtes-vous sûr de vouloir supprimer cette chasse au trésor ?
+    count: '{count, plural, one {# chasse} other {# chasses}}'
+    create: Créer une chasse
+    create_title: Création d'une chasse au trésor
+    draft: Brouillon
+    duration_minutes: '{minutes} min'
+    edit_title: Mise à jour d'une chasse au trésor
+    empty: Aucune chasse au trésor pour le moment.
+    empty_mine: Vos équipes n'ont pas encore créé de chasse au trésor.
+    flash:
+        cannot_publish_empty: Impossible de publier une chasse sans énigmes.
+        no_qrcode_riddle: Cette chasse ne contient aucune énigme QR Code.
+        published: La chasse au trésor a été publiée avec succès.
+        scores_reset: Les scores et le classement de la chasse au trésor ont été effacés.
+        unpublished: La chasse au trésor n'est plus publiée.
+    form:
+        create_heading: Créer une chasse au trésor
+        edit_heading: Modifier la chasse au trésor
+    list_title: Chasses au trésor
+    my_hunts: Mes chasses au trésor
+    no_reviews: Pas d'avis
+    player_count: '{count, plural, one {# joueur} other {# joueurs}}'
+    published: Publiée
+    qrcodes:
+        alt: QR code
+        riddle: 'Énigme n°{index} : {title}'
+        title: QR Codes - {title}
+    reviews: '{count, plural, one {# avis} other {# avis}}'
+    riddle_count: '{count, plural, one {# énigme} other {# énigmes}}'
+    show:
+        confirm_delete: Confirmer la suppression de la chasse au trésor ?
+        copied: Copié !
+        copy: Copier
+        created_by: Créé par {team}
+        invitation_code: 'Code d''invitation :'
+        leaderboard: Classement
+        reset_scores: Effacer les scores
+        reset_scores_confirm: Confirmer l'effacement des scores et du classement de tous les joueurs
+        no_riddles: Aucune énigme configurée.
+        print_qrcodes: Imprimer les QR Codes
+        publish: Publier
+        title: '{title} - Détails'
+        unpublish: Dépublier
+    status: '{published, select, true {Publiée} other {Brouillon}}'
+validate_email:
+    heading: Confirmez votre adresse e-mail
+    instructions: Veuillez cliquer sur le bouton ci-dessous pour recevoir un nouvel e-mail de confirmation.
+    not_validated: Votre adresse e-mail n'a pas encore été validée.
+    resend: Renvoyer l'e-mail de confirmation
+    title: Confirmer mon adresse e-mail
+validation:
+    image:
+        bad_format: 'Le format de l''image n''est pas valide. Formats acceptés : PNG, JPEG, WebP, GIF.'
+        invalid: Veuillez uploader une image valide (JPG, PNG, WEBP)
+        too_large: L'image est trop volumineuse ({size} {suffix}). La taille maximale autorisée est {limit} {suffix}.
+    invite:
+        min_user: Veuillez sélectionner au moins un utilisateur.
+        username_blank: Veuillez saisir un nom d'utilisateur.
+    password:
+        blank: Veuillez renseigner un mot de passe.
+        compromised: Ce mot de passe a été divulgué dans une fuite de données, veuillez en choisir un autre.
+        mismatch: Les mots de passe ne sont pas identiques
+        weak: Le mot de passe doit contenir au moins 8 caractères, une majuscule, un chiffre et un symbole
+    reset:
+        email_blank: Veuillez entrez votre email
+    riddle_qcm:
+        max_choices: Vous ne pouvez pas ajouter plus de {limit, plural, one {# choix de réponse} other {# choix de réponses}}.
+    team:
+        max_members: Une équipe ne peut pas contenir plus de {limit, plural, one {# membre} other {# membres}}.
+    user:
+        email_invalid: L'email « {value} » n'est pas une adresse email valide.
+        email_taken: Cette adresse email est déjà utilisée.
+        first_name_format: Le prénom ne peut pas contenir <, >, &, "
+        last_name_format: Le nom ne peut pas contenir <, >, &, "
+        max_teams: Un utilisateur ne peut appartenir qu'à {limit, plural, one {# équipe} other {# équipes}}.
+        username_format: Le pseudo ne peut contenir que des lettres, chiffres, _ ou -
+        username_taken: Ce nom d'utilisateur est déjà utilisé.

@@ -28,6 +28,10 @@
     text-shadow: 0 4px 12px rgba(0, 0, 0, 0.6);
 }
 
+.min-w-0 {
+    min-width: 0;
+}
+
 .profile-content-wrapper {
     margin-top: -60px;
     position: relative;

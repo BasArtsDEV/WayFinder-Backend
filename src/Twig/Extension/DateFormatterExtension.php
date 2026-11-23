@@ -12,14 +12,14 @@ class DateFormatterExtension extends AbstractExtension
     public function getFilters(): array
     {
         return [
-            new TwigFilter('date_formatter', [DateFormatterExtensionRuntime::class, 'doSomething']),
+            new TwigFilter('date_formatter', [DateFormatterExtensionRuntime::class, 'format']),
         ];
     }
 
     public function getFunctions(): array
     {
         return [
-            new TwigFunction('date_formatter', [DateFormatterExtensionRuntime::class, 'doSomething']),
+            new TwigFunction('date_formatter', [DateFormatterExtensionRuntime::class, 'format']),
         ];
     }
 }

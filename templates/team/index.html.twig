@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Liste des équipes{% endblock %}
+{% block title %}{{ 'team.list.title'|trans }}{% endblock %}
 
 {% block stylesheets %}
     <link href="{{ asset('styles/team/list.css') }}" type="text/css" rel="stylesheet" />
@@ -10,16 +10,16 @@
     <div class="container py-5">
         <div class="page-header">
             <h1 class="h3 fw-bold mb-0">
-                {{ teams.totalItemCount }} équipe{{ teams.totalItemCount > 1 ? 's' : '' }}
+                {{ 'team.list.count'|trans({ count: teams.totalItemCount }) }}
                 {% if q %}
-                    pour « {{ q }} »
+                    {{ 'team.list.for_query'|trans({ query: q }) }}
                     <a href="{{ path('app_team', { filter: currentFilter.value == 'all' ? null : currentFilter.value }) }}" class="text-decoration-none ms-1">
                         <i class="bi bi-x-circle"></i>
                     </a>
                 {% endif %}
             </h1>
             <a href="{{ path('app_team_new') }}" class="btn-app-primary">
-                <i class="bi bi-plus-circle"></i> Créer une équipe
+                <i class="bi bi-plus-circle"></i> {{ 'team.list.create'|trans }}
             </a>
         </div>
 
@@ -31,21 +31,21 @@
                     <div class="col-12 col-lg">
                         <div class="d-flex gap-2">
                             <input type="search" name="q" value="{{ q }}" maxlength="50"
-                                   class="form-control" placeholder="Rechercher une équipe ou un chef…"
-                                   aria-label="Rechercher une équipe">
-                            <button type="submit" class="btn-app-primary flex-shrink-0" aria-label="Rechercher">
-                                <i class="bi bi-search" aria-hidden="true"></i><span class="d-none d-sm-inline">Rechercher</span>
+                                   class="form-control" placeholder="{{ 'team.list.search_placeholder'|trans }}"
+                                   aria-label="{{ 'team.list.search_label'|trans }}">
+                            <button type="submit" class="btn-app-primary flex-shrink-0" aria-label="{{ 'common.search'|trans }}">
+                                <i class="bi bi-search" aria-hidden="true"></i><span class="d-none d-sm-inline">{{ 'common.search'|trans }}</span>
                             </button>
                         </div>
                     </div>
 
                     <div class="row mt-3">
-                        <div class="btn-group gap-2" role="group" aria-label="Filtrer les équipes">
+                        <div class="btn-group gap-2" role="group" aria-label="{{ 'team.list.filter_label'|trans }}">
                             {% for f in enum_cases('App\\Enum\\TeamFilter') %}
                                 <a href="{{ path('app_team', { filter: f.value == 'all' ? null : f.value, q: q ?: null }) }}"
                                    class="btn {{ f == currentFilter ? 'btn-app-primary' : 'btn-app-secondary' }}"
                                    {% if f == currentFilter %}aria-current="true"{% endif %}>
-                                    {{ f.label }}
+                                    {{ f.label|trans }}
                                 </a>
                             {% endfor %}
                         </div>
@@ -61,7 +61,7 @@
                 {% else %}
                     <div class="col-12 text-center text-muted py-5">
                         <i class="bi bi-people fs-1 d-block mb-2"></i>
-                        Aucune équipe ne correspond à votre recherche.
+                        {{ 'team.list.empty'|trans }}
                     </div>
                 {% endfor %}
             </div>
