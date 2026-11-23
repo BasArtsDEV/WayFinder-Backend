@@ -1,0 +1,130 @@
+.tutorial-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 1060;
+}
+
+.tutorial-spotlight {
+    position: fixed;
+    z-index: 1061;
+    border-radius: 10px;
+    border: 2px solid var(--app-button-background, #57a841);
+    box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.65);
+    pointer-events: none;
+    transition: top 0.25s ease, left 0.25s ease, width 0.25s ease, height 0.25s ease;
+}
+
+.tutorial-tooltip {
+    position: fixed;
+    z-index: 1062;
+    width: 330px;
+    max-width: calc(100vw - 24px);
+    background-color: #ffffff;
+    color: #252525;
+    border-radius: 12px;
+    padding: 16px;
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.3);
+    font-family: 'Lexend', sans-serif;
+    transition: top 0.25s ease, left 0.25s ease;
+}
+
+.tutorial-tooltip-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 8px;
+}
+
+.tutorial-step-count {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--app-button-background, #57a841);
+}
+
+.tutorial-icon-close {
+    background: none;
+    border: none;
+    font-size: 1.35rem;
+    line-height: 1;
+    color: #666666;
+    cursor: pointer;
+    padding: 0 4px;
+}
+
+.tutorial-icon-close:hover {
+    color: #000000;
+}
+
+.tutorial-tooltip-title {
+    font-size: 1.05rem;
+    font-weight: 700;
+    margin: 0 0 6px;
+    color: #1f2421;
+}
+
+.tutorial-tooltip-text {
+    font-size: 0.9rem;
+    line-height: 1.5;
+    margin: 0 0 14px;
+    color: #444444;
+}
+
+.tutorial-tooltip-actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+.tutorial-nav-buttons {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.tutorial-btn-close,
+.tutorial-btn-prev,
+.tutorial-btn-next {
+    font-family: 'Lexend', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 500;
+    border-radius: 50px;
+    padding: 6px 14px;
+    cursor: pointer;
+    border: none;
+    transition: background-color 0.2s ease, opacity 0.2s ease;
+}
+
+.tutorial-btn-close {
+    background-color: transparent;
+    color: #666666;
+    padding-left: 4px;
+    padding-right: 4px;
+}
+
+.tutorial-btn-close:hover {
+    color: #000000;
+}
+
+.tutorial-btn-prev {
+    background-color: #ececec;
+    color: #252525;
+}
+
+.tutorial-btn-prev:hover:not(:disabled) {
+    background-color: #dcdcdc;
+}
+
+.tutorial-btn-prev:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+}
+
+.tutorial-btn-next {
+    background-color: var(--app-button-background, #57a841);
+    color: #ffffff;
+}
+
+.tutorial-btn-next:hover {
+    background-color: var(--app-button-background-hover, #468e33);
+}
