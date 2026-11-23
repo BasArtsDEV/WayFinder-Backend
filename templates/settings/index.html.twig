@@ -127,7 +127,8 @@
 
                         <div class="tab-pane fade" id="v-pills-preferences" role="tabpanel" aria-labelledby="v-pills-preferences-tab">
                             <h4 class="fw-bold mb-4 text-dark">{{ 'settings.preferences.heading'|trans }}</h4>
-                            <form method="POST" action="">
+                            <form method="POST" action="{{ path('app_settings_preferences') }}">
+                                <input type="hidden" name="_token" value="{{ csrf_token('settings-preferences') }}">
                                 <div class="row g-4">
                                     <div class="col-md-6">
                                         <label for="language_select" class="form-label fw-semibold text-dark small">{{ 'settings.preferences.language'|trans }}</label>
