@@ -48,15 +48,13 @@
                     <span class="input-badge-icon">
                         <i class="bi bi-lock-fill"></i>
                     </span>
-                        <input type="email"
-                               placeholder="{{ 'registration.placeholder.email'|trans }}"
-                               value="{{ last_username }}"
-                               name="_username"
-                               id="username"
+                        <input type="password"
+                               placeholder="{{ 'login.placeholder.password'|trans }}"
+                               name="_password"
+                               id="password"
                                class="form-control-custom"
-                               autocomplete="email"
-                               required
-                               autofocus>
+                               autocomplete="current-password"
+                               required>
                     </div>
                     <input type="hidden" name="_csrf_token" data-controller="csrf-protection" value="{{ csrf_token('authenticate') }}">
                 </div>
