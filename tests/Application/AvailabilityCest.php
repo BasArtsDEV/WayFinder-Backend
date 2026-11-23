@@ -12,7 +12,10 @@ use App\Factory\TreasureHuntFactory;
 use App\Factory\UserFactory;
 use App\Tests\Support\ApplicationTester;
 use Codeception\Attribute\DataProvider;
+use Codeception\Attribute\Group;
 use Codeception\Example;
+
+use function Zenstruck\Foundry\Persistence\save;
 
 final class AvailabilityCest
 {
@@ -68,6 +71,7 @@ final class AvailabilityCest
      * @param Example<string, string> $example
      */
     #[DataProvider('_URLProvider')]
+    #[Group('available')]
     public function pageIsAvailable(ApplicationTester $I, Example $example): void
     {
         LocationFactory::createOne();
@@ -88,7 +92,7 @@ final class AvailabilityCest
         $notification->setTargetUser($user);
         $notification->setTargetTeam($team);
         $notification->addReceiveNotif($user);
-        $I->haveInRepository($notification);
+        save($notification);
 
         $I->amOnPage($example['url']);
         $I->seeResponseCodeIsSuccessful();
