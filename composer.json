@@ -154,7 +154,8 @@
             "php vendor/bin/codecept clean",
             "bin/console doctrine:schema:drop --force --quiet --env=test",
             "bin/console doctrine:schema:create --quiet --env=test",
-            "php vendor/bin/codecept run"
+            "php vendor/bin/codecept run -g available",
+            "php vendor/bin/codecept run --skip-group available"
         ],
         "test" : [
             "@test:phpcs",
