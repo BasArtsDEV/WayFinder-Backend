@@ -29,6 +29,43 @@ final class LeaderboardController extends AbstractController
         ]);
     }
 
+    #[Route('/treasure_hunt/{id}/leaderboard/export', name: 'app_treasure_hunt_leaderboard_export', requirements: ['id' => '\d+'], methods: ['GET'])]
+    public function export(TreasureHunt $treasureHunt, HuntStatisticsService $huntStatisticsService): Response
+    {
+        $this->denyAccessUnlessCreator($treasureHunt);
+
+        $file = fopen('php://temp', 'r+');
+        if (false === $file) {
+            throw new \RuntimeException("Impossible de générer l'export du classement.");
+        }
+
+        fputcsv($file, ['Rang', 'Participant', 'Type', 'Joueurs', 'Score', 'Points', 'Bonus temps', 'Temps de jeu (s)', 'Temps écoulé', 'Fin de partie'], ';', '"', '');
+        foreach ($huntStatisticsService->getDetailedLeaderboard($treasureHunt) as $row) {
+            $entry = $row['entry'];
+            fputcsv($file, [
+                $entry['rank'],
+                $entry['team']?->getName() ?? $entry['user']?->getUsername(),
+                null !== $entry['team'] ? 'Équipe' : 'Solo',
+                $row['players'],
+                $entry['score'],
+                $row['points'],
+                $row['bonus'],
+                $row['playTime'],
+                $entry['timedOut'] ? 'Oui' : 'Non',
+                $row['finishedAt']?->format('d/m/Y H:i'),
+            ], ';', '"', '');
+        }
+
+        rewind($file);
+        $csv = (string) stream_get_contents($file);
+        fclose($file);
+
+        return new Response("\u{FEFF}".$csv, Response::HTTP_OK, [
+            'Content-Type' => 'text/csv; charset=UTF-8',
+            'Content-Disposition' => 'attachment; filename="classement-chasse-'.$treasureHunt->getId().'.csv"',
+        ]);
+    }
+
     private function denyAccessUnlessCreator(TreasureHunt $treasureHunt): void
     {
         $user = $this->getUser();

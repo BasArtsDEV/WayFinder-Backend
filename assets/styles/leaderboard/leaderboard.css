@@ -72,6 +72,22 @@
     background-color: var(--app-button-background);
 }
 
+.leaderboard-header-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.leaderboard-header-actions .btn {
+    flex: 1 1 auto;
+    white-space: nowrap;
+}
+
+.leaderboard-header .btn-app-secondary {
+    padding: calc(0.6rem - 2px) calc(1rem - 2px) !important;
+    border: 2px solid #ebebeb !important;
+}
+
 .leaderboard-title {
     margin: 0;
     font-size: 1.6rem;

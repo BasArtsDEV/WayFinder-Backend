@@ -24,6 +24,14 @@
                     <p class="leaderboard-subtitle">{{ treasureHunt.title }}</p>
                 </div>
             </div>
+
+            <div class="leaderboard-header-actions">
+                {% if rows is not empty %}
+                    <a href="{{ path('app_treasure_hunt_leaderboard_export', { id: treasureHunt.id }) }}" class="btn btn-app-secondary" download>
+                        <i class="bi bi-download me-1" aria-hidden="true"></i>Exporter (CSV)
+                    </a>
+                {% endif %}
+            </div>
         </header>
 
         <section aria-labelledby="leaderboard-stats-title">
