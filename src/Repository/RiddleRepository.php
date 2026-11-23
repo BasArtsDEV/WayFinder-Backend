@@ -25,7 +25,7 @@ class RiddleRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('r')
             ->where('r.treasureHunt = :treasureHunt')
             ->setParameter('treasureHunt', $treasureHunt)
-            ->orderBy('r.index', 'ASC')
+            ->orderBy('r.index', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
     }

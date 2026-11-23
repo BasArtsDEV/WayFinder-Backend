@@ -26,7 +26,7 @@ class TreasureHuntRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('t')
             ->where('t.team = :team')
             ->setParameter('team', $team)
-            ->orderBy('t.title', 'ASC')
+            ->orderBy('t.title', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
     }
@@ -42,7 +42,7 @@ class TreasureHuntRepository extends ServiceEntityRepository
             ->addSelect('r')
             ->where('tre.id = :id')
             ->setParameter('id', $id)
-            ->orderBy('r.index', 'ASC')
+            ->orderBy('r.index', \SortDirection::Ascending)
             ->getQuery()
             ->getOneOrNullResult();
     }
@@ -75,8 +75,8 @@ class TreasureHuntRepository extends ServiceEntityRepository
             ->andWhere(':user MEMBER OF t.users')
             ->setParameter('role', Team::ROLE_CREATOR)
             ->setParameter('user', $user)
-            ->orderBy('th.creationDate', 'DESC')
-            ->addOrderBy('th.id', 'DESC')
+            ->orderBy('th.creationDate', \SortDirection::Descending)
+            ->addOrderBy('th.id', \SortDirection::Descending)
             ->getQuery()
             ->getResult();
     }

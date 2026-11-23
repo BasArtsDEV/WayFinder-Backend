@@ -25,7 +25,7 @@ class TeamRepository extends ServiceEntityRepository
     public function findAllTeamsOrderedByName(): array
     {
         return $this->createQueryBuilder('t')
-            ->orderBy('t.name', 'ASC')
+            ->orderBy('t.name', \SortDirection::Ascending)
             ->getQuery()
             ->getResult();
     }
@@ -53,8 +53,8 @@ class TeamRepository extends ServiceEntityRepository
             ->leftJoin('t.users', 'u')->addSelect('u')
             ->andWhere('t.role = :role')
             ->setParameter('role', Team::ROLE_CREATOR)
-            ->orderBy('t.name', 'ASC')
-            ->addOrderBy('t.id', 'ASC');
+            ->orderBy('t.name', \SortDirection::Ascending)
+            ->addOrderBy('t.id', \SortDirection::Ascending);
 
         match ($filter) {
             TeamFilter::Member => $qb->andWhere(':user MEMBER OF t.users')->setParameter('user', $user),

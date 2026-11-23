@@ -39,6 +39,6 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         return $this->createQueryBuilder('u')
             ->where(':team NOT MEMBER OF u.teams')
             ->setParameter('team', $teamId)
-            ->orderBy('u.username', 'ASC');
+            ->orderBy('u.username', \SortDirection::Ascending);
     }
 }

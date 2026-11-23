@@ -122,8 +122,8 @@ class EnrollmentRepository extends ServiceEntityRepository
             ->where('e.treasureHunt = :treasureHunt')
             ->andWhere('e.feedback IS NOT NULL')
             ->setParameter('treasureHunt', $treasureHunt)
-            ->orderBy('e.registrationDate', 'DESC')
-            ->addOrderBy('e.id', 'DESC')
+            ->orderBy('e.registrationDate', \SortDirection::Descending)
+            ->addOrderBy('e.id', \SortDirection::Descending)
             ->getQuery();
     }
 }
