@@ -118,6 +118,29 @@ class LeaderboardPageCest
         $I->seeInRepository(Enrollment::class, ['id' => $enrollment->getId(), 'status' => EnrollmentStatus::NOT_STARTED, 'scoreTotal' => 0]);
     }
 
+    public function expiredGamesAreFinishedOnTheLeaderboard(ApplicationTester $I): void
+    {
+        $treasureHunt = $this->createHunt();
+        $enrollment = EnrollmentFactory::createOne([
+            'countdown' => 3000,
+            'lastResumedAt' => new \DateTimeImmutable('-20 minutes'),
+            'riddle' => $treasureHunt->getRiddles()->first(),
+            'scoreTotal' => 0,
+            'status' => EnrollmentStatus::IN_PROGRESS,
+            'team' => null,
+            'treasureHunt' => $treasureHunt,
+            'user' => UserFactory::createOne(['username' => 'alice']),
+        ]);
+
+        $I->amLoggedInAs($this->creator);
+        $I->amOnPage('/treasure_hunt/'.$treasureHunt->getId().'/leaderboard');
+
+        $I->see('alice', '.leaderboard-row');
+        $I->see('Temps écoulé', '.leaderboard-row');
+        $I->see('Aucune partie en cours.');
+        $I->seeInRepository(Enrollment::class, ['id' => $enrollment->getId(), 'status' => EnrollmentStatus::FINISHED, 'countdown' => 3600]);
+    }
+
     public function riddleAnalysisIgnoresOtherHunts(ApplicationTester $I): void
     {
         $treasureHunt = $this->createHunt();
