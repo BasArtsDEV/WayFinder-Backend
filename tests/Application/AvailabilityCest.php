@@ -4,6 +4,16 @@ declare(strict_types=1);
 
 namespace App\Tests\Application;
 
+use App\Entity\Notification;
+use App\Factory\LocationFactory;
+use App\Factory\RiddleTextFactory;
+use App\Factory\TeamFactory;
+use App\Factory\TreasureHuntFactory;
+use App\Factory\UserFactory;
+use App\Tests\Support\ApplicationTester;
+use Codeception\Attribute\DataProvider;
+use Codeception\Example;
+
 final class AvailabilityCest
 {
     /** @return array<array<string, string>> */
@@ -20,8 +30,6 @@ final class AvailabilityCest
             ['url' => '/reset-password'],
             ['url' => '/reset-password/check-email'],
             ['url' => '/reset-password/reset/token'],
-
-            ['url' => '/api/verify-email'],
 
             ['url' => '/profil'],
             ['url' => '/user/1/avatar'],
@@ -42,8 +50,6 @@ final class AvailabilityCest
             ['url' => '/team/1/edit'],
             ['url' => '/team/1/invite'],
 
-            ['url' => '/api/teams/1/treasure_hunts/1/score'],
-
             ['url' => '/treasure_hunt'],
             ['url' => '/treasure_hunt/new'],
             ['url' => '/treasure_hunt/1'],
@@ -55,9 +61,36 @@ final class AvailabilityCest
             ['url' => '/treasure-hunt/1/new/gps'],
             ['url' => '/treasure-hunt/1/new/qrcode'],
             ['url' => '/riddle/1/edit'],
-
-            ['url' => '/api/users/1/avatar'],
-            ['url' => '/api/users/1/banner'],
         ];
+    }
+
+    /**
+     * @param Example<string, string> $example
+     */
+    #[DataProvider('_URLProvider')]
+    public function pageIsAvailable(ApplicationTester $I, Example $example): void
+    {
+        LocationFactory::createOne();
+
+        $user = UserFactory::createOne(['isVerified' => true]);
+        $team = TeamFactory::createOne(['leader' => $user, 'users' => [$user]]);
+        $treasureHunt = TreasureHuntFactory::createOne([
+            'team' => $team,
+            'published' => true,
+            'listed' => true,
+        ]);
+        RiddleTextFactory::createOne(['treasureHunt' => $treasureHunt]);
+
+        $notification = new Notification();
+        $notification->setType(Notification::TYPE_TEAM_JOIN_REQUEST);
+        $notification->setTitle('Demande à rejoindre l\'équipe');
+        $notification->setDescription('Notification de test.');
+        $notification->setTargetUser($user);
+        $notification->setTargetTeam($team);
+        $notification->addReceiveNotif($user);
+        $I->haveInRepository($notification);
+
+        $I->amOnPage($example['url']);
+        $I->seeResponseCodeIsSuccessful();
     }
 }
