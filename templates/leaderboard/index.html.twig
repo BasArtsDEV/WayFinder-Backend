@@ -274,7 +274,7 @@
                                     <span class="leaderboard-ongoing-detail">
                                         {% if game.team %}{{ game.team.name }} · {% endif %}
                                         Énigme {{ game.riddle ? game.riddle.index : '-' }}/{{ riddleStatistics|length }}
-                                        · {{ game.countdown|duration }} joué
+                                        · {{ min(game.countdown, treasureHunt.duration)|duration }} joué
                                     </span>
                                 </div>
                                 <span class="leaderboard-score">{{ game.scoreTotal }} <span class="leaderboard-score-unit">pts</span></span>
