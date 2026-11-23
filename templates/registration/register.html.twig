@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}S'inscrire{% endblock %}
+{% block title %}{{ 'registration.title'|trans }}{% endblock %}
 
 {% block stylesheets %}
     <link href="{{ asset('styles/security/register.css') }}" type="text/css" rel="stylesheet" />
@@ -13,7 +13,7 @@
                 <i class="bi bi-person-plus-fill"></i>
             </div>
 
-            <h1 class="login-title">Créer un compte</h1>
+            <h1 class="login-title">{{ 'registration.heading'|trans }}</h1>
 
             {% if form_errors(registrationForm) %}
                 <div class="alert alert-danger mx-3 my-2 text-center py-2 fs-7">
@@ -24,7 +24,7 @@
             {{ form_start(registrationForm, { attr: { class: 'login-form' } }) }}
 
             <div class="form-group mb-3">
-                <label for="{{ registrationForm.username.vars.id }}" class="form-label-custom">Nom d'utilisateur</label>
+                <label for="{{ registrationForm.username.vars.id }}" class="form-label-custom">{{ 'common.username'|trans }}</label>
                 <div class="input-badge-group">
                     <span class="input-badge-icon">
                         <i class="bi bi-at"></i>
@@ -32,7 +32,7 @@
                     {{ form_widget(registrationForm.username, {
                         attr: {
                             class: 'form-control-custom',
-                            placeholder: 'JohnDoe',
+                            placeholder: 'registration.placeholder.username'|trans,
                         },
                     }) }}
                 </div>
@@ -40,7 +40,7 @@
             </div>
 
             <div class="form-group mb-3">
-                <label for="{{ registrationForm.email.vars.id }}" class="form-label-custom">Adresse e-mail</label>
+                <label for="{{ registrationForm.email.vars.id }}" class="form-label-custom">{{ 'common.email'|trans }}</label>
                 <div class="input-badge-group">
                     <span class="input-badge-icon">
                         <i class="bi bi-envelope-fill"></i>
@@ -48,7 +48,7 @@
                     {{ form_widget(registrationForm.email, {
                         attr: {
                             class: 'form-control-custom',
-                            placeholder: 'example@gmail.com',
+                            placeholder: 'registration.placeholder.email'|trans,
                         },
                     }) }}
                 </div>
@@ -57,7 +57,7 @@
 
             <div class="row g-2 mb-3">
                 <div class="col-12 col-md-6">
-                    <label for="{{ registrationForm.firstname.vars.id }}" class="form-label-custom">Prénom</label>
+                    <label for="{{ registrationForm.firstname.vars.id }}" class="form-label-custom">{{ 'common.first_name'|trans }}</label>
                     <div class="input-badge-group">
                         <span class="input-badge-icon">
                             <i class="bi bi-person-fill"></i>
@@ -65,14 +65,14 @@
                         {{ form_widget(registrationForm.firstname, {
                             attr: {
                                 class: 'form-control-custom',
-                                placeholder: 'Jean',
+                                placeholder: 'registration.placeholder.first_name'|trans,
                             },
                         }) }}
                     </div>
                     {{ form_errors(registrationForm.firstname) }}
                 </div>
                 <div class="col-12 col-md-6">
-                    <label for="{{ registrationForm.lastname.vars.id }}" class="form-label-custom">Nom</label>
+                    <label for="{{ registrationForm.lastname.vars.id }}" class="form-label-custom">{{ 'common.last_name'|trans }}</label>
                     <div class="input-badge-group">
                         <span class="input-badge-icon">
                             <i class="bi bi-person-vcard-fill"></i>
@@ -80,7 +80,7 @@
                         {{ form_widget(registrationForm.lastname, {
                             attr: {
                                 class: 'form-control-custom',
-                                placeholder: 'Dupont',
+                                placeholder: 'registration.placeholder.last_name'|trans,
                             },
                         }) }}
                     </div>
@@ -90,7 +90,7 @@
 
             {% if registrationForm.password.first is defined %}
                 <div class="form-group mb-3">
-                    <label for="{{ registrationForm.password.first.vars.id }}" class="form-label-custom">Mot de passe</label>
+                    <label for="{{ registrationForm.password.first.vars.id }}" class="form-label-custom">{{ 'common.password'|trans }}</label>
                     <div class="input-badge-group">
                         <span class="input-badge-icon">
                             <i class="bi bi-lock-fill"></i>
@@ -98,7 +98,7 @@
                         {{ form_widget(registrationForm.password.first, {
                             attr: {
                                 class: 'form-control-custom',
-                                placeholder: 'Choisissez un mot de passe',
+                                placeholder: 'registration.placeholder.password'|trans,
                             },
                         }) }}
                     </div>
@@ -106,7 +106,7 @@
                 </div>
 
                 <div class="form-group mb-4">
-                    <label for="{{ registrationForm.password.second.vars.id }}" class="form-label-custom">Confirmer le mot de passe</label>
+                    <label for="{{ registrationForm.password.second.vars.id }}" class="form-label-custom">{{ 'common.password_confirm'|trans }}</label>
                     <div class="input-badge-group">
                         <span class="input-badge-icon">
                             <i class="bi bi-check2-circle"></i>
@@ -114,7 +114,7 @@
                         {{ form_widget(registrationForm.password.second, {
                             attr: {
                                 class: 'form-control-custom',
-                                placeholder: 'Répétez votre mot de passe',
+                                placeholder: 'registration.placeholder.password_confirm'|trans,
                             },
                         }) }}
                     </div>
@@ -122,7 +122,7 @@
                 </div>
             {% else %}
                 <div class="form-group mb-4">
-                    <label for="{{ registrationForm.password.vars.id }}" class="form-label-custom">Mot de passe</label>
+                    <label for="{{ registrationForm.password.vars.id }}" class="form-label-custom">{{ 'common.password'|trans }}</label>
                     <div class="input-badge-group">
                         <span class="input-badge-icon">
                             <i class="bi bi-lock-fill"></i>
@@ -130,7 +130,7 @@
                         {{ form_widget(registrationForm.password, {
                             attr: {
                                 class: 'form-control-custom',
-                                placeholder: 'Choisissez un mot de passe',
+                                placeholder: 'registration.placeholder.password'|trans,
                             },
                         }) }}
                     </div>
@@ -140,13 +140,13 @@
 
             <button type="submit" class="btn-app-primary btn-login-submit" style="justify-content: center;">
                 <i class="bi bi-plus-circle-fill"></i>
-                S'inscrire
+                {{ 'registration.submit'|trans }}
             </button>
 
             <div class="text-center mt-3 flex-row">
                 <p style="margin-bottom: 0">Vous avez déjà un compte ?</p>
                 <a href="{{ path('app_login') }}" class="btn-app-hypertext">
-                    Se connecter
+                    {{ 'registration.login_link'|trans }}
                 </a>
             </div>
 

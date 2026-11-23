@@ -9,7 +9,7 @@
                     aria-expanded="false"
                     aria-controls="feedbacks-collapse">
                 <h3 class="h4 fw-bold text-dark mb-0 d-flex align-items-center gap-2">
-                    {{ feedbacksList|length }} avis
+                    {{ 'treasure_hunt.reviews'|trans({ count: feedbacksList|length }) }}
                 </h3>
                 <span class="feedbacks-arrow-wrapper">
                     <i class="bi bi-chevron-down feedbacks-arrow" aria-hidden="true"></i>
@@ -33,7 +33,7 @@
                                                 }) }}
                                             {% endif %}
                                             <div>
-                                                <h4 class="h6 fw-bold text-dark mb-0">{{ feedback.user.username ?? 'Joueur anonyme' }}</h4>
+                                                <h4 class="h6 fw-bold text-dark mb-0">{{ feedback.user.username ?? 'treasure_hunt.anonymous_player'|trans }}</h4>
                                             </div>
                                         </div>
 

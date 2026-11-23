@@ -1,17 +1,17 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Confirmer mon adresse e-mail{% endblock %}
+{% block title %}{{ 'validate_email.title'|trans }}{% endblock %}
 
 {% block main %}
     <div class="card d-flex flex-column align-items-center m-auto p-4 border border-dark">
-        <h1>Confirmez votre adresse e-mail</h1>
+        <h1>{{ 'validate_email.heading'|trans }}</h1>
 
-        <p class="m-0">Votre adresse e-mail n&apos;a pas encore été validée.</p>
-        <p>Veuillez cliquer sur le bouton ci-dessous pour recevoir un nouvel e-mail de confirmation.</p>
+        <p class="m-0">{{ 'validate_email.not_validated'|trans }}</p>
+        <p>{{ 'validate_email.instructions'|trans }}</p>
 
         <div class="mt-4">
             {{ form_start(validationForm) }}
-                <button type="submit" class="btn btn-primary">Renvoyer l&apos;e-mail de confirmation</button>
+            <button type="submit" class="btn btn-primary">{{ 'validate_email.resend'|trans }}</button>
             {{ form_end(validationForm) }}
         </div>
     </div>

@@ -13,14 +13,13 @@
     <div class="card-body">
         <h3 class="h6 fw-bold text-dark mb-1">{{ team.name }}</h3>
         <p class="small text-muted mb-2">
-            Propriétaire :
-            {{ team.leader ? '@' ~ team.leader.username : 'Sans chef' }}
+            {{ 'team.card.owner'|trans({ owner: team.leader ? '@' ~ team.leader.username : 'team.card.no_leader'|trans }) }}
         </p>
         <span class="badge team-card-badge">
             <i class="bi bi-people"></i> {{ team.users|length }}/{{ constant('App\\Entity\\Team::MAX_USERS') }}
         </span>
         {% if team.leader and team.leader.id == app.user.id %}
-            <span class="badge text-bg-success">Votre équipe</span>
+            <span class="badge text-bg-success">{{ 'team.card.yours'|trans }}</span>
         {% endif %}
     </div>
 </a>

@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% set resetTitle = 'Réinitialiser votre mot de passe' %}
+{% set resetTitle = 'reset_password.title'|trans %}
 
 {% block title %}{{ resetTitle }}{% endblock %}
 
@@ -15,7 +15,7 @@
                 <i class="bi bi-key-fill"></i>
             </div>
 
-            <h1 class="login-title">Nouveau mot de passe</h1>
+            <h1 class="login-title">{{ 'reset_password.reset.heading'|trans }}</h1>
 
             {{ form_start(resetForm, { attr: { class: 'login-form' } }) }}
 
@@ -35,14 +35,14 @@
             </div>
 
             <button type="submit" class="btn-app-primary btn-login-submit mt-3">
-                Réinitialiser le mot de passe
+                {{ 'reset_password.reset.submit'|trans }}
             </button>
 
             {{ form_end(resetForm) }}
 
             <div class="text-center mt-4">
                 <a href="{{ path('app_login') }}" class="text-decoration-none text-muted small hover-green">
-                    <i class="bi bi-arrow-left"></i> Retour à la connexion
+                    <i class="bi bi-arrow-left"></i> {{ 'reset_password.back_to_login'|trans }}
                 </a>
             </div>
         </div>

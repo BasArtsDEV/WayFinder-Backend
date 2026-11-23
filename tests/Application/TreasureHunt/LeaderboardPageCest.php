@@ -53,7 +53,7 @@ class LeaderboardPageCest
 
         $I->amLoggedInAs($this->creator);
         $I->amOnPage('/treasure_hunt/'.$treasureHunt->getId());
-        $I->click('Classement');
+        $I->click('.leaderboard_btn');
 
         $I->seeCurrentUrlEquals('/treasure_hunt/'.$treasureHunt->getId().'/leaderboard');
         $I->see('3020', '.leaderboard-row:first-child');
