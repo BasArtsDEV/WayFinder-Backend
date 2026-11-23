@@ -61,9 +61,11 @@
                         {% endif %}
 
                         {% if treasureHunt.published %}
-                            <a href="{{ path('app_treasure_hunt_leaderboard', { id: treasureHunt.id }) }}" class="btn btn-app-secondary">
-                                <i class="bi bi-trophy me-1" aria-hidden="true"></i>Classement
-                            </a>
+                            {% if is_granted('TREASURE_HUNT_RESET_SCORES', treasureHunt) %}
+                                <a href="{{ path('app_treasure_hunt_leaderboard', { id: treasureHunt.id }) }}" class="btn btn-app-secondary">
+                                    <i class="bi bi-trophy me-1" aria-hidden="true"></i>Classement
+                                </a>
+                            {% endif %}
 
                             <form method="post" action="{{ path('app_treasure_hunt_unpublish', { id: treasureHunt.id }) }}" class="d-inline">
                                 <input type="hidden" name="_token" value="{{ csrf_token('unpublish' ~ treasureHunt.id) }}">
@@ -78,9 +80,11 @@
                                 </a>
                             {% endif %}
 
-                            <a href="{{ path('app_treasure_hunt_leaderboard', { id: treasureHunt.id }) }}" class="btn btn-app-secondary">
-                                <i class="bi bi-trophy me-1" aria-hidden="true"></i>Classement
-                            </a>
+                            {% if is_granted('TREASURE_HUNT_RESET_SCORES', treasureHunt) %}
+                                <a href="{{ path('app_treasure_hunt_leaderboard', { id: treasureHunt.id }) }}" class="btn btn-app-secondary">
+                                    <i class="bi bi-trophy me-1" aria-hidden="true"></i>Classement
+                                </a>
+                            {% endif %}
                         {% endif %}
                     </div>
 

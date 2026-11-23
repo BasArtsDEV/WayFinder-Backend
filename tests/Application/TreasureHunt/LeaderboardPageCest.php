@@ -71,6 +71,7 @@ class LeaderboardPageCest
         $I->dontSeeUserIsGranted(TreasureHuntVoter::RESET, $treasureHunt);
         $I->seeCurrentUrlEquals('/treasure_hunt/'.$treasureHunt->getId());
         $I->dontSeeElement('.leaderboard-table');
+        $I->dontSeeLink('Classement');
     }
 
     public function creatorCanRemoveOneEntry(ApplicationTester $I): void
