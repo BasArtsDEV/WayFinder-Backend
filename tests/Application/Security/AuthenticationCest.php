@@ -23,4 +23,15 @@ final class AuthenticationCest
         $userInstance = $I->grabEntityFromRepository(User::class, ['email' => $user->getEmail()]);
         $I->amLoggedInAs($userInstance);
     }
+
+    public function authenticatedUserCanLogout(ApplicationTester $I): void
+    {
+        $user = UserFactory::createOne();
+        $userInstance = $I->grabEntityFromRepository(User::class, ['email' => $user->getEmail()]);
+        $I->amLoggedInAs($userInstance);
+
+        $I->amOnPage('/logout');
+        $I->seeResponseCodeIsSuccessful();
+        $I->dontSeeAuthentication();
+    }
 }
