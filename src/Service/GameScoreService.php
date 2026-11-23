@@ -177,7 +177,7 @@ readonly class GameScoreService
         return $scores;
     }
 
-    private function getCompetitorKey(Enrollment $enrollment): string
+    public function getCompetitorKey(Enrollment $enrollment): string
     {
         $team = $enrollment->getTeam();
 

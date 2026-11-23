@@ -42,6 +42,7 @@ final class RiddleQCMFactory extends PersistentObjectFactory
             'location' => LocationFactory::random(),
             'question' => self::faker()->randomElement($questions),
             'secondsPenalty' => self::faker()->randomElement([15, 30, 60]),
+            'score' => self::faker()->randomElement([10, 20, 50, 100]),
             'title' => self::faker()->text(120),
             'treasureHunt' => TreasureHuntFactory::random(),
         ];

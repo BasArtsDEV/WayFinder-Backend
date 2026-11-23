@@ -43,6 +43,7 @@ final class RiddleGPSFactory extends PersistentObjectFactory
             'latitude' => $faker->latitude(48.8, 48.9),
             'longitude' => $faker->longitude(2.2, 2.4),
             'secondsPenalty' => $faker->randomElement([15, 30, 60]),
+            'score' => $faker->randomElement([10, 20, 50, 100]),
             'title' => $faker->text(120),
             'treasureHunt' => TreasureHuntFactory::random(),
         ];
