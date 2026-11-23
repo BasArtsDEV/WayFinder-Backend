@@ -35,9 +35,9 @@ final class EnrollmentFactory extends PersistentObjectFactory
     protected function defaults(): array|callable
     {
         return [
-            'countdown' => self::faker()->randomNumber(),
+            'countdown' => self::faker()->numberBetween(0, 3600),
             'registrationDate' => \DateTimeImmutable::createFromMutable(self::faker()->dateTime()),
-            'scoreTotal' => self::faker()->randomNumber(),
+            'scoreTotal' => self::faker()->numberBetween(0, 100),
             'status' => self::faker()->randomElement(EnrollmentStatus::cases()),
             'treasureHunt' => TreasureHuntFactory::random(),
             'user' => UserFactory::random(),

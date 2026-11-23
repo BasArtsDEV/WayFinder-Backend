@@ -19,6 +19,16 @@ class RiddleFixtures extends Fixture implements DependentFixtureInterface
         RiddleQRCodeFactory::createMany(5);
         RiddleTextFactory::createMany(5);
 
+        $riddles = array_merge(RiddleGPSFactory::all(), RiddleQCMFactory::all(), RiddleQRCodeFactory::all(), RiddleTextFactory::all());
+        shuffle($riddles);
+
+        $indexes = [];
+        foreach ($riddles as $riddle) {
+            $treasureHuntId = $riddle->getTreasureHunt()->getId();
+            $indexes[$treasureHuntId] = ($indexes[$treasureHuntId] ?? 0) + 1;
+            $riddle->setIndex($indexes[$treasureHuntId]);
+        }
+
         $manager->flush();
     }
 

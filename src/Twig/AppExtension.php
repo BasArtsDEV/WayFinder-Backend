@@ -39,6 +39,7 @@ class AppExtension extends AbstractExtension
     {
         return [
             new TwigFilter('json_decode', $this->decodeJson(...)),
+            new TwigFilter('duration', $this->formatDuration(...)),
         ];
     }
 
@@ -52,5 +53,18 @@ class AppExtension extends AbstractExtension
         }
 
         return json_decode($string, true) ?? [];
+    }
+
+    public function formatDuration(?int $seconds): string
+    {
+        $seconds = max(0, (int) $seconds);
+        $hours = intdiv($seconds, 3600);
+        $minutes = intdiv($seconds % 3600, 60);
+
+        if ($hours > 0) {
+            return sprintf('%d h %02d min', $hours, $minutes);
+        }
+
+        return sprintf('%d min %02d s', $minutes, $seconds % 60);
     }
 }

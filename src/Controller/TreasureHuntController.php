@@ -11,7 +11,6 @@ use App\Form\TreasureHuntType;
 use App\Repository\EnrollmentRepository;
 use App\Repository\RiddleQCMRepository;
 use App\Repository\RiddleRepository;
-use App\Repository\SubmissionRepository;
 use App\Repository\TreasureHuntRepository;
 use App\Security\Voter\TreasureHuntVoter;
 use Doctrine\ORM\EntityManagerInterface;
@@ -221,27 +220,6 @@ final class TreasureHuntController extends AbstractController
             $em->flush();
 
             $this->addFlash('success', 'La chasse au trésor n\'est plus publiée.');
-        }
-
-        return $this->redirectToRoute('app_treasure_hunt_show', ['id' => $treasureHunt->getId()]);
-    }
-
-    #[Route('/treasure_hunt/{id}/reset-scores', name: 'app_treasure_hunt_reset_scores', requirements: ['id' => '\d+'], methods: ['POST'])]
-    #[IsGranted(TreasureHuntVoter::EDIT, 'treasureHunt', message: 'Seuls les membres de l\'équipe peuvent effacer les scores.')]
-    public function resetScores(
-        Request $request,
-        TreasureHunt $treasureHunt,
-        EntityManagerInterface $em,
-        SubmissionRepository $submissionRepository,
-        EnrollmentRepository $enrollmentRepository,
-    ): Response {
-        if ($this->isCsrfTokenValid('reset-scores'.$treasureHunt->getId(), $request->getPayload()->getString('_token'))) {
-            $em->wrapInTransaction(static function () use ($treasureHunt, $submissionRepository, $enrollmentRepository): void {
-                $submissionRepository->deleteByTreasureHunt($treasureHunt);
-                $enrollmentRepository->resetByTreasureHunt($treasureHunt);
-            });
-
-            $this->addFlash('success', 'Les scores et le classement de la chasse au trésor ont été effacés.');
         }
 
         return $this->redirectToRoute('app_treasure_hunt_show', ['id' => $treasureHunt->getId()]);
