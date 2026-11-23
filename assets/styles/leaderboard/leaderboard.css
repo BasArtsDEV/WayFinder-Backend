@@ -38,7 +38,7 @@
 }
 
 .leaderboard-card {
-    padding: 1rem;
+    padding: 1rem 0.75rem;
     border-radius: 1.2rem;
     background-color: #ffffff;
 }
@@ -288,7 +288,7 @@
 }
 
 .leaderboard-table td {
-    padding: 0.5rem 0.6rem;
+    padding: 0.5rem 0.4rem;
     vertical-align: middle;
     background-color: #f7f7f7;
 }
@@ -342,6 +342,10 @@
 .leaderboard-avatar {
     flex-shrink: 0;
     border: 2px solid #ffffff;
+}
+
+.leaderboard-player .leaderboard-avatar {
+    display: none;
 }
 
 .leaderboard-team-icon {
@@ -479,6 +483,14 @@
     .leaderboard-optional {
         display: table-cell;
         white-space: nowrap;
+    }
+
+    .leaderboard-table td {
+        padding: 0.5rem 0.6rem;
+    }
+
+    .leaderboard-player .leaderboard-avatar {
+        display: flex;
     }
 }
 
