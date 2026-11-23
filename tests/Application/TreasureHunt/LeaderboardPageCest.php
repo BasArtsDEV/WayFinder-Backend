@@ -3,6 +3,7 @@
 namespace App\Tests\Application\TreasureHunt;
 
 use App\Entity\Enrollment;
+use App\Entity\Submission;
 use App\Entity\TreasureHunt;
 use App\Entity\User;
 use App\Enum\EnrollmentStatus;
@@ -115,6 +116,21 @@ class LeaderboardPageCest
         $I->seeCurrentUrlEquals('/treasure_hunt/'.$treasureHunt->getId().'/leaderboard');
         $I->see("Personne n'a encore terminé cette chasse au trésor.");
         $I->seeInRepository(Enrollment::class, ['id' => $enrollment->getId(), 'status' => EnrollmentStatus::NOT_STARTED, 'scoreTotal' => 0]);
+    }
+
+    public function riddleAnalysisIgnoresOtherHunts(ApplicationTester $I): void
+    {
+        $treasureHunt = $this->createHunt();
+        $otherHunt = TreasureHuntFactory::createOne(['team' => $treasureHunt->getTeam()]);
+        $enrollment = $this->createFinishedEnrollment($otherHunt, 'alice', 10);
+        $riddle = $treasureHunt->getRiddles()->first();
+        $I->assertNotFalse($riddle);
+        $I->haveInRepository(new Submission()->setEnrollment($enrollment)->setRiddle($riddle)->setIsRight(true)->setSubmittedValue('Paris'));
+
+        $I->amLoggedInAs($this->creator);
+        $I->amOnPage('/treasure_hunt/'.$treasureHunt->getId().'/leaderboard');
+
+        $I->see('Aucune réponse', '.leaderboard-riddles');
     }
 
     public function creatorCanExportTheLeaderboard(ApplicationTester $I): void
