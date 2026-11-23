@@ -148,11 +148,6 @@
     font-weight: 500;
 }
 
-.leaderboard-stat-detail {
-    font-size: 0.8rem;
-    color: #6c757d;
-}
-
 .leaderboard-card-header {
     display: flex;
     flex-wrap: wrap;

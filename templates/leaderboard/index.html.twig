@@ -49,40 +49,29 @@
             <ul class="leaderboard-stats">
                 <li class="leaderboard-stat">
                     <i class="bi bi-people-fill leaderboard-stat-icon" aria-hidden="true"></i>
-                    <span class="leaderboard-stat-value">{{ summary.players }}</span>
-                    <span class="leaderboard-stat-label">Inscrit{{ summary.players > 1 ? 's' }}</span>
-                    <span class="leaderboard-stat-detail">{{ summary.started }} ont commencé</span>
+                    <span class="leaderboard-stat-value">{{ summary.started }}</span>
+                    <span class="leaderboard-stat-label">Partie{{ summary.started > 1 ? 's' }} commencée{{ summary.started > 1 ? 's' }}</span>
                 </li>
                 <li class="leaderboard-stat">
                     <i class="bi bi-flag-fill leaderboard-stat-icon" aria-hidden="true"></i>
                     <span class="leaderboard-stat-value">{{ summary.finished }}</span>
-                    <span class="leaderboard-stat-label">Partie{{ summary.finished > 1 ? 's' }} terminée{{ summary.finished > 1 ? 's' }}</span>
-                    <span class="leaderboard-stat-detail">dont {{ summary.timedOut }} temps écoulé</span>
-                </li>
+                    <span class="leaderboard-stat-label">Partie{{ summary.finished > 1 ? 's' }} terminée{{ summary.finished > 1 ? 's' }}</span>                </li>
                 <li class="leaderboard-stat">
                     <i class="bi bi-hourglass-split leaderboard-stat-icon" aria-hidden="true"></i>
                     <span class="leaderboard-stat-value">{{ summary.ongoing }}</span>
-                    <span class="leaderboard-stat-label">En cours ou en pause</span>
-                    <span class="leaderboard-stat-detail">{{ summary.players - summary.started }} pas encore commencé</span>
-                </li>
+                    <span class="leaderboard-stat-label">En cours ou en pause</span>                </li>
                 <li class="leaderboard-stat">
                     <i class="bi bi-check-circle-fill leaderboard-stat-icon" aria-hidden="true"></i>
                     <span class="leaderboard-stat-value">{{ summary.completionRate is null ? '-' : summary.completionRate ~ ' %' }}</span>
-                    <span class="leaderboard-stat-label">Taux de réussite</span>
-                    <span class="leaderboard-stat-detail">{{ summary.completed }} chasse{{ summary.completed > 1 ? 's' }} finie{{ summary.completed > 1 ? 's' }} à temps</span>
-                </li>
+                    <span class="leaderboard-stat-label">Taux de réussite</span>                </li>
                 <li class="leaderboard-stat">
                     <i class="bi bi-star-fill leaderboard-stat-icon" aria-hidden="true"></i>
                     <span class="leaderboard-stat-value">{{ summary.averageScore ?? '-' }}{% if summary.averageScore is not null %} <small>pts</small>{% endif %}</span>
-                    <span class="leaderboard-stat-label">Score moyen</span>
-                    <span class="leaderboard-stat-detail">Meilleur : {{ summary.bestScore ?? '-' }} pts</span>
-                </li>
+                    <span class="leaderboard-stat-label">Score moyen</span>                </li>
                 <li class="leaderboard-stat">
                     <i class="bi bi-stopwatch-fill leaderboard-stat-icon" aria-hidden="true"></i>
                     <span class="leaderboard-stat-value">{{ summary.averagePlayTime is null ? '-' : summary.averagePlayTime|duration }}</span>
-                    <span class="leaderboard-stat-label">Temps de jeu moyen</span>
-                    <span class="leaderboard-stat-detail">Limite : {{ treasureHunt.duration|duration }}</span>
-                </li>
+                    <span class="leaderboard-stat-label">Temps de jeu moyen</span>                </li>
             </ul>
         </section>
 
