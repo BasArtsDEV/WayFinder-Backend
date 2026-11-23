@@ -45,7 +45,7 @@
                     <h1 class="fw-bold text-dark h2 mb-2">{{ treasureHunt.title }}</h1>
                     <div class="d-flex flex-wrap align-items-center gap-2 text-muted small mb-3">
                         {{ include('profile/partials/_avatar.html.twig', { user: treasureHunt.team.leader, size: 24 }) }}
-                        <span>Créé par <a href="{{ path('app_team_show', { id: treasureHunt.team.id }) }}" class="text-dark fw-semibold text-decoration-none">{{ treasureHunt.team.name }}</a></span>
+                        <span>{{ 'treasure_hunt.show.created_by'|trans({ team: '<a href="' ~ path('app_team_show', { id: treasureHunt.team.id }) ~ '" class="text-dark fw-semibold text-decoration-none">' ~ treasureHunt.team.name|e ~ '</a>' })|raw }}</span>
                         <span aria-hidden="true">•</span>
                         <span>{{ treasureHunt.creationDate|date_formatter }}</span>
                     </div>
@@ -56,52 +56,61 @@
                     <div class="hunt-header-actions {{ treasureHunt.published ? 'equal-buttons' }}">
                         {% if riddles|filter(r => r is instanceof('App\\Entity\\RiddleQRCode'))|length > 0 %}
                             <a href="{{ path('app_treasure_hunt_qrcodes', { id: treasureHunt.id }) }}" class="btn btn-app-secondary" target="_blank" data-turbo="false">
-                                <i class="bi bi-printer me-1"></i>Imprimer les QR Codes
+                                <i class="bi bi-printer me-1"></i>{{ 'treasure_hunt.show.print_qrcodes'|trans }}
                             </a>
                         {% endif %}
 
                         {% if treasureHunt.published %}
                             {% if is_granted('TREASURE_HUNT_RESET_SCORES', treasureHunt) %}
                                 <a href="{{ path('app_treasure_hunt_leaderboard', { id: treasureHunt.id }) }}" class="btn btn-app-secondary">
-                                    <i class="bi bi-trophy me-1" aria-hidden="true"></i>Classement
+                                    <i class="bi bi-trophy me-1" aria-hidden="true"></i>{{ 'treasure_hunt.show.leaderboard'|trans }}
                                 </a>
                             {% endif %}
 
                             <form method="post" action="{{ path('app_treasure_hunt_unpublish', { id: treasureHunt.id }) }}" class="d-inline">
                                 <input type="hidden" name="_token" value="{{ csrf_token('unpublish' ~ treasureHunt.id) }}">
                                 <button type="submit" class="btn btn-app-danger">
-                                    <i class="bi bi-pause-circle me-1"></i>Dépublier
+                                    <i class="bi bi-pause-circle me-1"></i>{{ 'treasure_hunt.show.unpublish'|trans }}
                                 </button>
                             </form>
                         {% else %}
                             {% if is_granted('TREASURE_HUNT_EDIT', treasureHunt) %}
                                 <a href="{{ path('app_treasure_hunt_edit', { id: treasureHunt.id }) }}" class="btn btn-app-secondary">
-                                    <i class="bi bi-pencil me-1"></i>Éditer
+                                    <i class="bi bi-pencil me-1"></i>{{ 'common.edit_alt'|trans }}
                                 </a>
                             {% endif %}
 
                             {% if is_granted('TREASURE_HUNT_RESET_SCORES', treasureHunt) %}
                                 <a href="{{ path('app_treasure_hunt_leaderboard', { id: treasureHunt.id }) }}" class="btn btn-app-secondary">
-                                    <i class="bi bi-trophy me-1" aria-hidden="true"></i>Classement
+                                    <i class="bi bi-trophy me-1" aria-hidden="true"></i>{{ 'treasure_hunt.show.leaderboard'|trans }}
                                 </a>
                             {% endif %}
                         {% endif %}
                     </div>
 
                     {% if not treasureHunt.published %}
+                        {% if is_granted('TREASURE_HUNT_RESET_SCORES', treasureHunt) %}
+                            <form method="post" action="{{ path('app_treasure_hunt_reset_scores', { id: treasureHunt.id }) }}" class="d-inline" onsubmit="return confirm('{{ 'treasure_hunt.show.reset_scores_confirm'|trans|e('js') }}');">
+                                <input type="hidden" name="_token" value="{{ csrf_token('reset-scores' ~ treasureHunt.id) }}">
+                                <button type="submit" class="btn btn-app-secondary">
+                                    <i class="bi bi-arrow-counterclockwise me-1"></i>{{ 'treasure_hunt.show.reset_scores'|trans }}
+                                </button>
+                            </form>
+                        {% endif %}
+
                         {% if is_granted('TREASURE_HUNT_DELETE', treasureHunt) %}
                             <div class="hunt-header-actions equal-buttons">
                                 {{ include('_delete_button.html.twig', {
                                     action_path: path('app_treasure_hunt_delete', { id: treasureHunt.id }),
                                     csrf_token_name: 'delete' ~ treasureHunt.id,
-                                    confirm_message: 'Confirmer la suppression de la chasse aux trésors ?',
+                                    confirm_message: 'treasure_hunt.show.confirm_delete'|trans,
                                     btn_class: 'btn btn-app-danger',
                                 }) }}
 
                                 <form method="post" action="{{ path('app_treasure_hunt_publish', { id: treasureHunt.id }) }}" class="d-inline">
                                     <input type="hidden" name="_token" value="{{ csrf_token('publish' ~ treasureHunt.id) }}">
                                     <button type="submit" class="btn btn-app-primary">
-                                        <i class="bi bi-rocket-takeoff-fill me-1"></i>Publier
+                                        <i class="bi bi-rocket-takeoff-fill me-1"></i>{{ 'treasure_hunt.show.publish'|trans }}
                                     </button>
                                 </form>
                             </div>
@@ -109,12 +118,12 @@
                     {% elseif treasureHunt.invitationCode %}
                         <div class="hunt-code">
                             <div class="hunt-code-content">
-                                <span class="hunt-code-label">Code d'invitation :</span>
+                                <span class="hunt-code-label">{{ 'treasure_hunt.show.invitation_code'|trans }}</span>
                                 <span class="hunt-code-value">{{ treasureHunt.invitationCode }}</span>
                             </div>
                             <button type="button" class="hunt-code-copy" onclick="copyInvitationCode(this, '{{ treasureHunt.invitationCode }}')">
                                 <i class="bi bi-clipboard" aria-hidden="true"></i>
-                                <span>Copier</span>
+                                <span>{{ 'treasure_hunt.show.copy'|trans }}</span>
                             </button>
                         </div>
                     {% endif %}
@@ -131,20 +140,20 @@
                 <div class="treasure-card p-3 riddle-sidebar">
                     <div class="d-flex align-items-center justify-content-between gap-2 mb-3">
                         <h2 class="riddle-sidebar-title">
-                            {{ riddles|length }} énigme{{ riddles|length > 1 ? 's' }}
+                            {{ 'treasure_hunt.riddle_count'|trans({ count: riddles|length }) }}
                         </h2>
 
                         {% if not treasureHunt.published and is_granted('RIDDLE_ADD', treasureHunt) %}
                             <div class="dropdown" data-turbo="false">
                                 <button type="button" class="btn btn-app-primary btn-sm px-3" data-bs-toggle="dropdown" aria-expanded="false">
-                                    <i class="bi bi-plus-lg me-1"></i>Ajouter
+                                    <i class="bi bi-plus-lg me-1"></i> {{ 'common.add'|trans }}
                                 </button>
 
                                 <ul class="dropdown-menu dropdown-menu-end riddle-add-menu">
-                                    <li><a class="dropdown-item" href="{{ path('app_riddle_new', { huntId: treasureHunt.id, type: 'text' }) }}"><i class="bi bi-chat-left-text me-2 text-success" aria-hidden="true"></i>Texte</a></li>
-                                    <li><a class="dropdown-item" href="{{ path('app_riddle_new', { huntId: treasureHunt.id, type: 'qcm' }) }}"><i class="bi bi-ui-checks me-2 text-success" aria-hidden="true"></i>QCM</a></li>
-                                    <li><a class="dropdown-item" href="{{ path('app_riddle_new', { huntId: treasureHunt.id, type: 'gps' }) }}"><i class="bi bi-geo-alt me-2 text-success" aria-hidden="true"></i>GPS</a></li>
-                                    <li><a class="dropdown-item" href="{{ path('app_riddle_new', { huntId: treasureHunt.id, type: 'qrcode' }) }}"><i class="bi bi-qr-code me-2 text-success" aria-hidden="true"></i>QR Code</a></li>
+                                    <li><a class="dropdown-item" href="{{ path('app_riddle_new', { huntId: treasureHunt.id, type: 'text' }) }}"><i class="bi bi-chat-left-text me-2 text-success" aria-hidden="true"></i>{{ 'riddle.type.text'|trans }}</a></li>
+                                    <li><a class="dropdown-item" href="{{ path('app_riddle_new', { huntId: treasureHunt.id, type: 'qcm' }) }}"><i class="bi bi-ui-checks me-2 text-success" aria-hidden="true"></i>{{ 'riddle.type.qcm'|trans }}</a></li>
+                                    <li><a class="dropdown-item" href="{{ path('app_riddle_new', { huntId: treasureHunt.id, type: 'gps' }) }}"><i class="bi bi-geo-alt me-2 text-success" aria-hidden="true"></i>{{ 'riddle.type.gps'|trans }}</a></li>
+                                    <li><a class="dropdown-item" href="{{ path('app_riddle_new', { huntId: treasureHunt.id, type: 'qrcode' }) }}"><i class="bi bi-qr-code me-2 text-success" aria-hidden="true"></i>{{ 'riddle.type.qrcode'|trans }}</a></li>
                                 </ul>
                             </div>
                         {% endif %}
@@ -171,15 +180,15 @@
                                 <div class="riddle-label flex-grow-1 min-w-0">
                                     <div class="fw-semibold small text-dark text-break mb-1" style="line-height: 1.3;">{{ riddle.title }}</div>
                                     <div class="text-muted d-flex align-items-center gap-1" style="font-size: 0.7rem;">
-                                        {% if riddle is instanceof('App\\Entity\\RiddleQCM') %}<i class="bi bi-ui-checks text-success" aria-hidden="true"></i> QCM
-                                        {% elseif riddle is instanceof('App\\Entity\\RiddleGPS') %}<i class="bi bi-geo-alt text-success" aria-hidden="true"></i> GPS
-                                        {% elseif riddle is instanceof('App\\Entity\\RiddleQRCode') %}<i class="bi bi-qr-code text-success" aria-hidden="true"></i> QR Code
-                                        {% else %}<i class="bi bi-chat-left-text text-success" aria-hidden="true"></i> Texte{% endif %}
+                                        {% if riddle is instanceof('App\\Entity\\RiddleQCM') %}<i class="bi bi-ui-checks text-success" aria-hidden="true"></i> {{ 'riddle.type.qcm'|trans }}
+                                        {% elseif riddle is instanceof('App\\Entity\\RiddleGPS') %}<i class="bi bi-geo-alt text-success" aria-hidden="true"></i> {{ 'riddle.type.gps'|trans }}
+                                        {% elseif riddle is instanceof('App\\Entity\\RiddleQRCode') %}<i class="bi bi-qr-code text-success" aria-hidden="true"></i> {{ 'riddle.type.qrcode'|trans }}
+                                        {% else %}<i class="bi bi-chat-left-text text-success" aria-hidden="true"></i> {{ 'riddle.type.text'|trans }}{% endif %}
                                     </div>
                                 </div>
                             </div>
                         {% else %}
-                            <div class="p-4 text-center text-muted small treasure-card-inner">Aucune énigme configurée.</div>
+                            <div class="p-4 text-center text-muted small treasure-card-inner">{{ 'treasure_hunt.show.no_riddles'|trans }}</div>
                         {% endfor %}
                     </div>
                 </div>
@@ -202,7 +211,7 @@
                                         <div class="d-flex align-items-center gap-2 flex-shrink-0 text-nowrap">
                                             {% if is_granted('TREASURE_HUNT_EDIT', treasureHunt) %}
                                                 <a href="{{ path('app_riddle_edit', { id: riddle.id }) }}" class="btn btn-app-secondary btn-sm">
-                                                    <i class="bi bi-pencil me-1"></i>Éditer
+                                                    <i class="bi bi-pencil me-1"></i>{{ 'common.edit_alt'|trans }}
                                                 </a>
                                             {% endif %}
 
@@ -210,7 +219,7 @@
                                                 {{ include('_delete_button.html.twig', {
                                                     action_path: path('app_riddle_delete', { id: riddle.id }),
                                                     csrf_token_name: 'delete' ~ riddle.id,
-                                                    confirm_message: 'Confirmer la suppression de cette énigme ?',
+                                                    confirm_message: 'riddle.confirm_delete'|trans,
                                                     btn_class: 'btn btn-app-danger btn-sm',
                                                 }) }}
                                             {% endif %}
@@ -220,7 +229,7 @@
 
                                 {% if riddle.description %}
                                     <div class="mb-4">
-                                        <label class="text-muted fw-bold text-uppercase d-block mb-1" style="font-size: 0.68rem; letter-spacing: 1px;">Indice</label>
+                                        <label class="text-muted fw-bold text-uppercase d-block mb-1" style="font-size: 0.68rem; letter-spacing: 1px;">{{ 'riddle.hint'|trans }}</label>
                                         <p class="text-dark mb-0" style="line-height: 1.6;">{{ riddle.description }}</p>
                                     </div>
                                 {% endif %}
@@ -228,7 +237,7 @@
                                 {% if riddle.img %}
                                     <div class="mb-4 text-center treasure-card-inner p-3">
                                         <img src="data:image/png;base64,{{ riddle.imgBase64 }}"
-                                             alt="{{ riddle.imgDescription ?? 'Illustration énigme' }}"
+                                             alt="{{ riddle.imgDescription ?? 'riddle.illustration_alt'|trans }}"
                                              class="img-fluid rounded-3" style="max-height: 320px; object-fit: contain;" />
                                     </div>
                                 {% endif %}
@@ -236,7 +245,7 @@
                                 {% if riddle is instanceof('App\\Entity\\RiddleQCM') %}
                                     <div class="treasure-card-inner p-4">
                                         <div class="d-flex align-items-center gap-2 mb-3">
-                                            <span class="riddle-type-badge"><i class="bi bi-ui-checks" aria-hidden="true"></i> Question QCM</span>
+                                            <span class="riddle-type-badge"><i class="bi bi-ui-checks" aria-hidden="true"></i> {{ 'riddle.show.qcm_question'|trans }}</span>
                                         </div>
                                         <p class="fw-bold text-dark h6 mb-3">{{ riddle.question }}</p>
 
@@ -246,7 +255,7 @@
                                                     <span class="qcm-choice-badge">{{ loop.index }}</span>
                                                     <span class="fw-medium text-dark small flex-grow-1">{{ choice.choice }}</span>
                                                     {% if choice.isRight %}
-                                                        <i class="bi bi-check-circle-fill text-success ms-1" title="Bonne réponse"></i>
+                                                        <i class="bi bi-check-circle-fill text-success ms-1" title="{{ 'riddle.show.correct_answer'|trans }}"></i>
                                                     {% endif %}
                                                 </div>
                                             {% endfor %}
@@ -256,7 +265,7 @@
                                 {% elseif riddle is instanceof('App\\Entity\\RiddleGPS') %}
                                     <div class="treasure-card-inner p-4">
                                         <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3">
-                                            <span class="riddle-type-badge"><i class="bi bi-geo-alt-fill" aria-hidden="true"></i> Localisation GPS</span>
+                                            <span class="riddle-type-badge"><i class="bi bi-geo-alt-fill" aria-hidden="true"></i> {{ 'riddle.show.gps_location'|trans }}</span>
                                             <code class="bg-light px-3 py-1 rounded-pill text-dark font-monospace small">{{ riddle.latitude }}, {{ riddle.longitude }}</code>
                                         </div>
                                         <div class="rounded-3 overflow-hidden">
@@ -268,15 +277,15 @@
                                     <div class="treasure-card-inner p-4 text-center">
                                         <div class="d-flex flex-column align-items-center">
                                             <span class="riddle-type-badge mb-3">
-                                                <i class="bi bi-qr-code" aria-hidden="true"></i> Scanner un QR Code
+                                                <i class="bi bi-qr-code" aria-hidden="true"></i> {{ 'riddle.show.scan_qrcode'|trans }}
                                             </span>
 
                                             <div class="my-2 p-2 bg-white rounded-3 border">
-                                                <img src="{{ qr_code_url(riddle.url) }}" alt="QR code" class="img-fluid" style="width: 120px; height: 120px;"/>
+                                                <img src="{{ qr_code_url(riddle.url) }}" alt="{{ 'treasure_hunt.qrcodes.alt'|trans }}" class="img-fluid" style="width: 120px; height: 120px;"/>
                                             </div>
 
                                             <div class="mt-3 w-100">
-                                                <label class="text-muted fw-bold text-uppercase d-block mb-1" style="font-size: 0.65rem;">Lien cible</label>
+                                                <label class="text-muted fw-bold text-uppercase d-block mb-1" style="font-size: 0.65rem;">{{ 'riddle.show.target_link'|trans }}</label>
                                                 <a href="{{ riddle.url }}" target="_blank" class="fw-bold text-success font-monospace text-decoration-none text-break d-inline-block">{{ riddle.url }}</a>
                                             </div>
                                         </div>
@@ -284,10 +293,10 @@
 
                                 {% elseif riddle is instanceof('App\\Entity\\RiddleText') %}
                                     <div class="treasure-card-inner p-4">
-                                        <span class="riddle-type-badge mb-3"><i class="bi bi-chat-left-text-fill" aria-hidden="true"></i> Réponse libre</span>
+                                        <span class="riddle-type-badge mb-3"><i class="bi bi-chat-left-text-fill" aria-hidden="true"></i> {{ 'riddle.show.free_answer'|trans }}</span>
                                         <p class="fw-bold text-dark h6 mb-3">{{ riddle.question }}</p>
                                         <div class="p-3 bg-light rounded-3">
-                                            <span class="small">Réponse attendue : <strong>{{ riddle.expectedAnswer }}</strong></span>
+                                            <span class="small">{{ 'riddle.show.expected_answer'|trans({ answer: riddle.expectedAnswer|e })|raw }}</span>
                                         </div>
                                     </div>
                                 {% endif %}
@@ -307,11 +316,11 @@
                 const icon = button.querySelector('i');
                 const text = button.querySelector('span');
                 icon.className = 'bi bi-check-lg';
-                text.textContent = 'Copié !';
+                text.textContent = {{ 'treasure_hunt.show.copied'|trans|json_encode|raw }};
 
                 setTimeout(() => {
                     icon.className = 'bi bi-clipboard';
-                    text.textContent = 'Copier';
+                    text.textContent = {{ 'treasure_hunt.show.copy'|trans|json_encode|raw }};
                 }, 2000);
             });
         }

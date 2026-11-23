@@ -508,6 +508,8 @@ treasure_hunt:
         created_by: Créé par {team}
         invitation_code: 'Code d''invitation :'
         leaderboard: Classement
+        reset_scores: Effacer les scores
+        reset_scores_confirm: Confirmer l'effacement des scores et du classement de tous les joueurs
         no_riddles: Aucune énigme configurée.
         print_qrcodes: Imprimer les QR Codes
         publish: Publier

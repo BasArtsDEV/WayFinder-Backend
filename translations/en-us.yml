@@ -508,6 +508,8 @@ treasure_hunt:
         created_by: Created by {team}
         invitation_code: 'Invitation code:'
         leaderboard: Leaderboard
+        reset_scores: Reset scores
+        reset_scores_confirm: Confirm the reset of scores and leaderboard for all players
         no_riddles: No riddle configured.
         print_qrcodes: Print the QR codes
         publish: Publish
