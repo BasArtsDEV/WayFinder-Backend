@@ -31,6 +31,16 @@
                         <i class="bi bi-download me-1" aria-hidden="true"></i>Exporter (CSV)
                     </a>
                 {% endif %}
+
+                {% if summary.started > 0 %}
+                    <form method="post" action="{{ path('app_treasure_hunt_reset_scores', { id: treasureHunt.id }) }}"
+                          onsubmit="return confirm('Réinitialiser tous les résultats ? Les {{ summary.started }} partie(s) commencée(s) seront remises à zéro, cette action est irréversible.');">
+                        <input type="hidden" name="_token" value="{{ csrf_token('reset-scores' ~ treasureHunt.id) }}">
+                        <button type="submit" class="btn btn-app-danger w-100">
+                            <i class="bi bi-arrow-counterclockwise me-1" aria-hidden="true"></i>Tout réinitialiser
+                        </button>
+                    </form>
+                {% endif %}
             </div>
         </header>
 
