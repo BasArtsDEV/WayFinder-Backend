@@ -23,8 +23,8 @@
         {% if user is same as(app.user) or is_granted('ROLE_ADMIN') %}
             <div class="d-flex justify-content-end gap-2 mb-4">
                 {% if user is same as(app.user) %}
-                    <a href="{{ path('app_settings') }}" class="btn-app-secondary">
-                        <i class="bi bi-pencil-square"></i> Modifier le profil
+                    <a href="{{ path('app_settings') }}" class="btn btn-app-secondary">
+                        <i class="bi bi-pencil-square"></i> {{ 'profile.edit'|trans }}
                     </a>
                 {% endif %}
             </div>
@@ -36,42 +36,42 @@
                 <div class="card border-0 rounded-4 p-4 h-100 bg-white">
                     <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom border-light">
                         <h3 class="fw-bold fs-4 text-dark m-0 d-flex align-items-center gap-2">
-                            <i class="bi bi-person-vcard text-success"></i> Informations générales
+                            <i class="bi bi-person-vcard text-success"></i> {{ 'profile.general_info'|trans }}
                         </h3>
                     </div>
 
                     <div class="row g-3">
                         <div class="col-md-6">
                             <div class="info-item p-3 rounded-3 bg-light border border-light">
-                                <span class="text-muted small d-block mb-1">Nom d'utilisateur</span>
+                                <span class="text-muted small d-block mb-1">{{ 'common.username'|trans }}</span>
                                 <span class="fw-bold text-dark fs-6">@{{ user.username }}</span>
                             </div>
                         </div>
 
                         <div class="col-md-6">
                             <div class="info-item p-3 rounded-3 bg-light border border-light">
-                                <span class="text-muted small d-block mb-1">Adresse Email</span>
+                                <span class="text-muted small d-block mb-1">{{ 'profile.email'|trans }}</span>
                                 <span class="fw-bold text-dark fs-6">{{ user.email }}</span>
                             </div>
                         </div>
 
                         <div class="col-md-6">
                             <div class="info-item p-3 rounded-3 bg-light border border-light">
-                                <span class="text-muted small d-block mb-1">Prénom & Nom</span>
+                                <span class="text-muted small d-block mb-1">{{ 'profile.full_name'|trans }}</span>
                                 <span class="fw-bold text-dark fs-6">{{ user.firstName }} {{ user.lastName }}</span>
                             </div>
                         </div>
 
                         <div class="col-md-6">
                             <div class="info-item p-3 rounded-3 bg-light border border-light">
-                                <span class="text-muted small d-block mb-1">Date d'inscription</span>
+                                <span class="text-muted small d-block mb-1">{{ 'profile.registration_date'|trans }}</span>
                                 <span class="fw-bold text-dark fs-6">{{ user.createdAt|date_formatter }}</span>
                             </div>
                         </div>
 
                         <div class="col-md-6">
                             <div class="info-item p-3 rounded-3 bg-light border border-light">
-                                <span class="text-muted small d-block mb-1">Fuseau Horaire</span>
+                                <span class="text-muted small d-block mb-1">{{ 'settings.preferences.timezone'|trans }}</span>
                                 <span class="fw-bold text-dark fs-6">{{ user.timezone }}</span>
                             </div>
                         </div>
@@ -82,7 +82,7 @@
             <div class="col-lg-4">
                 <div class="card border-0 rounded-4 p-4 h-100 bg-white">
                     <h3 class="fw-bold fs-5 text-dark mb-2 d-flex align-items-center gap-2">
-                        <i class="bi bi-people-fill text-success"></i> Équipes
+                        <i class="bi bi-people-fill text-success"></i> {{ 'profile.teams'|trans }}
                     </h3>
 
                     {% set maxTeams = constant('App\\Entity\\User::MAX_TEAMS') %}
@@ -93,7 +93,7 @@
 
                     <div class="mb-4">
                         <div class="d-flex justify-content-between align-items-center mb-1">
-                            <small class="text-muted" style="font-size: 0.8rem;">Équipes rejointes</small>
+                            <small class="text-muted" style="font-size: 0.8rem;">{{ 'profile.teams_joined'|trans }}</small>
                             <small class="fw-bold text-success" style="font-size: 0.8rem;">{{ currentTeamsCount }} / {{ maxTeams }}</small>
                         </div>
                         <div class="progress" style="height: 8px; background-color: #e9ecef; border-radius: 4px;">
@@ -114,13 +114,13 @@
                                             </span>
                                             <span class="text-muted fw-normal fs-6">|</span>
                                             <span class="text-secondary small text-nowrap">
-                                                {{ memberCount }} membre{% if memberCount > 1 %}s{% endif %}
+                                                {{ 'team.member_count'|trans({ count: memberCount }) }}
                                             </span>
                                         </div>
 
                                         {% if team.leader and team.leader.id == user.id %}
                                             <span class="badge bg-warning text-dark fw-semibold px-2 py-1 rounded-pill ms-2" title="Chef d'équipe">
-                                                Chef
+                                                {{ 'team.leader_badge'|trans }}
                                             </span>
                                         {% endif %}
                                     </div>
@@ -129,7 +129,7 @@
                         {% else %}
                             <div class="text-center py-4 text-muted">
                                 <i class="bi bi-people display-6 text-secondary opacity-50 mb-2"></i>
-                                <p class="small mb-0">Aucune équipe rejointe pour le moment.</p>
+                                <p class="small mb-0">{{ 'profile.no_teams'|trans }}</p>
                             </div>
                         {% endif %}
                     </div>

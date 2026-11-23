@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Mes chasses au trésor{% endblock %}
+{% block title %}{{ 'treasure_hunt.my_hunts'|trans }}{% endblock %}
 
 {% block stylesheets %}
     <link href="{{ asset('styles/treasure_hunt/list.css') }}" type="text/css" rel="stylesheet" />
@@ -10,12 +10,12 @@
     <div class="container py-5">
         <div class="page-header">
             <h1 class="h3 fw-bold mb-0 d-flex align-items-center gap-2">
-                Mes chasses au trésor
+                {{ 'treasure_hunt.my_hunts'|trans }}
                 <span class="hunt-count" title="{{ treasureHunts|length }} chasse{{ treasureHunts|length > 1 ? 's' }}">{{ treasureHunts|length }}</span>
             </h1>
             {% if is_granted('TREASURE_HUNT_ADD') %}
                 <a href="{{ path('app_treasure_hunt_new') }}" class="btn-app-primary">
-                    <i class="bi bi-plus-circle"></i>Créer une chasse
+                    <i class="bi bi-plus-circle"></i> {{ 'treasure_hunt.create'|trans }}
                 </a>
             {% endif %}
         </div>
@@ -24,7 +24,7 @@
             {{ include('treasure_hunt/partials/_treasure_hunts_display.html.twig', {
                 treasureHunts: treasureHunts,
                 showTeam: true,
-                emptyMessage: "Vos équipes n'ont pas encore créé de chasse au trésor.",
+                emptyMessage: 'treasure_hunt.empty_mine'|trans,
             }) }}
         </div>
     </div>

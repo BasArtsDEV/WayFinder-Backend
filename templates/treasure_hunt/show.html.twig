@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}{{ treasureHunt.title|raw }} - Détails{% endblock %}
+{% block title %}{{ 'treasure_hunt.show.title'|trans({ title: treasureHunt.title }) }}{% endblock %}
 
 {% block stylesheets %}
     <link rel="stylesheet" href="{{ asset('styles/riddle/show.css') }}">
@@ -16,11 +16,11 @@
                     <div class="d-flex align-items-center flex-wrap gap-2 mb-3">
                         {% if treasureHunt.published %}
                             <span class="hunt-badge published">
-                                <i class="bi bi-cloud-check-fill" aria-hidden="true"></i> Publiée
+                                <i class="bi bi-cloud-check-fill" aria-hidden="true"></i> {{ 'treasure_hunt.published'|trans }}
                             </span>
                         {% else %}
                             <span class="hunt-badge">
-                                <i class="bi bi-eye-slash-fill" aria-hidden="true"></i> Brouillon
+                                <i class="bi bi-eye-slash-fill" aria-hidden="true"></i> {{ 'treasure_hunt.draft'|trans }}
                             </span>
                         {% endif %}
 
@@ -37,7 +37,7 @@
                                     {% endif %}
                                 {% endfor %}
                             </div>
-                            <span class="fw-bold">{{ avgstars > 0 ? avgstars|number_format(1) : 'Pas d\'avis' }}</span>
+                            <span class="fw-bold">{{ avgstars > 0 ? avgstars|number_format(1) : 'treasure_hunt.no_reviews'|trans }}</span>
                         </div>
 
                     </div>

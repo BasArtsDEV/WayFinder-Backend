@@ -12,13 +12,13 @@
 
             <a href="{{ path('app_treasure_hunt_show', { id: treasureHunt.id }) }}" class="hunt-card {{ treasureHunt.published ? 'published' }}">
                 <div class="hunt-card-header">
-                    <h4 class="hunt-card-title">{{ treasureHunt.title }}</h4>
-                    <span class="hunt-status {{ treasureHunt.published ? 'published' }}">
-                        {{ treasureHunt.published ? 'Publiée' : 'Brouillon' }}
-                    </span>
-                </div>
-
-                <p class="hunt-card-description">{{ treasureHunt.description }}</p>
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                        <h4 class="fw-bold fs-5 text-dark mb-0">{{ treasureHunt.title }}</h4>
+                        <span class="status-badge {% if treasureHunt.published %}published{% else %}draft{% endif %} m-0">
+                            {{ 'treasure_hunt.status'|trans({ published: treasureHunt.published ? 'true' : 'false' }) }}
+                        </span>
+                    </div>
+                    <p class="text-muted small mb-2 text-truncate-2">{{ treasureHunt.description }}</p>
 
                 <ul class="hunt-card-meta">
                     {% if showTeam|default(false) %}
@@ -57,7 +57,7 @@
                     </div>
 
                     <span class="hunt-card-reviews">
-                        {{ feedbacks|length }} avis <i class="bi bi-arrow-right-short" aria-hidden="true"></i>
+                        {{ 'treasure_hunt.reviews'|trans({ count: feedbacks|length }) }} <i class="bi bi-arrow-right-short" aria-hidden="true"></i>
                     </span>
                 </div>
             </a>

@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Paramètres{% endblock %}
+{% block title %}{{ 'settings.title'|trans }}{% endblock %}
 
 {% block stylesheets %}
     <link href="{{ asset('styles/settings/settings.css') }}" type="text/css" rel="stylesheet" />
@@ -14,16 +14,16 @@
                 <div class="card border-0 rounded-4 p-3 bg-white">
                     <div class="settings-nav" id="v-pills-tab" role="tablist" aria-orientation="vertical">
                         <button class="settings-nav-link active" id="v-pills-profile-tab" data-bs-toggle="pill" data-bs-target="#v-pills-profile" type="button" role="tab" aria-controls="v-pills-profile" aria-selected="true">
-                            <i class="bi bi-person" aria-hidden="true"></i> Paramètres du profil
+                            <i class="bi bi-person" aria-hidden="true"></i> {{ 'settings.nav.profile'|trans }}
                         </button>
                         <button class="settings-nav-link" id="v-pills-security-tab" data-bs-toggle="pill" data-bs-target="#v-pills-security" type="button" role="tab" aria-controls="v-pills-security" aria-selected="false">
-                            <i class="bi bi-lock" aria-hidden="true"></i> Mot de passe
+                            <i class="bi bi-lock" aria-hidden="true"></i> {{ 'common.password'|trans }}
                         </button>
                         <button class="settings-nav-link" id="v-pills-preferences-tab" data-bs-toggle="pill" data-bs-target="#v-pills-preferences" type="button" role="tab" aria-controls="v-pills-preferences" aria-selected="false">
-                            <i class="bi bi-translate" aria-hidden="true"></i> Langues
+                            <i class="bi bi-translate" aria-hidden="true"></i> {{ 'settings.nav.preferences'|trans }}
                         </button>
                         <button class="settings-nav-link danger" id="v-pills-verification-tab" data-bs-toggle="pill" data-bs-target="#v-pills-verification" type="button" role="tab" aria-controls="v-pills-verification" aria-selected="false">
-                            <i class="bi bi-trash" aria-hidden="true"></i> Suppression
+                            <i class="bi bi-trash" aria-hidden="true"></i>{{ 'settings.nav.deletion'|trans }}
                         </button>
                     </div>
                 </div>
@@ -44,7 +44,7 @@
                                             {% if user.avatar %}
                                                 {{ include('profile/partials/_avatar.html.twig', { user: user, size: 105 }) }}
                                             {% endif %}
-                                            <img id="avatar-preview-img" src="" alt="Aperçu de l'avatar"
+                                            <img id="avatar-preview-img" src="" alt="{{ 'settings.avatar.preview'|trans }}"
                                                  class="d-none w-100 h-100" style="object-fit: cover;">
                                         </div>
 
@@ -54,19 +54,19 @@
                                             {{ user.username|slice(0, 1)|upper }}
                                         </div>
 
-                                        <label for="avatar-input" class="avatar-edit-button" title="Changer l'avatar">
+                                        <label for="avatar-input" class="avatar-edit-button" title="{{ 'settings.avatar.change_title'|trans }}">
                                             <i class="bi bi-camera-fill" aria-hidden="true"></i>
                                         </label>
                                     </div>
                                     <div class="d-flex flex-wrap align-items-center gap-3">
                                         <label for="avatar-input" class="btn-app-primary mb-0">
-                                            Changer
+                                            {{ 'settings.avatar.change'|trans }}
                                         </label>
                                         <input type="file" class="d-none" id="avatar-input" name="avatar" accept="image/*">
 
                                         {% if user.avatar %}
                                             <a href="{{ path('app_profil_avatar_delete') }}" class="btn-app-secondary">
-                                                Supprimer l'avatar
+                                                {{ 'settings.avatar.delete'|trans }}
                                             </a>
                                         {% endif %}
                                     </div>
@@ -74,31 +74,31 @@
 
                                 <div class="row g-4">
                                     <div class="col-md-6">
-                                        <label for="username-input" class="form-label fw-semibold text-dark small">Nom d'utilisateur <span class="text-danger">*</span></label>
+                                        <label for="username-input" class="form-label fw-semibold text-dark small">{{ 'common.username'|trans }} <span class="text-danger">*</span></label>
                                         <input type="text" class="form-control" id="username-input" name="username" value="{{ user.username }}" required>
                                     </div>
 
                                     <div class="col-md-6">
-                                        <label for="lastname-input" class="form-label fw-semibold text-dark small">Nom <span class="text-danger">*</span></label>
+                                        <label for="lastname-input" class="form-label fw-semibold text-dark small">{{ 'common.last_name'|trans }} <span class="text-danger">*</span></label>
                                         <input type="text" class="form-control" id="lastname-input" name="lastName" value="{{ user.lastName }}" required>
                                     </div>
 
                                     <div class="col-md-6">
-                                        <label for="firstname-input" class="form-label fw-semibold text-dark small">Prénom <span class="text-danger">*</span></label>
+                                        <label for="firstname-input" class="form-label fw-semibold text-dark small">{{ 'common.first_name'|trans }} <span class="text-danger">*</span></label>
                                         <input type="text" class="form-control" id="firstname-input" name="firstName" value="{{ user.firstName }}" required>
                                     </div>
 
                                     <div class="col-md-6">
-                                        <label for="email-input" class="form-label fw-semibold text-dark small">Email</label>
+                                        <label for="email-input" class="form-label fw-semibold text-dark small">{{ 'settings.email'|trans }}</label>
                                         <input type="email" class="form-control" id="email-input" name="email" value="{{ user.email|default('') }}" readonly>
                                     </div>
 
                                     <div class="col-12">
-                                        <label for="banner-input" class="form-label fw-semibold text-dark small">Bannière</label>
+                                        <label for="banner-input" class="form-label fw-semibold text-dark small">{{ 'settings.banner'|trans }}</label>
                                         <input type="file" class="form-control" id="banner-input" name="banner" accept="image/*">
                                         {% if user.banner %}
                                             <div class="mt-3">
-                                                <img src="{{ user.banner }}" alt="Bannière" class="img-fluid rounded-3" style="max-height: 120px; object-fit: cover; width: 100%;">
+                                                <img src="{{ user.banner }}" alt="{{ 'settings.banner'|trans }}" class="img-fluid rounded-3" style="max-height: 120px; object-fit: cover; width: 100%;">
                                             </div>
                                         {% endif %}
                                     </div>
@@ -106,39 +106,40 @@
 
                                 <div class="mt-5 pt-2">
                                     <button type="submit" class="btn-app-primary">
-                                        Enregistrer
+                                        {{ 'common.save'|trans }}
                                     </button>
                                 </div>
                             </form>
                         </div>
 
                         <div class="tab-pane fade" id="v-pills-security" role="tabpanel" aria-labelledby="v-pills-security-tab">
-                            <h4 class="fw-bold mb-4 text-dark">Sécurité et Mot de passe</h4>
+                            <h4 class="fw-bold mb-4 text-dark">{{ 'settings.security.heading'|trans }}</h4>
                             <div class="settings-box">
                                 <div>
-                                    <h6 class="mb-1 fw-bold text-dark">Mot de passe du compte</h6>
-                                    <p class="text-muted small mb-0">Modifiez régulièrement votre mot de passe pour assurer la sécurité de votre profil.</p>
+                                    <h6 class="mb-1 fw-bold text-dark">{{ 'settings.security.account_password'|trans }}</h6>
+                                    <p class="text-muted small mb-0">{{ 'settings.security.hint'|trans }}</p>
                                 </div>
                                 <a href="{{ path('app_forgot_password_request') }}" class="btn-app-primary">
-                                    Changer le mot de passe
+                                    {{ 'settings.security.change_password'|trans }}
                                 </a>
                             </div>
                         </div>
 
                         <div class="tab-pane fade" id="v-pills-preferences" role="tabpanel" aria-labelledby="v-pills-preferences-tab">
-                            <h4 class="fw-bold mb-4 text-dark">Préférences d'affichage</h4>
+                            <h4 class="fw-bold mb-4 text-dark">{{ 'settings.preferences.heading'|trans }}</h4>
                             <form method="POST" action="">
                                 <div class="row g-4">
                                     <div class="col-md-6">
-                                        <label for="language_select" class="form-label fw-semibold text-dark small">Langue</label>
+                                        <label for="language_select" class="form-label fw-semibold text-dark small">{{ 'settings.preferences.language'|trans }}</label>
                                         <select id="language_select" name="locale" class="form-select">
-                                            <option value="fr" {% if app.request.locale == 'fr' %}selected{% endif %}>Français</option>
-                                            <option value="en" {% if app.request.locale == 'en' %}selected{% endif %}>English</option>
+                                            {% for locale in available_locales() %}
+                                                <option value="{{ locale.code }}" {% if locale.active %}selected{% endif %}>{{ locale.name }}</option>
+                                            {% endfor %}
                                         </select>
                                     </div>
 
                                     <div class="col-md-6">
-                                        <label for="timezone_select" class="form-label fw-semibold text-dark small">Fuseau horaire</label>
+                                        <label for="timezone_select" class="form-label fw-semibold text-dark small">{{ 'settings.preferences.timezone'|trans }}</label>
                                         <select id="timezone_select" name="timezone" class="form-select">
                                             {% set userTimezone = app.user.timezone|default('Europe/Paris') %}
                                             {% for tz in timezones %}
@@ -150,21 +151,21 @@
 
                                 <div class="mt-5 pt-2">
                                     <button type="submit" class="btn-app-primary">
-                                        Enregistrer
+                                        {{ 'common.save'|trans }}
                                     </button>
                                 </div>
                             </form>
                         </div>
 
                         <div class="tab-pane fade" id="v-pills-verification" role="tabpanel" aria-labelledby="v-pills-verification-tab">
-                            <h4 class="fw-bold mb-4 text-danger">Zone de danger</h4>
+                            <h4 class="fw-bold mb-4 text-danger">{{ 'settings.danger.heading'|trans }}</h4>
                             <div class="settings-box danger">
                                 <div>
-                                    <h6 class="mb-1 fw-bold text-danger">Supprimer le compte</h6>
-                                    <p class="text-muted small mb-0">Une fois supprimé, toutes vos données personnelles seront définitivement effacées.</p>
+                                    <h6 class="mb-1 fw-bold text-danger">{{ 'settings.danger.delete_account'|trans }}</h6>
+                                    <p class="text-muted small mb-0">{{ 'settings.danger.hint'|trans }}</p>
                                 </div>
                                     <button type="button" class="btn-app-danger" data-bs-toggle="modal" data-bs-target="#deleteAccountModal">
-                                    Supprimer mon compte
+                                        {{ 'settings.danger.delete_button'|trans }}
                                 </button>
                             </div>
                         </div>
@@ -179,20 +180,20 @@
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content border-0 rounded-4">
                 <div class="modal-header border-bottom-0 pb-0">
-                    <h5 class="modal-title fw-bold text-danger" id="deleteAccountModalLabel">Êtes-vous absolument sûr ?</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+                    <h5 class="modal-title fw-bold text-danger" id="deleteAccountModalLabel">{{ 'settings.modal.title'|trans }}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ 'flash.close'|trans }}"></button>
                 </div>
                 <div class="modal-body py-4">
-                    <p class="mb-3 text-secondary">Cette action supprimera définitivement votre compte utilisateur ainsi que l'ensemble des données associées.</p>
+                    <p class="mb-3 text-secondary">{{ 'settings.modal.body'|trans }}</p>
                     <div class="alert alert-warning small mb-0 rounded-3">
-                        <i class="bi bi-exclamation-triangle-fill me-1"></i> Attention : cette opération est irréversible.
+                        <i class="bi bi-exclamation-triangle-fill me-1"></i> {{ 'settings.modal.warning'|trans }}
                     </div>
                 </div>
                 <div class="modal-footer border-top-0 pt-0">
-                    <button type="button" class="btn-app-secondary" data-bs-dismiss="modal">Annuler</button>
+                    <button type="button" class="btn-app-secondary" data-bs-dismiss="modal">{{ 'common.cancel'|trans }}</button>
                     <form action="{{ path('app_user_delete') }}" method="post">
                         <input type="hidden" name="_token" value="{{ csrf_token('delete-account-' ~ app.user.id) }}">
-                        <button type="submit" class="btn-app-danger">Confirmer la suppression</button>
+                        <button type="submit" class="btn-app-danger">{{ 'settings.modal.confirm'|trans }}</button>
                     </form>
                 </div>
             </div>

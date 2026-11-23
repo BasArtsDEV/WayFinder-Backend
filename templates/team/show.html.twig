@@ -19,13 +19,13 @@
             <div class="d-flex justify-content-end gap-2 mb-4">
                 {% if is_granted('TEAM_INVITE', team) %}
                     <a href="{{ path('app_team_invite', { id: team.id }) }}" class="btn-app-primary">
-                        <i class="bi bi-person-plus-fill me-1"></i>Inviter un membre
+                        <i class="bi bi-person-plus-fill me-1"></i>{{ 'team.invite.title'|trans }}
                     </a>
                 {% endif %}
 
                 {% if is_granted('TEAM_EDIT', team) %}
                     <a href="{{ path('app_team_edit', { id: team.id }) }}" class="btn-app-secondary">
-                        <i class="bi bi-pencil-square me-1"></i>Modifier
+                        <i class="bi bi-pencil-square me-1"></i>{{ 'common.edit'|trans }}
                     </a>
                 {% endif %}
 
@@ -33,15 +33,15 @@
                     {{ include('_delete_button.html.twig', {
                         action_path: path('app_team_delete', { id: team.id }),
                         csrf_token_name: 'delete' ~ team.id,
-                        confirm_message: 'En tant que chef, souhaitez-vous vraiment supprimer cette équipe ? Cette action est irréversible.',
+                        confirm_message: 'team.show.confirm_delete_leader'|trans,
                     }) }}
                 {% endif %}
 
                 {% if is_granted('TEAM_LEAVE', team) %}
-                    <form action="{{ path('app_team_leave', { id: team.id }) }}" method="POST" onsubmit="return confirm('Es-tu sûr de vouloir quitter cette équipe ?');">
+                    <form action="{{ path('app_team_leave', { id: team.id }) }}" method="POST" onsubmit="return confirm('{{ 'team.show.confirm_leave'|trans|e('js') }}');">
                         <input type="hidden" name="_token" value="{{ csrf_token('leave' ~ team.id) }}">
                         <button type="submit" class="btn btn-app-danger">
-                            <i class="bi bi-person-dash-fill me-1"></i>Quitter
+                            <i class="bi bi-person-dash-fill me-1"></i>{{ 'team.show.leave'|trans }}
                         </button>
                     </form>
                 {% endif %}
@@ -49,24 +49,24 @@
                 {% if is_granted('TEAM_REQUEST_JOIN', team) %}
                     {% if hasPendingRequest %}
                         <button type="button" class="btn-app-secondary" disabled>
-                            <i class="bi bi-hourglass-split me-1"></i>Demande en attente
+                            <i class="bi bi-hourglass-split me-1"></i>{{ 'team.show.pending'|trans }}
                         </button>
                     {% else %}
                         <a class="btn-app-primary" href="{{ path('app_team_request_join', { id: team.id }) }}">
-                            <i class="bi bi-person-plus-fill me-1"></i>Rejoindre
+                            <i class="bi bi-person-plus-fill me-1"></i>{{ 'team.show.join'|trans }}
                         </a>
                     {% endif %}
                 {% endif %}
 
                 {% if is_granted('ROLE_ADMIN') and not is_granted('TEAM_EDIT', team) %}
                     <a href="{{ path('app_team_edit', { id: team.id }) }}" class="btn-app-secondary">
-                        <i class="bi bi-pencil-square me-1"></i>Modifier
+                        <i class="bi bi-pencil-square me-1"></i>{{ 'common.edit'|trans }}
                     </a>
 
                     {{ include('_delete_button.html.twig', {
                         action_path: path('app_team_delete', { id: team.id }),
                         csrf_token_name: 'delete' ~ team.id,
-                        confirm_message: 'Es-tu sûr de vouloir supprimer cette équipe ?',
+                        confirm_message: 'team.show.confirm_delete'|trans,
                     }) }}
                 {% endif %}
             </div>
@@ -75,9 +75,9 @@
                 <div class="col-lg-8">
                     <div class="card border-0 rounded-4 p-4 h-100 theme-card-bg">
                         {{ include('treasure_hunt/partials/_treasure_hunts_display.html.twig', {
-                            listTitle: 'Chasses au trésor',
+                            listTitle: 'treasure_hunt.list_title'|trans,
                             treasureHunts: treasurehunts,
-                            emptyMessage: "Cette équipe n'a pas encore créé de chasses au trésor.",
+                            emptyMessage: 'team.show.no_hunts'|trans,
                         }) }}
                     </div>
                 </div>
@@ -85,7 +85,7 @@
                 <div class="col-lg-4">
                     <div class="card border-0 rounded-4 p-4 h-100 bg-white">
                         <h3 class="fw-bold fs-5 text-dark mb-2 d-flex align-items-center gap-2">
-                            <i class="bi bi-people-fill text-success"></i> Membres
+                            <i class="bi bi-people-fill text-success"></i> {{ 'team.show.members'|trans }}
                         </h3>
 
                         {% set maxMembers = constant('App\\Entity\\Team::MAX_USERS') %}
@@ -112,8 +112,8 @@
                                         }) }}
                                         <span class="fw-bold text-dark">@{{ team.leader.username }}</span>
                                     </div>
-                                    <span class="badge bg-warning text-dark fw-semibold px-2.5 py-1 rounded-pill" title="Chef d'équipe">
-                                        Chef
+                                    <span class="badge bg-warning text-dark fw-semibold px-2.5 py-1 rounded-pill" title="{{ 'team.leader_title'|trans }}">
+                                        {{ 'team.leader_badge'|trans }}
                                     </span>
                                 </div>
                                 <hr class="text-muted opacity-25 my-2">
@@ -130,32 +130,32 @@
                                             <span class="text-secondary fw-medium">@{{ user.username }}</span>
                                         </div>
                                         {% if app.user and user.id == app.user.id %}
-                                            <span class="badge bg-dark text-white fw-semibold px-2.5 py-1 rounded-pill">Moi</span>
+                                            <span class="badge bg-dark text-white fw-semibold px-2.5 py-1 rounded-pill">{{ 'team.show.me'|trans }}</span>
                                         {% endif %}
 
                                         {% if is_granted('TEAM_PROMOTE', team) and is_granted('TEAM_KICK', team) %}
                                             <div class="btn-dropdown flex-shrink-0">
                                                 <button class="btn btn-sm rounded-circle member-actions-button" type="button"
                                                         data-bs-toggle="dropdown" aria-expanded="false"
-                                                        aria-label="Actions pour @{{ user.username }}">
+                                                        aria-label="{{ 'team.show.actions_for'|trans({ username: user.username }) }}">
                                                     <i class="bi bi-three-dots-vertical"></i>
                                                 </button>
                                                 <ul class="dropdown-menu dropdown-menu-end member-actions-menu">
                                                     <li>
                                                         <form action="{{ path('app_team_promote', { id: team.id, userId: user.id }) }}" method="POST"
-                                                              onsubmit="return confirm('Promouvoir @{{ user.username|e('js') }} chef de l\'équipe ? Vous deviendrez simple membre.');">
+                                                              onsubmit="return confirm('{{ 'team.show.confirm_promote'|trans({ username: user.username })|e('js') }}');">
                                                             <input type="hidden" name="_token" value="{{ csrf_token('promote' ~ team.id ~ '-' ~ user.id) }}">
                                                             <button type="submit" class="dropdown-item">
-                                                                <i class="bi bi-award me-2"></i>Promouvoir chef
+                                                                <i class="bi bi-award me-2"></i>{{ 'team.show.promote'|trans }}
                                                             </button>
                                                         </form>
                                                     </li>
                                                     <li>
                                                         <form action="{{ path('app_team_exclude', { id: team.id, userId: user.id }) }}" method="POST"
-                                                              onsubmit="return confirm('Exclure @{{ user.username|e('js') }} de l\'équipe ?');">
+                                                              onsubmit="return confirm('{{ 'team.show.confirm_exclude'|trans({ username: user.username })|e('js') }}');">
                                                             <input type="hidden" name="_token" value="{{ csrf_token('exclude' ~ team.id ~ '-' ~ user.id) }}">
                                                             <button type="submit" class="dropdown-item text-danger">
-                                                                <i class="bi bi-person-x me-2"></i>Exclure de l&apos;équipe
+                                                                <i class="bi bi-person-x me-2"></i>{{ 'team.show.exclude'|trans }}
                                                             </button>
                                                         </form>
                                                     </li>
@@ -167,7 +167,7 @@
                             {% endfor %}
 
                             {% if team.users|length == 0 and not team.leader %}
-                                <p class="text-muted small fst-italic text-center my-4">Aucun membre dans cette équipe pour le moment.</p>
+                                <p class="text-muted small fst-italic text-center my-4">{{ 'team.show.no_members'|trans }}</p>
                             {% endif %}
                         </div>
                     </div>

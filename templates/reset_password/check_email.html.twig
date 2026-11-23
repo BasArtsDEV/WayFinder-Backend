@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% set checkmailTitle = 'Vérification de l\'e-mail - Mot de passe oublié' %}
+{% set checkmailTitle = 'reset_password.check.title'|trans %}
 
 {% block title %} {{ checkmailTitle }}{% endblock %}
 
@@ -11,17 +11,15 @@
 {% block main %}
     <div class="login-page-wrapper">
         <div class="login-card">
-            <h1 class="login-title">E-mail envoyé</h1>
+            <h1 class="login-title">{{ 'reset_password.check.heading'|trans }}</h1>
 
             <div class="login-form text-center">
                 <p class="mb-4" style="color: #2d3748; font-size: 0.95rem; line-height: 1.5;">
-                    Si un compte correspondant à votre adresse e-mail existe, un e-mail vient d'être envoyé contenant un lien que vous pouvez utiliser pour réinitialiser votre mot de passe.<br><br>
-                    Ce lien expirera dans 1 heure.
+                    {{ 'reset_password.check.message'|trans|raw }}
                 </p>
 
                 <p style="color: #718096; font-size: 0.9rem;">
-                    Si vous ne recevez pas d'e-mail, veuillez vérifier votre dossier spam ou
-                    <a href="{{ path('app_forgot_password_request') }}" class="text-success fw-bold hover-green" style="text-decoration: none;">essayer à nouveau</a>.
+                    {{ 'reset_password.check.no_email'|trans({ link: path('app_forgot_password_request') })|raw }}
                 </p>
             </div>
         </div>

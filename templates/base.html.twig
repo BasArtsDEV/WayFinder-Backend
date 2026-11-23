@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="{{ html_lang() }}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -26,12 +26,12 @@
         <div class="d-flex align-items-center gap-3">
             <a class="navbar-brand fw-bold fs-4 text-white m-0 d-flex align-items-center gap-2" href="{{ path('app_home') }}">
                 <img src="{{ asset('icons/app-icon.png') }}"
-                     alt="Logo WayFinder"
+                     alt="{{ 'nav.logo_alt'|trans }}"
                      style="height: 34px; width: auto; object-fit: contain;"
                      class="rounded-2" />
                 <span>WayFinder</span>
             </a>
-            <span class="badge bg-white bg-warning-subtle text-success border border-warning-subtle px-2 py-1 rounded-pill d-none d-xl-inline fs-8">Mode création</span>        </div>
+            <span class="badge bg-white bg-warning-subtle text-success border border-warning-subtle px-2 py-1 rounded-pill d-none d-xl-inline fs-8">{{ 'nav.creation_mode'|trans }}</span>        </div>
 
         <button class="navbar-toggler border-0 shadow-none ms-auto" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
             <span class="navbar-toggler-icon"></span>
@@ -44,25 +44,47 @@
                 <a class="nav-link text-light opacity-75 px-3 py-2 rounded-3 fw-semibold d-flex align-items-center gap-2 {{ currentRoute == 'app_treasure_hunt' ? 'active text-white opacity-100' : '' }}"
                    href="{{ path('app_treasure_hunt') }}">
                     <i class="bi bi-map"></i>
-                    <span>Chasses</span>
+                    <span>{{ 'nav.hunts'|trans }}</span>
                 </a>
 
                 <a class="nav-link text-light opacity-75 px-3 py-2 rounded-3 fw-semibold d-flex align-items-center gap-2 {{ currentRoute == 'app_team' ? 'active text-white opacity-100' : '' }}"
                    href="{{ path('app_team') }}">
                     <i class="bi bi-people"></i>
-                    <span>Équipes</span>
+                    <span>{{ 'nav.teams'|trans }}</span>
                 </a>
             </div>
 
             <div class="d-flex align-items-center gap-3 ms-lg-auto">
 
-                <div class="lang-switch-wrapper">
-                    <input type="checkbox" id="lang-toggle" class="d-none">
-                    <label for="lang-toggle" class="btn btn-sm btn-outline-light d-flex align-items-center gap-2 border-0 px-2 py-1 rounded-3 m-0" style="cursor: pointer;">
+                <div class="dropdown">
+                    <button class="btn btn-sm btn-outline-light d-flex align-items-center gap-2 border-0 px-2 py-1 rounded-3 m-0 dropdown-toggle"
+                            type="button"
+                            id="languageDropdown"
+                            data-bs-toggle="dropdown"
+                            aria-expanded="false"
+                            aria-label="{{ 'nav.language'|trans }}"
+                            title="{{ 'nav.language'|trans }}">
                         <i class="bi bi-globe fs-6"></i>
-                        <span class="text-uppercase fw-bold fs-8 lang-label-fr">FR</span>
-                        <span class="text-uppercase fw-bold fs-8 lang-label-en d-none">EN</span>
-                    </label>
+                        {% for locale in available_locales() %}
+                            {% if locale.active %}
+                                <span class="text-uppercase fw-bold fs-8">{{ locale.short }}</span>
+                            {% endif %}
+                        {% endfor %}
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end shadow-lg" aria-labelledby="languageDropdown">
+                        {% for locale in available_locales() %}
+                            <li>
+                                <a class="dropdown-item d-flex align-items-center justify-content-between gap-3{{ locale.active ? ' active' : '' }}"
+                                   href="{{ path('app_locale_switch', { locale: locale.code }) }}"
+                                   hreflang="{{ locale.code|replace({ _: '-' }) }}"
+                                   lang="{{ locale.code|replace({ _: '-' }) }}"
+                                   {% if locale.active %}aria-current="true"{% endif %}>
+                                    <span>{{ locale.name }}</span>
+                                    <span class="text-uppercase fs-8 opacity-75">{{ locale.short }}</span>
+                                </a>
+                            </li>
+                        {% endfor %}
+                    </ul>
                 </div>
 
                 {% if app.user %}
@@ -81,7 +103,7 @@
                                 }) }}
                                 {% if notifCount > 0 %}
                                     <span class="position-absolute top-0 end-0 p-1 bg-danger border border-dark rounded-circle">
-                                        <span class="visually-hidden">Nouvelles notifications</span>
+                                        <span class="visually-hidden">{{ 'nav.new_notifications'|trans }}</span>
                                     </span>
                                 {% endif %}
                             </div>
@@ -105,25 +127,25 @@
                             <div class="dropdown-section p-2 border-top border-theme">
                                 <a class="dropdown-item d-flex align-items-center gap-3 py-2 px-3 rounded-2 text-light" href="{{ path('app_settings') }}">
                                     <i class="bi bi-gear fs-5"></i>
-                                    <span>Paramètres</span>
+                                    <span>{{ 'nav.settings'|trans }}</span>
                                 </a>
                             </div>
 
                             <div class="dropdown-section p-2 border-top border-theme">
                                 <a class="dropdown-item d-flex align-items-center gap-3 py-2 px-3 rounded-2 text-warning" href="{{ path('app_treasure_hunt') }}">
                                     <i class="bi bi-map"></i>
-                                    <span>Mes chasses</span>
+                                    <span>{{ 'nav.my_hunts'|trans }}</span>
                                 </a>
                                 <a class="dropdown-item d-flex align-items-center gap-3 py-2 px-3 rounded-2  text-light" href="{{ path('app_team') }}">
                                     <i class="bi bi-people"></i>
-                                    <span>Mes équipes</span>
+                                    <span>{{ 'nav.my_teams'|trans }}</span>
                                 </a>
                             </div>
 
                             <div class="dropdown-section p-2 border-top border-theme">
                                 <a class="dropdown-item d-flex align-items-center gap-3 py-2 px-3 rounded-2  text-light" href="{{ path('app_notification') }}">
                                     <i class="bi bi-bell fs-5"></i>
-                                    <span>Notifications</span>
+                                    <span>{{ 'nav.notifications'|trans }}</span>
                                     {% if notifCount > 0 %}
                                         <span class="badge rounded-pill bg-danger ms-auto">{{ notifCount > 99 ? '99+' : notifCount }}</span>
                                     {% endif %}
@@ -133,7 +155,7 @@
                             <div class="dropdown-section p-2 border-top border-theme">
                                 <a class="dropdown-item d-flex align-items-center gap-3 py-2 px-3 rounded-2  text-light" href="{{ logout_path() }}">
                                     <i class="bi bi-box-arrow-right fs-5"></i>
-                                    <span>Se déconnecter</span>
+                                    <span>{{ 'nav.logout'|trans }}</span>
                                 </a>
                             </div>
 
@@ -141,7 +163,7 @@
                     </div>
                 {% else %}
                     <a class="btn-app-secondary" style="background-color: var(--brand-primary); border: none;" href="{{ path('app_login') }}">
-                        <i class="bi bi-box-arrow-in-right me-1"></i> Connexion
+                        <i class="bi bi-box-arrow-in-right me-1"></i> {{ 'nav.login'|trans }}
                     </a>
                 {% endif %}
             </div>
@@ -164,7 +186,7 @@
             {% for message in messages %}
                 <div class="alert flash flash-{{ type }} fade show" role="{{ type == 'error' ? 'alert' : 'status' }}">
                     <span class="flash-icon"><i class="bi bi-{{ flashIcons[type] }}" aria-hidden="true"></i></span>
-                    <p class="flash-message">{{ message }}</p>
+                    <p class="flash-message">{{ message|trans }}</p>
                     <button type="button" class="flash-close" data-bs-dismiss="alert" aria-label="Fermer">
                         <i class="bi bi-x-lg" aria-hidden="true"></i>
                     </button>
@@ -185,30 +207,34 @@
             </div>
 
             <div class="col-lg-2 col-md-3 col-6">
-                <h6 class="text-uppercase fw-semibold fs-8 tracking-wider mb-2 text-light">Produit</h6>
+                <h6 class="text-uppercase fw-semibold fs-8 tracking-wider mb-2 text-light">{{ 'footer.product'|trans }}</h6>
                 <ul class="list-unstyled small d-flex flex-column gap-1 mb-0">
-                    <li><a href="{{ path('app_register') }}" class="text-light opacity-75 text-decoration-none hover-emerald">Créer un compte</a></li>
+                    <li>
+                        <a href="{{ path('app_register') }}" class="text-light opacity-75 text-decoration-none hover-emerald">
+                            {{ 'footer.create_account'|trans }}
+                        </a>
+                    </li>
                 </ul>
             </div>
 
             <div class="col-lg-2 col-md-3 col-6">
-                <h6 class="text-uppercase fw-semibold fs-8 tracking-wider mb-2 text-light">Ressources</h6>
+                <h6 class="text-uppercase fw-semibold fs-8 tracking-wider mb-2 text-light">{{ 'footer.resources'|trans }}</h6>
                 <ul class="list-unstyled small d-flex flex-column gap-1 mb-0">
-                    <li><a href="#" class="text-light opacity-75 text-decoration-none hover-emerald">Foire aux questions</a></li>
+                    <li><a href="#" class="text-light opacity-75 text-decoration-none hover-emerald">{{ 'footer.faq'|trans }}</a></li>
                 </ul>
             </div>
 
             <div class="col-lg-2 col-md-3 col-6">
-                <h6 class="text-uppercase fw-semibold fs-8 tracking-wider mb-2 text-light">Société</h6>
+                <h6 class="text-uppercase fw-semibold fs-8 tracking-wider mb-2 text-light">{{ 'footer.company'|trans }}</h6>
                 <ul class="list-unstyled small d-flex flex-column gap-1 mb-0">
-                    <li><a href="#" class="text-light opacity-75 text-decoration-none hover-emerald">Nous contacter</a></li>
+                    <li><a href="#" class="text-light opacity-75 text-decoration-none hover-emerald">{{ 'footer.contact'|trans }}</a></li>
                 </ul>
             </div>
 
             <div class="col-lg-2 col-md-3 col-6">
-                <h6 class="text-uppercase fw-semibold fs-8 tracking-wider mb-2 text-light">Légal</h6>
+                <h6 class="text-uppercase fw-semibold fs-8 tracking-wider mb-2 text-light">{{ 'footer.legal'|trans }}</h6>
                 <ul class="list-unstyled small d-flex flex-column gap-1 mb-0">
-                    <li><a href="#" class="text-light opacity-75 text-decoration-none hover-emerald">Mentions légales</a></li>
+                    <li><a href="#" class="text-light opacity-75 text-decoration-none hover-emerald">{{ 'footer.legal_notice'|trans }}</a></li>
                 </ul>
             </div>
         </div>
@@ -237,8 +263,8 @@
         </div>
 
         <div class="d-flex flex-flex-column flex-md-row justify-content-between align-items-center fs-8 text-light opacity-50">
-            <p class="mb-1 mb-md-0">WayFinder &copy; {{ 'now'|date('Y') }} Tous droits réservés.</p>
-            <p class="mb-0">Aventures & Chasses au trésor interactives.</p>
+            <p class="mb-1 mb-md-0">{{ 'footer.copyright'|trans({ year: 'now'|date('Y') }) }}</p>
+            <p class="mb-0">{{ 'footer.tagline'|trans }}</p>
         </div>
 
     </div>

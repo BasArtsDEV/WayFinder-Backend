@@ -1,11 +1,10 @@
 <form method="post"
       action="{{ path('app_treasure_hunt_delete', { id: treasureHunt.id }) }}"
-      onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette chasse au trésor ?');">
+      onsubmit="return confirm('{{ 'treasure_hunt.confirm_delete'|trans|e('js') }}');">
 
     <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ treasureHunt.id) }}">
 
-    <button class="btn-app-danger btn btn-danger" title="Supprimer">
-        <i class="app-button-icon bi bi-trash-fill"></i>Supprimer
+    <button class="btn-app-danger btn btn-danger" title="{{ 'common.delete'|trans }}">
+        <i class="app-button-icon bi bi-trash-fill"></i>{{ 'common.delete'|trans }}
     </button>
-
 </form>
