@@ -97,60 +97,83 @@
             {% if rows is empty %}
                 <p class="leaderboard-empty">Personne n'a encore terminé cette chasse au trésor.</p>
             {% else %}
-                <div class="leaderboard-table-wrapper">
-                    <table class="leaderboard-table">
-                        <caption class="visually-hidden">Classement des participants, du meilleur au moins bon score</caption>
-                        <thead>
-                            <tr>
-                                <th scope="col">Rang</th>
-                                <th scope="col">Participant</th>
-                                <th scope="col">Score</th>
-                                <th scope="col" class="leaderboard-optional">Points</th>
-                                <th scope="col" class="leaderboard-optional">Bonus temps</th>
-                                <th scope="col" class="leaderboard-optional">Temps de jeu</th>
-                                <th scope="col" class="leaderboard-optional">Fin de partie</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for row in rows %}
-                                {% set entry = row.entry %}
-                                {% set name = entry.team ? entry.team.name : entry.user.username %}
-                                <tr class="leaderboard-row">
-                                    <td>
-                                        <span class="leaderboard-rank {{ entry.rank <= 3 ? 'leaderboard-rank-' ~ entry.rank }}">
-                                            <span class="visually-hidden">Place </span>{{ entry.rank }}
-                                        </span>
-                                    </td>
-                                    <td>
-                                        <div class="leaderboard-player">
-                                            {% if entry.team %}
-                                                <span class="leaderboard-avatar leaderboard-team-icon" aria-hidden="true">
-                                                    <i class="bi bi-people-fill"></i>
-                                                </span>
-                                            {% else %}
-                                                {{ include('profile/partials/_avatar.html.twig', { user: entry.user, size: 40, class: 'leaderboard-avatar' }) }}
-                                            {% endif %}
-                                            <span class="leaderboard-name">
-                                                {{ name }}
-                                                {% if entry.team %}
-                                                    <span class="leaderboard-tag">Équipe · {{ row.players }} joueur{{ row.players > 1 ? 's' }}</span>
-                                                {% endif %}
-                                                {% if entry.timedOut %}
-                                                    <span class="leaderboard-tag leaderboard-tag-warning">Temps écoulé</span>
-                                                {% endif %}
-                                            </span>
-                                        </div>
-                                    </td>
-                                    <td class="leaderboard-score">{{ entry.score }} <span class="leaderboard-score-unit">pts</span></td>
-                                    <td class="leaderboard-optional">{{ row.points }}</td>
-                                    <td class="leaderboard-optional">+{{ row.bonus }}</td>
-                                    <td class="leaderboard-optional">{{ row.playTime|duration }}</td>
-                                    <td class="leaderboard-optional">{{ row.finishedAt ? row.finishedAt|date_formatter : '-' }}</td>
+                <form method="post" action="{{ path('app_treasure_hunt_leaderboard_remove', { id: treasureHunt.id }) }}"
+                      onsubmit="return confirm(event.submitter.dataset.confirm);">
+                    <input type="hidden" name="_token" value="{{ csrf_token('remove-entries' ~ treasureHunt.id) }}">
+
+                    <div class="leaderboard-toolbar">
+                        <button type="submit" class="btn btn-app-danger" data-confirm="Retirer les entrées sélectionnées du classement ? Leurs parties seront remises à zéro.">
+                            <i class="bi bi-trash me-1" aria-hidden="true"></i>Retirer la sélection
+                        </button>
+                    </div>
+
+                    <div class="leaderboard-table-wrapper">
+                        <table class="leaderboard-table">
+                            <caption class="visually-hidden">Classement des participants, du meilleur au moins bon score</caption>
+                            <thead>
+                                <tr>
+                                    <th scope="col"><span class="visually-hidden">Sélection</span></th>
+                                    <th scope="col">Rang</th>
+                                    <th scope="col">Participant</th>
+                                    <th scope="col">Score</th>
+                                    <th scope="col" class="leaderboard-optional">Points</th>
+                                    <th scope="col" class="leaderboard-optional">Bonus temps</th>
+                                    <th scope="col" class="leaderboard-optional">Temps de jeu</th>
+                                    <th scope="col" class="leaderboard-optional">Fin de partie</th>
+                                    <th scope="col"><span class="visually-hidden">Actions</span></th>
                                 </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
+                            </thead>
+                            <tbody>
+                                {% for row in rows %}
+                                    {% set entry = row.entry %}
+                                    {% set name = entry.team ? entry.team.name : entry.user.username %}
+                                    <tr class="leaderboard-row">
+                                        <td>
+                                            <input type="checkbox" class="form-check-input leaderboard-check" name="keys[]" value="{{ entry.key }}" aria-label="Sélectionner {{ name }}">
+                                        </td>
+                                        <td>
+                                            <span class="leaderboard-rank {{ entry.rank <= 3 ? 'leaderboard-rank-' ~ entry.rank }}">
+                                                <span class="visually-hidden">Place </span>{{ entry.rank }}
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <div class="leaderboard-player">
+                                                {% if entry.team %}
+                                                    <span class="leaderboard-avatar leaderboard-team-icon" aria-hidden="true">
+                                                        <i class="bi bi-people-fill"></i>
+                                                    </span>
+                                                {% else %}
+                                                    {{ include('profile/partials/_avatar.html.twig', { user: entry.user, size: 40, class: 'leaderboard-avatar' }) }}
+                                                {% endif %}
+                                                <span class="leaderboard-name">
+                                                    {{ name }}
+                                                    {% if entry.team %}
+                                                        <span class="leaderboard-tag">Équipe · {{ row.players }} joueur{{ row.players > 1 ? 's' }}</span>
+                                                    {% endif %}
+                                                    {% if entry.timedOut %}
+                                                        <span class="leaderboard-tag leaderboard-tag-warning">Temps écoulé</span>
+                                                    {% endif %}
+                                                </span>
+                                            </div>
+                                        </td>
+                                        <td class="leaderboard-score">{{ entry.score }} <span class="leaderboard-score-unit">pts</span></td>
+                                        <td class="leaderboard-optional">{{ row.points }}</td>
+                                        <td class="leaderboard-optional">+{{ row.bonus }}</td>
+                                        <td class="leaderboard-optional">{{ row.playTime|duration }}</td>
+                                        <td class="leaderboard-optional">{{ row.finishedAt ? row.finishedAt|date_formatter : '-' }}</td>
+                                        <td>
+                                            <button type="submit" name="key" value="{{ entry.key }}" class="leaderboard-remove"
+                                                    data-confirm="Retirer {{ name }} du classement ? Sa partie sera remise à zéro."
+                                                    aria-label="Retirer {{ name }} du classement" title="Retirer du classement">
+                                                <i class="bi bi-trash" aria-hidden="true"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </form>
             {% endif %}
         </section>
 

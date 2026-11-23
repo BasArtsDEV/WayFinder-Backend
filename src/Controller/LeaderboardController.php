@@ -7,6 +7,8 @@ use App\Entity\User;
 use App\Repository\EnrollmentRepository;
 use App\Repository\SubmissionRepository;
 use App\Security\Voter\TreasureHuntVoter;
+use App\Service\GameProgressionService;
+use App\Service\GameScoreService;
 use App\Service\HuntStatisticsService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -87,6 +89,44 @@ final class LeaderboardController extends AbstractController
             });
 
             $this->addFlash('success', 'Les scores et le classement de la chasse au trésor ont été effacés.');
+        }
+
+        return $this->redirectToRoute('app_treasure_hunt_leaderboard', ['id' => $treasureHunt->getId()]);
+    }
+
+    #[Route('/treasure_hunt/{id}/leaderboard/remove', name: 'app_treasure_hunt_leaderboard_remove', requirements: ['id' => '\d+'], methods: ['POST'])]
+    public function removeEntries(Request $request, TreasureHunt $treasureHunt, EntityManagerInterface $em, GameScoreService $gameScoreService, GameProgressionService $gameProgressionService): Response
+    {
+        $this->denyAccessUnlessCreator($treasureHunt);
+
+        $payload = $request->getPayload();
+        if (!$this->isCsrfTokenValid('remove-entries'.$treasureHunt->getId(), $payload->getString('_token'))) {
+            $this->addFlash('error', 'Le formulaire a expiré, veuillez réessayer.');
+
+            return $this->redirectToRoute('app_treasure_hunt_leaderboard', ['id' => $treasureHunt->getId()]);
+        }
+
+        $key = $payload->getString('key');
+        $keys = '' !== $key ? [$key] : $payload->all('keys');
+
+        $removed = [];
+        foreach ($treasureHunt->getEnrollments() as $enrollment) {
+            if (null === $enrollment->getUser()) {
+                continue;
+            }
+
+            $competitorKey = $gameScoreService->getCompetitorKey($enrollment);
+            if (in_array($competitorKey, $keys, true)) {
+                $gameProgressionService->reset($enrollment);
+                $removed[$competitorKey] = true;
+            }
+        }
+
+        if ([] === $removed) {
+            $this->addFlash('info', 'Aucune entrée sélectionnée.');
+        } else {
+            $em->flush();
+            $this->addFlash('success', 1 === count($removed) ? "L'entrée a été retirée du classement." : count($removed).' entrées ont été retirées du classement.');
         }
 
         return $this->redirectToRoute('app_treasure_hunt_leaderboard', ['id' => $treasureHunt->getId()]);
