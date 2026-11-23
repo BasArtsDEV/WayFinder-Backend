@@ -107,21 +107,21 @@
                                 {% set memberCount = team.users|length %}
 
                                 <a href="{{ path('app_team_show', { id: team.id }) }}" class="team-card-item p-3 rounded-3 bg-light border border-light">
-                                    <div class="d-flex align-items-center justify-content-between">
-                                        <div class="d-flex align-items-center gap-2 min-w-0">
-                                            <span class="fw-bold text-dark text-decoration-none hover-success text-truncate">
+                                    <div class="d-flex align-items-center justify-content-between gap-2 w-100">
+                                        <div class="d-flex align-items-center gap-2 min-w-0 flex-grow-1">
+                                            <span class="fw-bold text-dark text-decoration-none hover-success text-truncate" title="{{ team.name }}">
                                                 {{ team.name }}
                                             </span>
-                                            <span class="text-muted fw-normal fs-6">|</span>
-                                            <span class="text-secondary small text-nowrap">
+                                            <span class="text-muted fw-normal fs-6 flex-shrink-0">|</span>
+                                            <span class="text-secondary small text-nowrap flex-shrink-0">
                                                 {{ 'team.member_count'|trans({ count: memberCount }) }}
                                             </span>
                                         </div>
 
                                         {% if team.leader and team.leader.id == user.id %}
-                                            <span class="badge bg-warning text-dark fw-semibold px-2 py-1 rounded-pill ms-2" title="Chef d'équipe">
-                                                {{ 'team.leader_badge'|trans }}
-                                            </span>
+                                            <span class="badge bg-warning text-dark fw-semibold px-2 py-1 rounded-pill flex-shrink-0" title="Chef d'équipe">
+                                            {{ 'team.leader_badge'|trans }}
+                                        </span>
                                         {% endif %}
                                     </div>
                                 </a>
