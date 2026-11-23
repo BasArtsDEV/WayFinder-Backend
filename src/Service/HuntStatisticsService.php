@@ -101,7 +101,11 @@ readonly class HuntStatisticsService
             $times = [];
 
             foreach ($riddle->getSubmissions() as $submission) {
-                $enrollmentId = $submission->getEnrollment()?->getId();
+                if ($submission->getEnrollment()?->getTreasureHunt() !== $treasureHunt) {
+                    continue;
+                }
+
+                $enrollmentId = $submission->getEnrollment()->getId();
                 $attempts[$enrollmentId] = true;
 
                 if ($submission->isRight()) {
@@ -114,7 +118,7 @@ readonly class HuntStatisticsService
 
             $blocked = 0;
             foreach ($riddle->getEnrollments() as $enrollment) {
-                if (EnrollmentStatus::FINISHED === $enrollment->getStatus()) {
+                if ($enrollment->getTreasureHunt() === $treasureHunt && EnrollmentStatus::FINISHED === $enrollment->getStatus()) {
                     ++$blocked;
                 }
             }
