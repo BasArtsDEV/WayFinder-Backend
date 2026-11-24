@@ -91,48 +91,54 @@
             {% if registrationForm.password.first is defined %}
                 <div class="form-group mb-3">
                     <label for="{{ registrationForm.password.first.vars.id }}" class="form-label-custom">{{ 'common.password'|trans }}</label>
-                    <div class="input-badge-group">
+                    <div class="input-badge-group" data-controller="password-toggle">
                         <span class="input-badge-icon">
                             <i class="bi bi-lock-fill"></i>
                         </span>
                         {{ form_widget(registrationForm.password.first, {
                             attr: {
                                 class: 'form-control-custom',
+                                'data-password-toggle-target': 'input',
                                 placeholder: 'registration.placeholder.password'|trans,
                             },
                         }) }}
+                        {{ include('security/partials/_password_toggle.html.twig') }}
                     </div>
                     {{ form_errors(registrationForm.password.first) }}
                 </div>
 
                 <div class="form-group mb-4">
                     <label for="{{ registrationForm.password.second.vars.id }}" class="form-label-custom">{{ 'common.password_confirm'|trans }}</label>
-                    <div class="input-badge-group">
+                    <div class="input-badge-group" data-controller="password-toggle">
                         <span class="input-badge-icon">
                             <i class="bi bi-check2-circle"></i>
                         </span>
                         {{ form_widget(registrationForm.password.second, {
                             attr: {
                                 class: 'form-control-custom',
+                                'data-password-toggle-target': 'input',
                                 placeholder: 'registration.placeholder.password_confirm'|trans,
                             },
                         }) }}
+                        {{ include('security/partials/_password_toggle.html.twig') }}
                     </div>
                     {{ form_errors(registrationForm.password.second) }}
                 </div>
             {% else %}
                 <div class="form-group mb-4">
                     <label for="{{ registrationForm.password.vars.id }}" class="form-label-custom">{{ 'common.password'|trans }}</label>
-                    <div class="input-badge-group">
+                    <div class="input-badge-group" data-controller="password-toggle">
                         <span class="input-badge-icon">
                             <i class="bi bi-lock-fill"></i>
                         </span>
                         {{ form_widget(registrationForm.password, {
                             attr: {
                                 class: 'form-control-custom',
+                                'data-password-toggle-target': 'input',
                                 placeholder: 'registration.placeholder.password'|trans,
                             },
                         }) }}
+                        {{ include('security/partials/_password_toggle.html.twig') }}
                     </div>
                     {{ form_errors(registrationForm.password) }}
                 </div>
