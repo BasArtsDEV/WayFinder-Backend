@@ -207,6 +207,74 @@ nav:
     notifications: Notifications
     settings: Paramètres
     teams: Équipes
+leaderboard:
+    page_title: '{title} - Classement'
+    title: Classement
+    back: Retour à la chasse
+    export: Exporter (CSV)
+    reset_all: Tout réinitialiser
+    confirm_reset: 'Réinitialiser tous les résultats ? {count, plural, one {La partie commencée sera remise} other {Les # parties commencées seront remises}} à zéro, cette action est irréversible.'
+    stats:
+        heading: Statistiques
+        started: '{count, plural, one {Partie commencée} other {Parties commencées}}'
+        finished: '{count, plural, one {Partie terminée} other {Parties terminées}}'
+        ongoing: En cours ou en pause
+        completion_rate: Taux de réussite
+        average_score: Score moyen
+        average_play_time: Temps de jeu moyen
+    points_unit: pts
+    participants:
+        title: Participants
+        empty: Personne n'a encore terminé cette chasse au trésor.
+        search: Rechercher un participant
+        filter_label: Filtrer les participants
+        filter:
+            all: Tous les participants
+            solo: Joueurs seuls
+            team: Équipes
+            timed_out: Temps écoulé
+        remove_selection: 'Retirer la sélection ({count})'
+        confirm_remove_selection: Retirer les entrées sélectionnées du classement ? Leurs parties seront remises à zéro.
+        caption: Classement des participants, du meilleur au moins bon score
+        select_all: Sélectionner tous les participants affichés
+        select_one: 'Sélectionner {name}'
+        column:
+            rank: Rang
+            participant: Participant
+            score: Score
+            points: Points
+            time_bonus: Bonus temps
+            play_time: Temps de jeu
+            finished_at: Fin de partie
+            actions: Actions
+        place: 'Place '
+        team_tag: 'Équipe · {count, plural, one {# joueur} other {# joueurs}}'
+        timed_out: Temps écoulé
+        remove_title: Retirer du classement
+        remove_one: 'Retirer {name} du classement'
+        confirm_remove_one: 'Retirer {name} du classement ? Sa partie sera remise à zéro.'
+        no_result: Aucun participant ne correspond à la recherche.
+    riddles:
+        title: Analyse des énigmes
+        empty: Cette chasse ne contient aucune énigme.
+        caption: Résultats des joueurs pour chaque énigme
+        column:
+            number: N°
+            riddle: Énigme
+            success: Réussite
+            wrong_answers: Mauvaises réponses
+            average_time: Temps moyen
+            blocked: Bloqués
+        hardest: La plus difficile
+        no_answer: Aucune réponse
+        progress_label: "Taux de réussite de l'énigme {index}"
+        blocked_title: Parties terminées par manque de temps sur cette énigme
+    ongoing:
+        title: Parties en cours
+        empty: Aucune partie en cours.
+        paused: En pause
+        in_progress: En cours
+        detail: 'Énigme {current}/{total} · {time} joué'
 notification:
     accept: Accepter
     decline: Refuser
