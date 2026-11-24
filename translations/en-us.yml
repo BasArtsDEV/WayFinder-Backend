@@ -207,6 +207,74 @@ nav:
     notifications: Notifications
     settings: Settings
     teams: Teams
+leaderboard:
+    page_title: '{title} - Leaderboard'
+    title: Leaderboard
+    back: Back to the hunt
+    export: Export (CSV)
+    reset_all: Reset everything
+    confirm_reset: 'Reset all results? {count, plural, one {The started game} other {The # started games}} will be reset to zero. This action cannot be undone.'
+    stats:
+        heading: Statistics
+        started: '{count, plural, one {Game started} other {Games started}}'
+        finished: '{count, plural, one {Game finished} other {Games finished}}'
+        ongoing: In progress or paused
+        completion_rate: Completion rate
+        average_score: Average score
+        average_play_time: Average play time
+    points_unit: pts
+    participants:
+        title: Participants
+        empty: Nobody has finished this treasure hunt yet.
+        search: Search for a participant
+        filter_label: Filter participants
+        filter:
+            all: All participants
+            solo: Solo players
+            team: Teams
+            timed_out: Time expired
+        remove_selection: 'Remove selection ({count})'
+        confirm_remove_selection: Remove the selected entries from the leaderboard? Their games will be reset to zero.
+        caption: Participant leaderboard, from the best to the lowest score
+        select_all: Select all displayed participants
+        select_one: 'Select {name}'
+        column:
+            rank: Rank
+            participant: Participant
+            score: Score
+            points: Points
+            time_bonus: Time bonus
+            play_time: Play time
+            finished_at: Finished
+            actions: Actions
+        place: 'Place '
+        team_tag: 'Team · {count, plural, one {# player} other {# players}}'
+        timed_out: Time expired
+        remove_title: Remove from the leaderboard
+        remove_one: 'Remove {name} from the leaderboard'
+        confirm_remove_one: 'Remove {name} from the leaderboard? Their game will be reset to zero.'
+        no_result: No participant matches the search.
+    riddles:
+        title: Riddle analysis
+        empty: This hunt does not contain any riddle.
+        caption: Player results for each riddle
+        column:
+            number: No.
+            riddle: Riddle
+            success: Success
+            wrong_answers: Wrong answers
+            average_time: Average time
+            blocked: Stuck
+        hardest: Hardest
+        no_answer: No answer
+        progress_label: 'Success rate of riddle {index}'
+        blocked_title: Games ended because time ran out on this riddle
+    ongoing:
+        title: Games in progress
+        empty: No game in progress.
+        paused: Paused
+        in_progress: In progress
+        detail: 'Riddle {current}/{total} · {time} played'
 notification:
     accept: Accept
     decline: Decline
