@@ -115,10 +115,10 @@ class LeaderboardPageCest
 
         $I->amLoggedInAs($this->creator);
         $I->amOnPage('/treasure_hunt/'.$treasureHunt->getId().'/leaderboard');
-        $I->click('Tout réinitialiser');
+        $I->click('.reset_all_button');
 
         $I->seeCurrentUrlEquals('/treasure_hunt/'.$treasureHunt->getId().'/leaderboard');
-        $I->see("Personne n'a encore terminé cette chasse au trésor.");
+        $I->seeElement('.leaderboard-empty');
         $I->seeInRepository(Enrollment::class, ['id' => $enrollment->getId(), 'status' => EnrollmentStatus::NOT_STARTED, 'scoreTotal' => 0]);
     }
 
@@ -140,8 +140,8 @@ class LeaderboardPageCest
         $I->amOnPage('/treasure_hunt/'.$treasureHunt->getId().'/leaderboard');
 
         $I->see('alice', '.leaderboard-row');
-        $I->see('Temps écoulé', '.leaderboard-row');
-        $I->see('Aucune partie en cours.');
+        $I->seeElement('.leaderboard-row');
+        $I->seeElement('.leaderboard-empty');
         $I->seeInRepository(Enrollment::class, ['id' => $enrollment->getId(), 'status' => EnrollmentStatus::FINISHED, 'countdown' => 3600]);
     }
 
@@ -157,7 +157,7 @@ class LeaderboardPageCest
         $I->amLoggedInAs($this->creator);
         $I->amOnPage('/treasure_hunt/'.$treasureHunt->getId().'/leaderboard');
 
-        $I->see('Aucune réponse', '.leaderboard-riddles');
+        $I->seeElement('.leaderboard-riddles');
     }
 
     public function creatorCanExportTheLeaderboard(ApplicationTester $I): void

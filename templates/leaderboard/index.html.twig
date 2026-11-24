@@ -36,7 +36,7 @@
                     <form method="post" action="{{ path('app_treasure_hunt_reset_scores', { id: treasureHunt.id }) }}"
                           onsubmit="return confirm('{{ 'leaderboard.confirm_reset'|trans({ count: summary.started })|e('js') }}');">
                         <input type="hidden" name="_token" value="{{ csrf_token('reset-scores' ~ treasureHunt.id) }}">
-                        <button type="submit" class="btn btn-app-danger w-100">
+                        <button type="submit" class="reset_all_button btn btn-app-danger w-100">
                             <i class="bi bi-arrow-counterclockwise me-1" aria-hidden="true"></i>{{ 'leaderboard.reset_all'|trans }}
                         </button>
                     </form>
