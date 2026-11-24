@@ -47,4 +47,23 @@ final class AuthenticationCest
 
         $I->dontSeeAuthentication();
     }
+
+    public function anonymousUserCanCreateAnAccount(ApplicationTester $I): void
+    {
+        $I->dontSeeAuthentication();
+        $I->amOnPage('/register');
+        $I->seeResponseCodeIsSuccessful();
+
+        $I->fillField(['name' => 'registration_form[username]'], 'myfirstaccount99');
+        $I->fillField(['name' => 'registration_form[email]'], 'test.test@example.com');
+        $I->fillField(['name' => 'registration_form[firstname]'], 'Toto');
+        $I->fillField(['name' => 'registration_form[lastname]'], 'Titi');
+
+        $password = 'Azerty01!';
+        $I->fillField(['name' => 'registration_form[password][first]'], $password);
+        $I->fillField(['name' => 'registration_form[password][second]'], $password);
+        $I->click('.btn-login-submit');
+
+        $I->seeAuthentication();
+    }
 }
