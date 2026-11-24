@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}{{ treasureHunt.title }} - Classement{% endblock %}
+{% block title %}{{ 'leaderboard.page_title'|trans({ title: treasureHunt.title }) }}{% endblock %}
 
 {% block stylesheets %}
     <link rel="stylesheet" href="{{ asset('styles/leaderboard/leaderboard.css') }}">
@@ -11,7 +11,7 @@
 
         <a href="{{ path('app_treasure_hunt_show', { id: treasureHunt.id }) }}" class="leaderboard-back">
             <i class="bi bi-arrow-left" aria-hidden="true"></i>
-            Retour à la chasse
+            {{ 'leaderboard.back'|trans }}
         </a>
 
         <header class="leaderboard-card leaderboard-header">
@@ -20,7 +20,7 @@
                     <i class="bi bi-trophy-fill"></i>
                 </span>
                 <div class="min-w-0">
-                    <h1 class="leaderboard-title">Classement</h1>
+                    <h1 class="leaderboard-title">{{ 'leaderboard.title'|trans }}</h1>
                     <p class="leaderboard-subtitle">{{ treasureHunt.title }}</p>
                 </div>
             </div>
@@ -28,16 +28,16 @@
             <div class="leaderboard-header-actions">
                 {% if rows is not empty %}
                     <a href="{{ path('app_treasure_hunt_leaderboard_export', { id: treasureHunt.id }) }}" class="btn btn-app-secondary" download>
-                        <i class="bi bi-download me-1" aria-hidden="true"></i>Exporter (CSV)
+                        <i class="bi bi-download me-1" aria-hidden="true"></i>{{ 'leaderboard.export'|trans }}
                     </a>
                 {% endif %}
 
                 {% if summary.started > 0 %}
                     <form method="post" action="{{ path('app_treasure_hunt_reset_scores', { id: treasureHunt.id }) }}"
-                          onsubmit="return confirm('Réinitialiser tous les résultats ? Les {{ summary.started }} partie(s) commencée(s) seront remises à zéro, cette action est irréversible.');">
+                          onsubmit="return confirm('{{ 'leaderboard.confirm_reset'|trans({ count: summary.started })|e('js') }}');">
                         <input type="hidden" name="_token" value="{{ csrf_token('reset-scores' ~ treasureHunt.id) }}">
                         <button type="submit" class="btn btn-app-danger w-100">
-                            <i class="bi bi-arrow-counterclockwise me-1" aria-hidden="true"></i>Tout réinitialiser
+                            <i class="bi bi-arrow-counterclockwise me-1" aria-hidden="true"></i>{{ 'leaderboard.reset_all'|trans }}
                         </button>
                     </form>
                 {% endif %}
@@ -45,66 +45,71 @@
         </header>
 
         <section aria-labelledby="leaderboard-stats-title">
-            <h2 id="leaderboard-stats-title" class="visually-hidden">Statistiques</h2>
+            <h2 id="leaderboard-stats-title" class="visually-hidden">{{ 'leaderboard.stats.heading'|trans }}</h2>
             <ul class="leaderboard-stats">
                 <li class="leaderboard-stat">
                     <i class="bi bi-people-fill leaderboard-stat-icon" aria-hidden="true"></i>
                     <span class="leaderboard-stat-value">{{ summary.started }}</span>
-                    <span class="leaderboard-stat-label">Partie{{ summary.started > 1 ? 's' }} commencée{{ summary.started > 1 ? 's' }}</span>
+                    <span class="leaderboard-stat-label">{{ 'leaderboard.stats.started'|trans({ count: summary.started }) }}</span>
                 </li>
                 <li class="leaderboard-stat">
                     <i class="bi bi-flag-fill leaderboard-stat-icon" aria-hidden="true"></i>
                     <span class="leaderboard-stat-value">{{ summary.finished }}</span>
-                    <span class="leaderboard-stat-label">Partie{{ summary.finished > 1 ? 's' }} terminée{{ summary.finished > 1 ? 's' }}</span>                </li>
+                    <span class="leaderboard-stat-label">{{ 'leaderboard.stats.finished'|trans({ count: summary.finished }) }}</span>
+                </li>
                 <li class="leaderboard-stat">
                     <i class="bi bi-hourglass-split leaderboard-stat-icon" aria-hidden="true"></i>
                     <span class="leaderboard-stat-value">{{ summary.ongoing }}</span>
-                    <span class="leaderboard-stat-label">En cours ou en pause</span>                </li>
+                    <span class="leaderboard-stat-label">{{ 'leaderboard.stats.ongoing'|trans }}</span>
+                </li>
                 <li class="leaderboard-stat">
                     <i class="bi bi-check-circle-fill leaderboard-stat-icon" aria-hidden="true"></i>
                     <span class="leaderboard-stat-value">{{ summary.completionRate is null ? '-' : summary.completionRate ~ ' %' }}</span>
-                    <span class="leaderboard-stat-label">Taux de réussite</span>                </li>
+                    <span class="leaderboard-stat-label">{{ 'leaderboard.stats.completion_rate'|trans }}</span>
+                </li>
                 <li class="leaderboard-stat">
                     <i class="bi bi-star-fill leaderboard-stat-icon" aria-hidden="true"></i>
-                    <span class="leaderboard-stat-value">{{ summary.averageScore ?? '-' }}{% if summary.averageScore is not null %} <small>pts</small>{% endif %}</span>
-                    <span class="leaderboard-stat-label">Score moyen</span>                </li>
+                    <span class="leaderboard-stat-value">{{ summary.averageScore ?? '-' }}{% if summary.averageScore is not null %} <small>{{ 'leaderboard.points_unit'|trans }}</small>{% endif %}</span>
+                    <span class="leaderboard-stat-label">{{ 'leaderboard.stats.average_score'|trans }}</span>
+                </li>
                 <li class="leaderboard-stat">
                     <i class="bi bi-stopwatch-fill leaderboard-stat-icon" aria-hidden="true"></i>
                     <span class="leaderboard-stat-value">{{ summary.averagePlayTime is null ? '-' : summary.averagePlayTime|duration }}</span>
-                    <span class="leaderboard-stat-label">Temps de jeu moyen</span>                </li>
+                    <span class="leaderboard-stat-label">{{ 'leaderboard.stats.average_play_time'|trans }}</span>
+                </li>
             </ul>
         </section>
 
         <section class="leaderboard-card" aria-labelledby="leaderboard-participants-title" data-controller="leaderboard">
             <div class="leaderboard-card-header">
                 <h2 id="leaderboard-participants-title" class="leaderboard-section-title">
-                    Participants
+                    {{ 'leaderboard.participants.title'|trans }}
                     <span class="leaderboard-count">{{ rows|length }}</span>
                 </h2>
             </div>
 
             {% if rows is empty %}
-                <p class="leaderboard-empty">Personne n'a encore terminé cette chasse au trésor.</p>
+                <p class="leaderboard-empty">{{ 'leaderboard.participants.empty'|trans }}</p>
             {% else %}
                 <div class="leaderboard-toolbar">
                     <div class="leaderboard-search">
-                        <label for="leaderboard-search" class="visually-hidden">Rechercher un participant</label>
+                        <label for="leaderboard-search" class="visually-hidden">{{ 'leaderboard.participants.search'|trans }}</label>
                         <i class="bi bi-search" aria-hidden="true"></i>
-                        <input type="search" id="leaderboard-search" class="form-control" placeholder="Rechercher un participant"
+                        <input type="search" id="leaderboard-search" class="form-control" placeholder="{{ 'leaderboard.participants.search'|trans }}"
                                data-leaderboard-target="search" data-action="input->leaderboard#filter">
                     </div>
 
-                    <label for="leaderboard-filter" class="visually-hidden">Filtrer les participants</label>
+                    <label for="leaderboard-filter" class="visually-hidden">{{ 'leaderboard.participants.filter_label'|trans }}</label>
                     <select id="leaderboard-filter" class="form-select leaderboard-filter" data-leaderboard-target="filter" data-action="change->leaderboard#filter">
-                        <option value="all">Tous les participants</option>
-                        <option value="solo">Joueurs seuls</option>
-                        <option value="team">Équipes</option>
-                        <option value="timed-out">Temps écoulé</option>
+                        <option value="all">{{ 'leaderboard.participants.filter.all'|trans }}</option>
+                        <option value="solo">{{ 'leaderboard.participants.filter.solo'|trans }}</option>
+                        <option value="team">{{ 'leaderboard.participants.filter.team'|trans }}</option>
+                        <option value="timed-out">{{ 'leaderboard.participants.filter.timed_out'|trans }}</option>
                     </select>
 
                     <button type="submit" form="leaderboard-remove-form" class="btn btn-app-danger" data-leaderboard-target="removeSelected"
-                            data-confirm="Retirer les entrées sélectionnées du classement ? Leurs parties seront remises à zéro.">
-                        <i class="bi bi-trash me-1" aria-hidden="true"></i><span>Retirer la sélection (<span data-leaderboard-target="count">0</span>)</span>
+                            data-confirm="{{ 'leaderboard.participants.confirm_remove_selection'|trans }}">
+                        <i class="bi bi-trash me-1" aria-hidden="true"></i><span>{{ 'leaderboard.participants.remove_selection'|trans({ count: '<span data-leaderboard-target="count">0</span>' })|raw }}</span>
                     </button>
                 </div>
 
@@ -114,133 +119,133 @@
 
                     <div class="leaderboard-table-wrapper">
                         <table class="leaderboard-table">
-                            <caption class="visually-hidden">Classement des participants, du meilleur au moins bon score</caption>
+                            <caption class="visually-hidden">{{ 'leaderboard.participants.caption'|trans }}</caption>
                             <thead>
-                                <tr>
-                                    <th scope="col">
-                                        <input type="checkbox" class="form-check-input leaderboard-check" aria-label="Sélectionner tous les participants affichés"
-                                               data-leaderboard-target="checkAll" data-action="change->leaderboard#toggleAll">
-                                    </th>
-                                    <th scope="col">Rang</th>
-                                    <th scope="col">Participant</th>
-                                    <th scope="col">Score</th>
-                                    <th scope="col" class="leaderboard-optional">Points</th>
-                                    <th scope="col" class="leaderboard-optional">Bonus temps</th>
-                                    <th scope="col" class="leaderboard-optional">Temps de jeu</th>
-                                    <th scope="col" class="leaderboard-optional">Fin de partie</th>
-                                    <th scope="col"><span class="visually-hidden">Actions</span></th>
-                                </tr>
+                            <tr>
+                                <th scope="col">
+                                    <input type="checkbox" class="form-check-input leaderboard-check" aria-label="{{ 'leaderboard.participants.select_all'|trans }}"
+                                           data-leaderboard-target="checkAll" data-action="change->leaderboard#toggleAll">
+                                </th>
+                                <th scope="col">{{ 'leaderboard.participants.column.rank'|trans }}</th>
+                                <th scope="col">{{ 'leaderboard.participants.column.participant'|trans }}</th>
+                                <th scope="col">{{ 'leaderboard.participants.column.score'|trans }}</th>
+                                <th scope="col" class="leaderboard-optional">{{ 'leaderboard.participants.column.points'|trans }}</th>
+                                <th scope="col" class="leaderboard-optional">{{ 'leaderboard.participants.column.time_bonus'|trans }}</th>
+                                <th scope="col" class="leaderboard-optional">{{ 'leaderboard.participants.column.play_time'|trans }}</th>
+                                <th scope="col" class="leaderboard-optional">{{ 'leaderboard.participants.column.finished_at'|trans }}</th>
+                                <th scope="col"><span class="visually-hidden">{{ 'leaderboard.participants.column.actions'|trans }}</span></th>
+                            </tr>
                             </thead>
                             <tbody>
-                                {% for row in rows %}
-                                    {% set entry = row.entry %}
-                                    {% set name = entry.team ? entry.team.name : entry.user.username %}
-                                    <tr class="leaderboard-row" data-leaderboard-target="row" data-name="{{ name|lower }}"
-                                        data-type="{{ entry.team ? 'team' : 'solo' }}" data-timed-out="{{ entry.timedOut ? 1 : 0 }}">
-                                        <td>
-                                            <input type="checkbox" class="form-check-input leaderboard-check" name="keys[]" value="{{ entry.key }}" aria-label="Sélectionner {{ name }}"
+                            {% for row in rows %}
+                                {% set entry = row.entry %}
+                                {% set name = entry.team ? entry.team.name : entry.user.username %}
+                                <tr class="leaderboard-row" data-leaderboard-target="row" data-name="{{ name|lower }}"
+                                    data-type="{{ entry.team ? 'team' : 'solo' }}" data-timed-out="{{ entry.timedOut ? 1 : 0 }}">
+                                    <td>
+                                        <input type="checkbox" class="form-check-input leaderboard-check" name="keys[]" value="{{ entry.key }}" aria-label="{{ 'leaderboard.participants.select_one'|trans({ name: name }) }}"
                                                data-leaderboard-target="check" data-action="change->leaderboard#updateSelection">
-                                        </td>
-                                        <td>
+                                    </td>
+                                    <td>
                                             <span class="leaderboard-rank {{ entry.rank <= 3 ? 'leaderboard-rank-' ~ entry.rank }}">
-                                                <span class="visually-hidden">Place </span>{{ entry.rank }}
+                                                <span class="visually-hidden">{{ 'leaderboard.participants.place'|trans }}</span>{{ entry.rank }}
                                             </span>
-                                        </td>
-                                        <td>
-                                            <div class="leaderboard-player">
-                                                {% if entry.team %}
-                                                    <span class="leaderboard-avatar leaderboard-team-icon" aria-hidden="true">
+                                    </td>
+                                    <td>
+                                        <div class="leaderboard-player">
+                                            {% if entry.team %}
+                                                <span class="leaderboard-avatar leaderboard-team-icon" aria-hidden="true">
                                                         <i class="bi bi-people-fill"></i>
                                                     </span>
-                                                {% else %}
-                                                    {{ include('profile/partials/_avatar.html.twig', { user: entry.user, size: 40, class: 'leaderboard-avatar' }) }}
-                                                {% endif %}
-                                                <span class="leaderboard-name">
+                                            {% else %}
+                                                {{ include('profile/partials/_avatar.html.twig', { user: entry.user, size: 40, class: 'leaderboard-avatar' }) }}
+                                            {% endif %}
+                                            <span class="leaderboard-name">
                                                     {{ name }}
-                                                    {% if entry.team %}
-                                                        <span class="leaderboard-tag">Équipe · {{ row.players }} joueur{{ row.players > 1 ? 's' }}</span>
-                                                    {% endif %}
-                                                    {% if entry.timedOut %}
-                                                        <span class="leaderboard-tag leaderboard-tag-warning">Temps écoulé</span>
-                                                    {% endif %}
+                                                {% if entry.team %}
+                                                    <span class="leaderboard-tag">{{ 'leaderboard.participants.team_tag'|trans({ count: row.players }) }}</span>
+                                                {% endif %}
+                                                {% if entry.timedOut %}
+                                                    <span class="leaderboard-tag leaderboard-tag-warning">{{ 'leaderboard.participants.timed_out'|trans }}</span>
+                                                {% endif %}
                                                 </span>
-                                            </div>
-                                        </td>
-                                        <td class="leaderboard-score">{{ entry.score }} <span class="leaderboard-score-unit">pts</span></td>
-                                        <td class="leaderboard-optional">{{ row.points }}</td>
-                                        <td class="leaderboard-optional">+{{ row.bonus }}</td>
-                                        <td class="leaderboard-optional">{{ row.playTime|duration }}</td>
-                                        <td class="leaderboard-optional">{{ row.finishedAt ? row.finishedAt|date_formatter : '-' }}</td>
-                                        <td>
-                                            <button type="submit" name="key" value="{{ entry.key }}" class="leaderboard-remove"
-                                                    data-confirm="Retirer {{ name }} du classement ? Sa partie sera remise à zéro."
-                                                    aria-label="Retirer {{ name }} du classement" title="Retirer du classement">
-                                                <i class="bi bi-trash" aria-hidden="true"></i>
-                                            </button>
-                                        </td>
-                                    </tr>
-                                {% endfor %}
+                                        </div>
+                                    </td>
+                                    <td class="leaderboard-score">{{ entry.score }} <span class="leaderboard-score-unit">{{ 'leaderboard.points_unit'|trans }}</span></td>
+                                    <td class="leaderboard-optional">{{ row.points }}</td>
+                                    <td class="leaderboard-optional">+{{ row.bonus }}</td>
+                                    <td class="leaderboard-optional">{{ row.playTime|duration }}</td>
+                                    <td class="leaderboard-optional">{{ row.finishedAt ? row.finishedAt|date_formatter : '-' }}</td>
+                                    <td>
+                                        <button type="submit" name="key" value="{{ entry.key }}" class="leaderboard-remove"
+                                                data-confirm="{{ 'leaderboard.participants.confirm_remove_one'|trans({ name: name }) }}"
+                                                aria-label="{{ 'leaderboard.participants.remove_one'|trans({ name: name }) }}" title="{{ 'leaderboard.participants.remove_title'|trans }}">
+                                            <i class="bi bi-trash" aria-hidden="true"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            {% endfor %}
                             </tbody>
                         </table>
                     </div>
                 </form>
 
-                <p class="leaderboard-empty" data-leaderboard-target="noResult" hidden>Aucun participant ne correspond à la recherche.</p>
+                <p class="leaderboard-empty" data-leaderboard-target="noResult" hidden>{{ 'leaderboard.participants.no_result'|trans }}</p>
             {% endif %}
         </section>
 
         <div class="leaderboard-columns">
             <section class="leaderboard-card leaderboard-riddles" aria-labelledby="leaderboard-riddles-title">
                 <div class="leaderboard-card-header">
-                    <h2 id="leaderboard-riddles-title" class="leaderboard-section-title">Analyse des énigmes</h2>
+                    <h2 id="leaderboard-riddles-title" class="leaderboard-section-title">{{ 'leaderboard.riddles.title'|trans }}</h2>
                 </div>
 
                 {% if riddleStatistics is empty %}
-                    <p class="leaderboard-empty">Cette chasse ne contient aucune énigme.</p>
+                    <p class="leaderboard-empty">{{ 'leaderboard.riddles.empty'|trans }}</p>
                 {% else %}
                     <div class="leaderboard-table-wrapper">
                         <table class="leaderboard-table">
-                            <caption class="visually-hidden">Résultats des joueurs pour chaque énigme</caption>
+                            <caption class="visually-hidden">{{ 'leaderboard.riddles.caption'|trans }}</caption>
                             <thead>
-                                <tr>
-                                    <th scope="col">N°</th>
-                                    <th scope="col">Énigme</th>
-                                    <th scope="col">Réussite</th>
-                                    <th scope="col" class="leaderboard-optional">Mauvaises réponses</th>
-                                    <th scope="col" class="leaderboard-optional">Temps moyen</th>
-                                    <th scope="col" class="leaderboard-optional">Bloqués</th>
-                                </tr>
+                            <tr>
+                                <th scope="col">{{ 'leaderboard.riddles.column.number'|trans }}</th>
+                                <th scope="col">{{ 'leaderboard.riddles.column.riddle'|trans }}</th>
+                                <th scope="col">{{ 'leaderboard.riddles.column.success'|trans }}</th>
+                                <th scope="col" class="leaderboard-optional">{{ 'leaderboard.riddles.column.wrong_answers'|trans }}</th>
+                                <th scope="col" class="leaderboard-optional">{{ 'leaderboard.riddles.column.average_time'|trans }}</th>
+                                <th scope="col" class="leaderboard-optional">{{ 'leaderboard.riddles.column.blocked'|trans }}</th>
+                            </tr>
                             </thead>
                             <tbody>
-                                {% for statistic in riddleStatistics %}
-                                    <tr>
-                                        <td><span class="leaderboard-riddle-index">{{ statistic.riddle.index }}</span></td>
-                                        <td>
+                            {% for statistic in riddleStatistics %}
+                                <tr>
+                                    <td><span class="leaderboard-riddle-index">{{ statistic.riddle.index }}</span></td>
+                                    <td>
                                             <span class="leaderboard-name">
                                                 {{ statistic.riddle.title }}
                                                 {% if statistic.isHardest %}
-                                                    <span class="leaderboard-tag leaderboard-tag-warning">La plus difficile</span>
+                                                    <span class="leaderboard-tag leaderboard-tag-warning">{{ 'leaderboard.riddles.hardest'|trans }}</span>
                                                 {% endif %}
                                             </span>
-                                        </td>
-                                        <td>
-                                            {% if statistic.successRate is null %}
-                                                <span class="text-muted small">Aucune réponse</span>
-                                            {% else %}
-                                                <div class="leaderboard-progress-label">
-                                                    <span>{{ statistic.successRate }} %</span>
-                                                    <span class="text-muted small">{{ statistic.solved }}/{{ statistic.attempts }}</span>
-                                                </div>
-                                                <div class="leaderboard-progress" role="progressbar" aria-label="Taux de réussite de l'énigme {{ statistic.riddle.index }}" aria-valuenow="{{ statistic.successRate }}" aria-valuemin="0" aria-valuemax="100">
-                                                    <div class="leaderboard-progress-bar" style="width: {{ statistic.successRate }}%;"></div>
-                                                </div>
-                                            {% endif %}
-                                        </td>
-                                        <td class="leaderboard-optional">{{ statistic.wrongAnswers }}</td>
-                                        <td class="leaderboard-optional">{{ statistic.averageTime is null ? '-' : statistic.averageTime|duration }}</td>
-                                        <td class="leaderboard-optional" title="Parties terminées par manque de temps sur cette énigme">{{ statistic.blocked }}</td>
-                                    </tr>
-                                {% endfor %}
+                                    </td>
+                                    <td>
+                                        {% if statistic.successRate is null %}
+                                            <span class="text-muted small">{{ 'leaderboard.riddles.no_answer'|trans }}</span>
+                                        {% else %}
+                                            <div class="leaderboard-progress-label">
+                                                <span>{{ statistic.successRate }} %</span>
+                                                <span class="text-muted small">{{ statistic.solved }}/{{ statistic.attempts }}</span>
+                                            </div>
+                                            <div class="leaderboard-progress" role="progressbar" aria-label="{{ 'leaderboard.riddles.progress_label'|trans({ index: statistic.riddle.index }) }}" aria-valuenow="{{ statistic.successRate }}" aria-valuemin="0" aria-valuemax="100">
+                                                <div class="leaderboard-progress-bar" style="width: {{ statistic.successRate }}%;"></div>
+                                            </div>
+                                        {% endif %}
+                                    </td>
+                                    <td class="leaderboard-optional">{{ statistic.wrongAnswers }}</td>
+                                    <td class="leaderboard-optional">{{ statistic.averageTime is null ? '-' : statistic.averageTime|duration }}</td>
+                                    <td class="leaderboard-optional" title="{{ 'leaderboard.riddles.blocked_title'|trans }}">{{ statistic.blocked }}</td>
+                                </tr>
+                            {% endfor %}
                             </tbody>
                         </table>
                     </div>
@@ -250,13 +255,13 @@
             <section class="leaderboard-card leaderboard-ongoing" aria-labelledby="leaderboard-ongoing-title">
                 <div class="leaderboard-card-header">
                     <h2 id="leaderboard-ongoing-title" class="leaderboard-section-title">
-                        Parties en cours
+                        {{ 'leaderboard.ongoing.title'|trans }}
                         <span class="leaderboard-count">{{ ongoingGames|length }}</span>
                     </h2>
                 </div>
 
                 {% if ongoingGames is empty %}
-                    <p class="leaderboard-empty">Aucune partie en cours.</p>
+                    <p class="leaderboard-empty">{{ 'leaderboard.ongoing.empty'|trans }}</p>
                 {% else %}
                     <ul class="leaderboard-ongoing-list">
                         {% for game in ongoingGames %}
@@ -266,18 +271,21 @@
                                     <span class="leaderboard-name">
                                         {{ game.user.username }}
                                         {% if game.status.value == 'paused' %}
-                                            <span class="leaderboard-tag">En pause</span>
+                                            <span class="leaderboard-tag">{{ 'leaderboard.ongoing.paused'|trans }}</span>
                                         {% else %}
-                                            <span class="leaderboard-tag leaderboard-tag-success">En cours</span>
+                                            <span class="leaderboard-tag leaderboard-tag-success">{{ 'leaderboard.ongoing.in_progress'|trans }}</span>
                                         {% endif %}
                                     </span>
                                     <span class="leaderboard-ongoing-detail">
                                         {% if game.team %}{{ game.team.name }} · {% endif %}
-                                        Énigme {{ game.riddle ? game.riddle.index : '-' }}/{{ riddleStatistics|length }}
-                                        · {{ min(game.countdown, treasureHunt.duration)|duration }} joué
+                                        {{ 'leaderboard.ongoing.detail'|trans({
+                                            current: game.riddle ? game.riddle.index : '-',
+                                            total: riddleStatistics|length,
+                                            time: min(game.countdown, treasureHunt.duration)|duration,
+                                        }) }}
                                     </span>
                                 </div>
-                                <span class="leaderboard-score">{{ game.scoreTotal }} <span class="leaderboard-score-unit">pts</span></span>
+                                <span class="leaderboard-score">{{ game.scoreTotal }} <span class="leaderboard-score-unit">{{ 'leaderboard.points_unit'|trans }}</span></span>
                             </li>
                         {% endfor %}
                     </ul>
