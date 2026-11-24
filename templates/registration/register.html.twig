@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}{{ 'registration.title'|trans }}{% endblock %}
+{% block title %}{{ 'registration.title'|trans|raw }}{% endblock %}
 
 {% block stylesheets %}
     <link href="{{ asset('styles/security/register.css') }}" type="text/css" rel="stylesheet" />
