@@ -89,15 +89,6 @@
                     </div>
 
                     {% if not treasureHunt.published %}
-                        {% if is_granted('TREASURE_HUNT_RESET_SCORES', treasureHunt) %}
-                            <form method="post" action="{{ path('app_treasure_hunt_reset_scores', { id: treasureHunt.id }) }}" class="d-inline" onsubmit="return confirm('{{ 'treasure_hunt.show.reset_scores_confirm'|trans|e('js') }}');">
-                                <input type="hidden" name="_token" value="{{ csrf_token('reset-scores' ~ treasureHunt.id) }}">
-                                <button type="submit" class="btn btn-app-secondary">
-                                    <i class="bi bi-arrow-counterclockwise me-1"></i>{{ 'treasure_hunt.show.reset_scores'|trans }}
-                                </button>
-                            </form>
-                        {% endif %}
-
                         {% if is_granted('TREASURE_HUNT_DELETE', treasureHunt) %}
                             <div class="hunt-header-actions equal-buttons">
                                 {{ include('_delete_button.html.twig', {
